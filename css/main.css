@@ -1,0 +1,164 @@
+#body-container {
+  background-color: black;
+}
+
+body {
+  padding-top: 85px;
+}
+@media (max-width: 980px) {
+  body {
+    padding-top: 80px;
+  }
+}
+
+#btn-account {
+  background-color: aquamarine;
+  border: none;
+  padding: 5px 10px 5px 10px;
+  border-radius: 10px;
+  margin: 5px;
+}
+
+#btn-account:hover{
+  background-color: white;
+  transition: background-color 0.5s ease;
+}
+
+#btn-logout{
+  background-color: lightpink;
+  border: none;
+  padding: 5px 10px 5px 10px;
+  border-radius: 10px;
+  margin: 5px;
+}
+
+#btn-logout:hover{
+  background-color: white;
+  transition: background-color 0.5s ease;
+}
+
+#home-main-content{
+  background-color: white;
+  padding: 30px;
+}
+
+.home-main-heading{
+  margin: 15px 0 15px 0;
+}
+
+#home-main-list{
+  list-style: none;
+}
+
+.home-main-list-item{
+  margin: 21px 0 21px 0;
+}
+
+.home-main-list-icon{
+  color: rgb(43, 89, 136);
+  width: 20px;
+}
+
+.home-main-list-text{
+  font-size: large;
+  margin: 20px;
+}
+
+.jumbotron {
+  background-color: rgb(244, 244, 244);
+  border-radius: 10px;
+  border: lightgray solid 1px;
+  padding: 5px;
+}
+
+.home-main-table-stars{
+  font-size: 10px;
+}
+
+.home-main-table-text{
+  font-size: smaller;
+}
+
+#home-main-favorites{
+  background-color: rgb(165, 248, 218);
+  padding: 10px 10px 10px 40px;
+}
+
+.carousel-bottom-paragraph{
+  height: 60px;
+  display: none;
+}
+
+@media (max-width: 992px) {
+  .carousel-bottom-paragraph{
+    display: block;
+  }
+}
+
+#footer{
+  background-color: lightpink;
+  padding: 20px;
+  border-top: rgb(33, 37, 41) solid 20px;
+}
+
+@media (max-width: 768px) {
+  #footer {
+    border-top: rgb(33, 37, 41) solid 10px;
+  }
+}
+
+#home-footer-left{
+  text-align: left;
+  margin: 10px 0 10px 0;
+}
+
+#home-footer-center{
+  text-align: center;
+  margin: 10px 0 10px 0;
+}
+
+@media (max-width: 768px) {
+  #home-footer-center {
+    text-align: left;
+  }
+}
+
+#home-footer-right{
+  text-align: right;
+  margin: 10px 0 10px 0;
+}
+
+#home-footer-list{
+  list-style: none;
+  margin-left: -30px;
+}
+
+.home-footer-list-item{
+  margin: 10px 0 10px 0;
+}
+
+.home-footer-list-text{
+  margin-left: 15px;
+}
+
+.home-footer-list-icon{
+  color: white;
+  width: 10px;
+}
+
+#copyright {
+  background-color: white;
+  padding: 8px;
+  text-align: center;
+}
+
+#img-main{
+  border-bottom: rgb(33, 37, 41) solid 20px;
+}
+
+@media (max-width: 768px) {
+  #img-main {
+    border-bottom: rgb(33, 37, 41) solid 10px;
+  }
+}
+
