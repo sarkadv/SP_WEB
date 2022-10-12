@@ -1,3 +1,4 @@
+/* CSS pro vsechny stranky webu */
 #body-container {
   background-color: black;
 }
@@ -11,6 +12,16 @@ body {
   }
 }
 
+#header-img {
+  border-bottom: rgb(33, 37, 41) solid 20px;
+}
+
+@media (max-width: 768px) {
+  #header-img {
+    border-bottom: rgb(33, 37, 41) solid 10px;
+  }
+}
+
 #btn-account {
   background-color: aquamarine;
   border: none;
@@ -19,12 +30,12 @@ body {
   margin: 5px;
 }
 
-#btn-account:hover{
+#btn-account:hover {
   background-color: white;
   transition: background-color 0.5s ease;
 }
 
-#btn-logout{
+#btn-logout {
   background-color: lightpink;
   border: none;
   padding: 5px 10px 5px 10px;
@@ -32,36 +43,9 @@ body {
   margin: 5px;
 }
 
-#btn-logout:hover{
+#btn-logout:hover {
   background-color: white;
   transition: background-color 0.5s ease;
-}
-
-#home-main-content{
-  background-color: white;
-  padding: 30px;
-}
-
-.home-main-heading{
-  margin: 15px 0 15px 0;
-}
-
-#home-main-list{
-  list-style: none;
-}
-
-.home-main-list-item{
-  margin: 21px 0 21px 0;
-}
-
-.home-main-list-icon{
-  color: rgb(43, 89, 136);
-  width: 20px;
-}
-
-.home-main-list-text{
-  font-size: large;
-  margin: 20px;
 }
 
 .jumbotron {
@@ -71,31 +55,7 @@ body {
   padding: 5px;
 }
 
-.home-main-table-stars{
-  font-size: 10px;
-}
-
-.home-main-table-text{
-  font-size: smaller;
-}
-
-#home-main-favorites{
-  background-color: rgb(165, 248, 218);
-  padding: 10px 10px 10px 40px;
-}
-
-.carousel-bottom-paragraph{
-  height: 60px;
-  display: none;
-}
-
-@media (max-width: 992px) {
-  .carousel-bottom-paragraph{
-    display: block;
-  }
-}
-
-#footer{
+#footer {
   background-color: lightpink;
   padding: 20px;
   border-top: rgb(33, 37, 41) solid 20px;
@@ -107,12 +67,12 @@ body {
   }
 }
 
-#home-footer-left{
+#home-footer-left {
   text-align: left;
   margin: 10px 0 10px 0;
 }
 
-#home-footer-center{
+#home-footer-center {
   text-align: center;
   margin: 10px 0 10px 0;
 }
@@ -123,25 +83,25 @@ body {
   }
 }
 
-#home-footer-right{
+#home-footer-right {
   text-align: right;
   margin: 10px 0 10px 0;
 }
 
-#home-footer-list{
+#home-footer-list {
   list-style: none;
   margin-left: -30px;
 }
 
-.home-footer-list-item{
+.home-footer-list-item {
   margin: 10px 0 10px 0;
 }
 
-.home-footer-list-text{
+.home-footer-list-text {
   margin-left: 15px;
 }
 
-.home-footer-list-icon{
+.home-footer-list-icon {
   color: white;
   width: 10px;
 }
@@ -152,13 +112,87 @@ body {
   text-align: center;
 }
 
-#img-main{
-  border-bottom: rgb(33, 37, 41) solid 20px;
+/* CSS pro domovskou stranku */
+#home-main-content {
+  background-color: white;
+  padding: 30px;
 }
 
-@media (max-width: 768px) {
-  #img-main {
-    border-bottom: rgb(33, 37, 41) solid 10px;
+.home-main-heading {
+  margin: 15px 0 15px 0;
+}
+
+#home-main-list {
+  list-style: none;
+}
+
+.home-main-list-item {
+  margin: 21px 0 21px 0;
+}
+
+.home-main-list-icon {
+  color: rgb(43, 89, 136);
+  width: 20px;
+}
+
+.home-main-list-text {
+  font-size: large;
+  margin: 20px;
+}
+
+.home-main-table-stars {
+  font-size: 10px;
+}
+
+.home-main-table-text {
+  font-size: smaller;
+}
+
+#home-carousel-favorites {
+  background-color: rgb(165, 248, 218);
+  padding: 10px 10px 10px 40px;
+}
+
+.home-carousel-bottom-paragraph {
+  height: 60px;
+  display: none;
+}
+
+@media (max-width: 992px) {
+  .home-carousel-bottom-paragraph {
+    display: block;
   }
 }
+
+/* CSS pro registracni stranku */
+#registration-main-content {
+  background-color: white;
+  padding: 30px;
+}
+
+.registration-main-heading {
+  margin: 15px 0 15px 0;
+}
+
+.registration-main-row {
+  margin: 20px 0 20px 0;
+}
+
+#registration-main-btn-submit {
+  background-color: aquamarine;
+  border: rgb(33, 37, 41) solid 2px;
+  padding: 5px 10px 5px 10px;
+  border-radius: 10px;
+}
+
+#registration-main-btn-submit:hover {
+  background-color: white;
+  transition: background-color 0.5s ease;
+}
+
+.registration-main-heading-secondary {
+  margin: 30px 0 15px 0;
+}
+
+
 
