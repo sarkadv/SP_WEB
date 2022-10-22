@@ -174,11 +174,12 @@ body {
   margin: 15px 0 15px 0;
 }
 
-.registration-main-row {
+.registration-main-item {
   margin: 20px 0 20px 0;
 }
 
 #registration-main-btn-submit {
+  margin: 15px 0 0 0;
   background-color: aquamarine;
   border: rgb(33, 37, 41) solid 2px;
   padding: 5px 10px 5px 10px;
@@ -186,12 +187,13 @@ body {
 }
 
 #registration-main-btn-submit:hover {
-  background-color: white;
-  transition: background-color 0.5s ease;
+  background-color: black;
+  color: white;
+  transition: 0.5s ease;
 }
 
 .registration-main-heading-secondary {
-  margin: 30px 0 15px 0;
+  margin: 20px 0 15px 0;
 }
 
 

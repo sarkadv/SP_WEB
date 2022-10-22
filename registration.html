@@ -19,7 +19,7 @@
   <!-- Hlavicka stranky -->
   <div class="container-fluid" id="body-container">
     <div class="row">
-      <img src="img/main.png" class="img-fluid" id="header-img" alt="Úvodní obrázek">
+      <img src="img/banner.png" class="img-fluid" id="header-img" alt="Úvodní obrázek">
     </div>
 
     <!-- Hlavni menu -->
@@ -27,7 +27,7 @@
       <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
         <div class="container-fluid">
           <div class="navbar-brand">
-            <img src="img/moon.png" style="width: 60px; height: 60px" alt="Logo Andromeda">
+            <img src="img/logo.png" style="width: 60px; height: 60px" alt="Logo Andromeda">
           </div>
           <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mynavbar">
             <span class="navbar-toggler-icon"></span>
@@ -67,64 +67,133 @@
         Registrace
       </h2>
       <form action="">
-        <div class="registration-main-row">
-          <label for="email" class="form-label">E-mail</label>
-          <input type="email" class="form-control" id="email" placeholder="Zadejte svůj e-mail" name="email" required>
+        <div class="row">
+          <div class="col-12 registration-main-item">
+            <label for="email" class="form-label">E-mail</label>
+            <div class="input-group">
+              <div class="input-group-text">
+                <i class="fas fa-at"></i>
+              </div>
+              <input type="email" class="form-control" id="email" placeholder="ufon@gmail.com" name="email" required>
+            </div>
+          </div>
         </div>
-        <div class="registration-main-row">
-          <label for="pwd" class="form-label">Heslo</label>
-          <input type="password" class="form-control" id="pwd" placeholder="Zadejte své heslo" name="pswd" required>
-        </div>
-        <div class="registration-main-row">
-          <label for="pwd-again" class="form-label">Heslo znovu</label>
-          <input type="password" class="form-control" id="pwd-again" placeholder="Znovu zadejte své heslo" name="pswd" required>
+        <div class="row">
+          <div class="col-md-6 registration-main-item">
+            <label for="pwd" class="form-label">Heslo</label>
+            <div class="input-group">
+              <div class="input-group-text">
+                <i class="fas fa-key"></i>
+              </div>
+              <input type="password" class="form-control" id="pwd" placeholder="Heslo" name="pswd" required>
+            </div>
+            </div>
+          <div class="col-md-6 registration-main-item">
+            <label for="pwd-again" class="form-label">Heslo podruhé</label>
+            <div class="input-group">
+              <div class="input-group-text">
+                <i class="fas fa-lock"></i>
+              </div>
+              <input type="password" class="form-control" id="pwd-again" placeholder="Heslo podruhé" name="pswd" required>
+            </div>
+          </div>
         </div>
 
         <h4 class="registration-main-heading-secondary">
           Osobní údaje
         </h4>
-        <div class="registration-main-row">
-          <label for="first-name" class="form-label">Jméno</label>
-          <input type="text" class="form-control" id="first-name" placeholder="Zadejte své křestní jmnéno" name="first-name" required>
+        <div class="row">
+          <div class="col-md-6 registration-main-item">
+            <label for="first-name" class="form-label">Křestní jméno</label>
+            <div class="input-group">
+              <div class="input-group-text">
+                <i class="fas fa-user-circle"></i>
+              </div>
+              <input type="text" class="form-control" id="first-name" placeholder="Křestní jméno" name="first-name" required>
+            </div>
+          </div>
+          <div class="col-md-6 registration-main-item">
+            <label for="last-name" class="form-label">Příjmení</label>
+            <div class="input-group">
+              <div class="input-group-text">
+                <i class="far fa-user-circle"></i>
+              </div>
+              <input type="text" class="form-control" id="last-name" placeholder="Příjmení" name="last-name" required>
+            </div>
+          </div>
         </div>
-        <div class="registration-main-row">
-          <label for="last-name" class="form-label">Příjmení</label>
-          <input type="text" class="form-control" id="last-name" placeholder="Zadejte své příjmení" name="last-name" required>
+        <div class="row">
+          <div class="col-12 registration-main-item">
+            <label for="birth-date" class="form-label">Datum narození</label>
+            <div class="input-group">
+              <div class="input-group-text">
+                <i class="fas fa-birthday-cake"></i>
+              </div>
+              <input type="date" class="form-control" id="birth-date" placeholder="Datum narození" name="birth-date" required>
+            </div>
+          </div>
         </div>
-        <div class="registration-main-row">
-          <label for="birth-date" class="form-label">Datum narození</label>
-          <input type="date" class="form-control" id="birth-date" placeholder="Zadejte své datum narození" name="birth-date" required>
-        </div>
-        <div class="registration-main-row">
-          <label for="phone" class="form-label">Telefonní číslo</label>
-          <input type="tel" class="form-control" id="phone" placeholder="Zadejte své telefonní číslo" name="phone" required>
+        <div class="row">
+          <div class="col-12 registration-main-item">
+            <label for="phone" class="form-label">Telefonní číslo</label>
+            <div class="input-group">
+              <div class="input-group-text">
+                <i class="fas fa-phone"></i>
+              </div>
+              <input type="tel" class="form-control" id="phone" placeholder="628 267 170" name="phone" required>
+            </div>
+          </div>
         </div>
 
         <h4 class="registration-main-heading-secondary">
           Adresa
         </h4>
-        <div class="registration-main-row">
-          <label for="street" class="form-label">Ulice a číslo popisné</label>
-          <input type="text" class="form-control" id="street" placeholder="Zadejte ulici a číslo popisné" name="street" required>
+        <div class="row">
+          <div class="col-12 registration-main-item">
+            <label for="street" class="form-label">Ulice a číslo popisné</label>
+            <div class="input-group">
+              <div class="input-group-text">
+                <i class="fas fa-home"></i>
+              </div>
+              <input type="text" class="form-control" id="street" placeholder="Mimozemská 108" name="street" required>
+            </div>
+          </div>
         </div>
-        <div class="registration-main-row">
-          <label for="city" class="form-label">Město</label>
-          <input type="text" class="form-control" id="city" placeholder="Zadejte město" name="city" required>
-        </div>
-        <div class="registration-main-row">
-          <label for="zip-code" class="form-label">Poštovní směrovací číslo</label>
-          <input type="text" class="form-control" id="zip-code" placeholder="Zadejte poštovní směrovací číslo" name="zip-code" required>
-        </div>
-        <div class="registration-main-row">
-          <label for="planet" class="form-label">Planeta</label>
-          <input class="form-control" id="planet" list ="planets" placeholder="Zadejte svou domovskou planetu" name="planet" required>
-          <datalist id="planets">
-            <option value="Kepler-452b">
-            <option value="Gliese 667Cc">
-            <option value="Kepler-69c">
-            <option value="Země">
-            <option value="Proxima Centauri b">
-          </datalist>
+        <div class="row">
+          <div class="col-md-4 registration-main-item">
+            <label for="city" class="form-label">Město</label>
+            <div class="input-group">
+              <div class="input-group-text">
+                <i class="fas fa-city"></i>
+              </div>
+              <input type="text" class="form-control" id="city" placeholder="Město" name="city" required>
+            </div>
+          </div>
+          <div class="col-md-4 registration-main-item">
+            <label for="zip-code" class="form-label">Poštovní směrovací číslo</label>
+            <div class="input-group">
+              <div class="input-group-text">
+                <i class="far fa-envelope-open"></i>
+              </div>
+              <input type="text" class="form-control" id="zip-code" placeholder="123 45" name="zip-code" required>
+            </div>
+          </div>
+          <div class="col-md-4 registration-main-item">
+            <label for="planet" class="form-label">Domovská planeta</label>
+              <div class="input-group">
+                <div class="input-group-text">
+                  <i class="fas fa-globe"></i>
+                </div>
+              <input class="form-control" id="planet" list ="planets" placeholder="Domovská planeta" name="planet" required>
+            </div>
+            <datalist id="planets">
+              <option value="Kepler-452b">
+              <option value="Gliese 667Cc">
+              <option value="Kepler-69c">
+              <option value="Země">
+              <option value="Proxima Centauri b">
+            </datalist>
+          </div>
         </div>
         <button type="submit" id="registration-main-btn-submit">Zaregistrovat se</button>
       </form>
@@ -134,7 +203,7 @@
     <div class="row" id="footer">
       <div class="col-12 col-md-4" id="home-footer-left">
         <h5>Andromeda</h5>
-        <img src="img/moon.png" alt="Logo Andromeda">
+        <img src="img/logo.png" alt="Logo Andromeda">
       </div>
       <div class="col-6 col-md-4" id="home-footer-center">
         <h5>Kontakty</h5>
