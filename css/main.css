@@ -122,6 +122,12 @@ body {
   margin: 15px 0 15px 0;
 }
 
+#home-main-about {
+  background-color: lightpink;
+  padding: 15px 15px 15px 40px;
+  margin-bottom: 0;
+}
+
 #home-main-list {
   list-style: none;
 }
@@ -195,6 +201,71 @@ body {
 .registration-main-heading-secondary {
   margin: 20px 0 15px 0;
 }
+
+/* CSS pro stranku s nabidkou */
+#products-main-content {
+  background-color: white;
+  padding: 30px;
+}
+
+.products-main-heading {
+  margin: 15px 0 30px 0;
+}
+
+.products-main-item {
+  margin: 0 0 15px 0;
+}
+
+/* unvisited link */
+.products-main-name-link:link {
+  color: rgb(43, 89, 136);
+  text-decoration: none;
+}
+
+/* visited link */
+.products-main-name-link:visited {
+  color: rgb(43, 89, 136);
+  text-decoration: none;
+}
+
+/* mouse over link */
+.products-main-name-link:hover {
+  color: grey;
+  text-decoration: underline;
+}
+
+/* selected link */
+.products-main-name-link:active {
+  color: rgb(43, 89, 136);
+  text-decoration: none;
+}
+
+.products-main-btn-product {
+  margin: 15px 0 0 0;
+  background-color: aquamarine;
+  border: rgb(33, 37, 41) solid 2px;
+  padding: 5px 10px 5px 10px;
+  border-radius: 10px;
+}
+
+.products-main-btn-product:hover {
+  background-color: black;
+  color: white;
+  transition: 0.5s ease;
+}
+
+.zoom {
+  overflow: hidden;
+}
+.zoom img:hover {
+  opacity: 0;
+}
+.zoom img {
+  transition: opacity .5s;
+  display: block;
+  width: 100%;
+}
+
 
 
 
