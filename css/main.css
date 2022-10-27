@@ -112,6 +112,20 @@ body {
   text-align: center;
 }
 
+.zoom {
+  overflow: hidden;
+}
+
+.zoom img:hover {
+  opacity: 0;
+}
+
+.zoom img {
+  transition: opacity .5s;
+  display: block;
+  width: 100%;
+}
+
 /* CSS pro domovskou stranku */
 #home-main-content {
   background-color: white;
@@ -254,17 +268,59 @@ body {
   transition: 0.5s ease;
 }
 
-.zoom {
-  overflow: hidden;
+/* CSS pro stranku s jednim modelem */
+#model-main-content {
+  background-color: white;
+  padding: 30px;
 }
-.zoom img:hover {
-  opacity: 0;
+
+.model-main-heading {
+  margin: 15px 0 30px 0;
 }
-.zoom img {
-  transition: opacity .5s;
-  display: block;
+
+.model-main-img {
   width: 100%;
+  border: grey solid 3px;
 }
+
+.model-main-content-list {
+  margin: 15px 0 0 0;
+}
+
+.model-main-content-list-key {
+  font-weight: bold;
+}
+
+.model-main-content-list-value {
+  float: right;
+}
+
+.model-main-content-price {
+  color: rgb(43, 89, 136);
+  margin: 30px 10px 10px 10px;
+  font-size: x-large;
+}
+
+.model-main-btn-product {
+  margin: 15px 0 0 10px;
+  background-color: aquamarine;
+  border: rgb(33, 37, 41) solid 2px;
+  padding: 5px 10px 5px 10px;
+  border-radius: 10px;
+}
+
+.model-main-btn-product:hover {
+  background-color: black;
+  color: white;
+  transition: 0.5s ease;
+}
+
+#model-other-content {
+  background-color: white;
+  padding: 30px;
+}
+
+
 
 
 

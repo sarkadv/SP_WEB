@@ -47,12 +47,10 @@
               </li>
             </ul>
             <div class="btn-group">
-              <a href="registration.html">
-                <button type="button" id="btn-account">
+                <button type="button" id="btn-account" data-bs-toggle="offcanvas" data-bs-target="#demo-sidebar">
                   <i class="fas fa-user"></i>
-                  Můj účet
+                  Přihlásit se
                 </button>
-              </a>
               <button type="button" id="btn-logout">
                 <i class="fas fa-sign-out-alt"></i>
                 Odhlásit se
@@ -61,6 +59,48 @@
           </div>
         </div>
       </nav>
+    </div>
+
+    <!-- Sidebar pro prihlaseni -->
+    <div class="offcanvas offcanvas-start" id="demo-sidebar">
+      <div class="offcanvas-header">
+        <h2 class="offcanvas-title">Přihlásit se</h2>
+        <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas"></button>
+      </div>
+      <div class="offcanvas-body">
+        <form action="">
+          <div class="row">
+            <div class="col-12 registration-main-item">
+              <label for="email" class="form-label">E-mail</label>
+              <div class="input-group">
+                <div class="input-group-text">
+                  <i class="fas fa-at"></i>
+                </div>
+                <input type="email" class="form-control" id="email" placeholder="ufon@gmail.com" name="email" required>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-12 registration-main-item">
+              <label for="pwd" class="form-label">Heslo</label>
+              <div class="input-group">
+                <div class="input-group-text">
+                  <i class="fas fa-key"></i>
+                </div>
+                <input type="password" class="form-control" id="pwd" placeholder="Heslo" name="pswd" required>
+              </div>
+            </div>
+          </div>
+          <button type="submit" id="registration-main-btn-submit">Přihlásit se</button>
+        </form>
+        <hr>
+        <p>
+          Ještě u nás nemáte účet?
+          <a href="registration.html">
+          Zaregistrujte se.
+          </a>
+        </p>
+      </div>
     </div>
 
     <!-- Stred stranky - seznam a tabulka-->
