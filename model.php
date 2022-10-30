@@ -1,3 +1,34 @@
+<?php
+
+  require_once "php/LoginClass.php";
+  $login = new Login;
+
+  require_once "php/HireUFOClass.php";
+  $hireUFO = new HireUFO;
+
+  if(isset($_POST["action"])) {
+    if($_POST["action"] == "login") {
+      if(isset($_POST["email"])) {
+        if($_POST["email"] != "") {
+          $login->login("email");
+        }
+      }
+    }
+    else if($_POST["action"] == "logout") {
+      $login->logout();
+    }
+  }
+
+  else if(isset($_POST["hire"])) {
+    if($_POST["hire"] == 1) {
+      $hireUFO->saveUFOData("The Timeless Classic", $_POST["days"], $_POST["days"] * 20000);
+    }
+
+    header("Refresh:0");
+  }
+
+?>
+
 <!doctype html>
 <html lang="cs">
 
@@ -35,32 +66,102 @@
         <div class="collapse navbar-collapse" id="mynavbar">
           <ul class="navbar-nav me-auto">
             <li class="nav-item">
-              <a class="nav-link" href="index.html">
+              <a class="nav-link" href="index.php">
                 <i class="fas fa-home"></i>
               </a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="products.html">Nabídka</a>
+              <a class="nav-link" href="products.php">Nabídka</a>
             </li>
             <li class="nav-item">
               <a class="nav-link" href="#">O Nás</a>
             </li>
           </ul>
           <div class="btn-group">
-            <a href="registration.html">
-              <button type="button" id="btn-account">
+
+            <?php
+            if(!$login->isUserLoggedIn()) {
+              ?>
+              <!-- Pro neprihlasene uzivatele -->
+              <button type="button" id="btn-account" data-bs-toggle="offcanvas" data-bs-target="#demo-sidebar">
+                <i class="fas fa-user"></i>
+                Přihlásit se
+              </button>
+              <button type="button" id="btn-cart" onclick="location.href='cart.php'">
+                <i class="fas fa-shopping-basket"></i>
+              </button>
+
+              <?php
+            }
+            else {
+              ?>
+              <!-- Pro prihlasene uzivatele -->
+              <button type="button" id="btn-account" onclick="location.href='#'">
                 <i class="fas fa-user"></i>
                 Můj účet
               </button>
-            </a>
-            <button type="button" id="btn-logout">
-              <i class="fas fa-sign-out-alt"></i>
-              Odhlásit se
-            </button>
+
+              <form method="post">
+                <button type="submit" id="btn-logout" name="action" value="logout">
+                  <i class="fas fa-sign-out-alt"></i>
+                  Odhlásit se
+                </button>
+              </form>
+
+              <button type="button" id="btn-cart" onclick="location.href='cart.php'">
+                <i class="fas fa-shopping-basket"></i>
+              </button>
+
+              <?php
+            }
+            ?>
+
           </div>
         </div>
       </div>
     </nav>
+  </div>
+
+  <!-- Sidebar pro prihlaseni -->
+  <div class="offcanvas offcanvas-start" id="demo-sidebar">
+    <div class="offcanvas-header">
+      <h2 class="offcanvas-title">Přihlásit se</h2>
+      <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas"></button>
+    </div>
+    <div class="offcanvas-body">
+      <form method="post">
+        <div class="row">
+          <div class="col-12 registration-main-item">
+            <label for="email" class="form-label">E-mail</label>
+            <div class="input-group">
+              <div class="input-group-text">
+                <i class="fas fa-at"></i>
+              </div>
+              <input type="email" class="form-control" id="email" placeholder="ufon@gmail.com" name="email" required>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-12 registration-main-item">
+            <label for="pwd" class="form-label">Heslo</label>
+            <div class="input-group">
+              <div class="input-group-text">
+                <i class="fas fa-key"></i>
+              </div>
+              <input type="password" class="form-control" id="pwd" placeholder="Heslo" name="pswd" required>
+            </div>
+          </div>
+        </div>
+        <button type="submit" id="registration-main-btn-submit" name="action" value="login">Přihlásit se</button>
+      </form>
+      <hr>
+      <p>
+        Ještě u nás nemáte účet?
+        <a href="registration.php">
+          Zaregistrujte se.
+        </a>
+      </p>
+    </div>
   </div>
 
   <!-- Stred stranky - obrazek UFO a zakladni informace -->
@@ -103,12 +204,17 @@
       <div class="model-main-content-price">
         20 000 kreditů / den
       </div>
-      <a href="#">
-        <button type="button" class="model-main-btn-product">
+
+      <!-- Formular pro vypujceni vozidla -->
+      <form method="post">
+        <label for="days" class="form-label">Počet dnů:</label>
+        <input type="number" class="form-control" id="days" placeholder="1" min="1" max="14" name="days" required>
+        <button type="submit" class="products-main-btn-product" name="hire" value="1">
           <i class="fas fa-shopping-basket"></i>
           Vypůjčit
         </button>
-      </a>
+      </form>
+
     </div>
   </div>
 
@@ -258,5 +364,6 @@
 </body>
 
 </html>
+
 
 

@@ -48,6 +48,20 @@ body {
   transition: background-color 0.5s ease;
 }
 
+#btn-cart {
+  background-color: transparent;
+  border: none;
+  color: rgb(155, 157, 159);
+  padding: 5px 10px 5px 10px;
+  border-radius: 10px;
+  margin: 5px;
+}
+
+#btn-cart:hover {
+  color: rgb(200, 200, 201);
+  transition: color 0.25s ease;
+}
+
 .jumbotron {
   background-color: rgb(244, 244, 244);
   border-radius: 10px;
@@ -284,7 +298,7 @@ body {
 }
 
 .model-main-content-list {
-  margin: 15px 0 0 0;
+  margin: 10px 0 0 0;
 }
 
 .model-main-content-list-key {
@@ -297,12 +311,11 @@ body {
 
 .model-main-content-price {
   color: rgb(43, 89, 136);
-  margin: 30px 10px 10px 10px;
+  margin: 15px 10px 15px 10px;
   font-size: x-large;
 }
 
 .model-main-btn-product {
-  margin: 15px 0 0 10px;
   background-color: aquamarine;
   border: rgb(33, 37, 41) solid 2px;
   padding: 5px 10px 5px 10px;
@@ -319,6 +332,174 @@ body {
   background-color: white;
   padding: 30px;
 }
+
+/* CSS pro stranku s obsahem kosiku */
+#cart-main-content {
+  background-color: white;
+  padding: 30px;
+}
+
+.cart-main-heading {
+  margin: 15px 0 15px 0;
+}
+
+.cart-main-item {
+  padding: 15px 10px 10px 10px;
+}
+
+.cart-main-item-name {
+  font-weight: bold;
+}
+
+.cart-main-item-days {
+  font-style: italic;
+}
+
+.cart-main-item-price {
+  color: rgb(43, 89, 136);
+  font-weight: bold;
+}
+
+.cart-main-item-remove-btn {
+  background-color: transparent;
+  border: none;
+  float: right;
+  color: indianred;
+  font-size: 25px;
+}
+
+.cart-main-item-remove-btn:hover {
+  transition: color 0.5s ease;
+  color: black;
+}
+
+.cart-main-price {
+  padding: 20px 0 10px 0;
+  font-size: x-large;
+  color: rgb(43, 89, 136);
+  float: right;
+}
+
+.cart-main-continue-btn {
+  float: right;
+  background-color: aquamarine;
+  border: rgb(33, 37, 41) solid 2px;
+  padding: 5px 10px 5px 10px;
+  border-radius: 10px;
+}
+
+.cart-main-continue-btn:hover {
+  background-color: black;
+  color: white;
+  transition: 0.5s ease;
+}
+
+.cart-main-info {
+  float: right;
+}
+
+.cart-main-progress {
+  padding: 30px 0 10px 0;
+}
+
+/* CSS pro stranku s adresou doruceni */
+#shipping-main-content {
+  background-color: white;
+  padding: 30px;
+}
+
+.shipping-main-heading {
+  margin: 15px 0 15px 0;
+}
+
+.shipping-main-continue-btn {
+  float: right;
+  background-color: aquamarine;
+  border: rgb(33, 37, 41) solid 2px;
+  padding: 5px 10px 5px 10px;
+  border-radius: 10px;
+}
+
+.shipping-main-continue-btn:hover {
+  background-color: black;
+  color: white;
+  transition: 0.5s ease;
+}
+
+.shipping-main-item {
+  margin: 20px 0 20px 0;
+}
+
+.shipping-main-info {
+  float: right;
+}
+
+/* CSS pro stranku s platbou */
+#payment-main-content {
+  background-color: white;
+  padding: 30px;
+}
+
+.payment-main-heading {
+  margin: 15px 0 15px 0;
+}
+
+.payment-main-price {
+  font-size: x-large;
+  color: rgb(43, 89, 136);
+}
+
+.payment-main-item {
+  margin: 20px 0 20px 0;
+}
+
+.payment-main-info {
+  margin: 20px 0 20px 0;
+  font-style: italic;
+}
+
+.payment-main-continue-btn {
+  float: right;
+  background-color: aquamarine;
+  border: rgb(33, 37, 41) solid 2px;
+  padding: 5px 10px 5px 10px;
+  border-radius: 10px;
+}
+
+.payment-main-continue-btn:hover {
+  background-color: black;
+  color: white;
+  transition: 0.5s ease;
+}
+
+/* CSS pro stranku s dokoncenou objednavkou */
+#order-main-content {
+  background-color: white;
+  padding: 30px;
+}
+
+.order-main-heading {
+  margin: 15px 0 15px 0;
+}
+
+.order-main-item {
+  padding: 15px 10px 10px 10px;
+}
+
+.order-main-item-name {
+  font-weight: bold;
+}
+
+.order-main-item-days {
+  font-style: italic;
+}
+
+.order-main-item-price {
+  float: right;
+  color: rgb(43, 89, 136);
+  font-weight: bold;
+}
+
 
 
 
