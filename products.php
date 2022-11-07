@@ -1,42 +1,33 @@
 <?php
 
-  require_once "php/LoginClass.php";
-  $login = new Login;
+  require_once "php/DatabaseConnectionClass.php";
+  $dbconnection = new DatabaseConnection();
 
   require_once "php/HireUFOClass.php";
   $hireUFO = new HireUFO;
 
   if(isset($_POST["action"])) {
     if($_POST["action"] == "login") {
-      if(isset($_POST["email"])) {
-        if($_POST["email"] != "") {
-          $login->login("email");
+      if(isset($_POST["email"]) && isset($_POST["pswd"])) {
+        if($_POST["email"] != "" && $_POST["pswd"] != "") {
+          $result = $dbconnection->loginUser($_POST["email"], $_POST["pswd"]);
+
+          if(!$result) {
+            echo '<script>alert("Nesprávný e-mail nebo heslo.")</script>';
+          }
         }
       }
     }
     else if($_POST["action"] == "logout") {
-      $login->logout();
+      $dbconnection->logoutUser();
     }
   }
 
   else if(isset($_POST["hire"])) {
-    if($_POST["hire"] == 1) {
-      $hireUFO->saveUFOData("The Timeless Classic", $_POST["days"], $_POST["days"] * 20000);
-    }
-    else if($_POST["hire"] == 2) {
-      $hireUFO->saveUFOData("The Cubicle", $_POST["days"], $_POST["days"] * 20000);
-    }
-    else if($_POST["hire"] == 3) {
-      $hireUFO->saveUFOData("Škoda 4000", $_POST["days"], $_POST["days"] * 20000);
-    }
-    else if($_POST["hire"] == 4) {
-      $hireUFO->saveUFOData("Default UFO 1", $_POST["days"], $_POST["days"] * 20000);
-    }
-    else if($_POST["hire"] == 5) {
-      $hireUFO->saveUFOData("Default UFO 2", $_POST["days"], $_POST["days"] * 20000);
-    }
-    else if($_POST["hire"] == 6) {
-      $hireUFO->saveUFOData("Default UFO 3", $_POST["days"], $_POST["days"] * 20000);
+    $model = $dbconnection->getUFOModelByNumber($_POST["hire"]);
+
+    if($model != null) {
+      $hireUFO->saveUFOData($model["nazev"], $_POST["days"], $_POST["days"] * $model["cena_den"]);
     }
 
     header("Refresh:0");
@@ -96,7 +87,7 @@
           <div class="btn-group">
 
             <?php
-            if(!$login->isUserLoggedIn()) {
+            if(!$dbconnection->isUserLoggedIn()) {
               ?>
               <!-- Pro neprihlasene uzivatele -->
               <button type="button" id="btn-account" data-bs-toggle="offcanvas" data-bs-target="#demo-sidebar">
@@ -185,149 +176,44 @@
     <h2 class="products-main-heading">
       Naše nabídka
     </h2>
-    <div class="col-lg-4 col-md-6 products-main-item">
-      <div class="card">
-        <div class="zoom" onmousemove="zoom(event)" style="background-image: url('img/the_timeless_classic.png')">
-          <img class="card-img-top" src="img/the_timeless_classic.png" alt="Card image">
-        </div>
-        <div class="card-body">
-          <a href="model.php" class="products-main-name-link">
-            <h4 class="card-title">The Timeless Classic</h4>
-          </a>
-          <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
 
-          <!-- Formular pro vypujceni vozidla -->
-          <form method="post">
-            <label for="days1" class="form-label">Počet dnů:</label>
-            <input type="number" class="form-control" id="days1" placeholder="1" min="1" max="14" name="days" required>
-            <button type="submit" class="products-main-btn-product" name="hire" value="1">
-              <i class="fas fa-shopping-basket"></i>
-              Vypůjčit
-            </button>
-          </form>
+    <?php
+      $allModels = $dbconnection->getAllUFOModels();
 
-        </div>
-      </div>
-    </div>
-    <div class="col-lg-4 col-md-6 products-main-item">
-      <div class="card">
-        <div class="zoom" onmousemove="zoom(event)" style="background-image: url('img/the_cubicle.png')">
-          <img class="card-img-top" src="img/the_cubicle.png" alt="Card image">
-        </div>
-        <div class="card-body">
-          <a href="#" class="products-main-name-link">
-            <h4 class="card-title">The Cubicle</h4>
-          </a>
-          <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+      foreach($allModels as $model) {
+        $img = $model["obrazek_url"];
+        $name = $model["nazev"];
+        $description = $model["popis_kratky"];
+        $c_modelu = $model["c_modelu"];
+        $input_id = "days".$c_modelu;
+        echo "
+        <div class='col-lg-4 col-md-6 products-main-item'>
+          <div class='card'>
+            <div class='zoom' onmousemove='zoom(event)' style='background-image: url($img)'>
+              <img class='card-img-top' src='$img' alt='Obrazek modelu'>
+            </div>
+            <div class='card-body'>
+              <a href='model.php' class='products-main-name-link'>
+                <h4 class='card-title'>$name</h4>
+              </a>
+              <p class='card-text'>$description</p>
 
-          <!-- Formular pro vypujceni vozidla -->
-          <form method="post">
-            <label for="days2" class="form-label">Počet dnů:</label>
-            <input type="number" class="form-control" id="days2" placeholder="1" min="1" max="14" name="days" required>
-            <button type="submit" class="products-main-btn-product" name="hire" value="2">
-              <i class="fas fa-shopping-basket"></i>
-              Vypůjčit
-            </button>
-          </form>
+              <!-- Formular pro vypujceni vozidla -->
+              <form method='post'>
+                <label for='$input_id' class='form-label'>Počet dnů:</label>
+                <input type='number' class='form-control' id='$input_id' placeholder='1' min='1' max='14' name='days' required>
+                <button type='submit' class='products-main-btn-product' name='hire' value='$c_modelu'>
+                  <i class='fas fa-shopping-basket'></i>
+                  Vypůjčit
+                </button>
+              </form>
 
-        </div>
-      </div>
-    </div>
-    <div class="col-lg-4 col-md-6 products-main-item">
-      <div class="card">
-        <div class="zoom" onmousemove="zoom(event)" style="background-image: url('img/skoda_4000.png')">
-          <img class="card-img-top" src="img/skoda_4000.png" alt="Card image">
-        </div>
-        <div class="card-body">
-          <a href="#" class="products-main-name-link">
-            <h4 class="card-title">Škoda 4000</h4>
-          </a>
-          <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+            </div>
+          </div>
+        </div>";
+      }
+    ?>
 
-          <!-- Formular pro vypujceni vozidla -->
-          <form method="post">
-            <label for="days3" class="form-label">Počet dnů:</label>
-            <input type="number" class="form-control" id="days3" placeholder="1" min="1" max="14" name="days" required>
-            <button type="submit" class="products-main-btn-product" name="hire" value="3">
-              <i class="fas fa-shopping-basket"></i>
-              Vypůjčit
-            </button>
-          </form>
-
-        </div>
-      </div>
-    </div>
-    <div class="col-lg-4 col-md-6 products-main-item">
-      <div class="card">
-        <div class="zoom" onmousemove="zoom(event)" style="background-image: url('img/default_ufo1.png')">
-          <img class="card-img-top" src="img/default_ufo1.png" alt="Card image">
-        </div>
-        <div class="card-body">
-          <a href="#" class="products-main-name-link">
-            <h4 class="card-title">Default UFO 1</h4>
-          </a>
-          <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
-
-          <!-- Formular pro vypujceni vozidla -->
-          <form method="post">
-            <label for="days4" class="form-label">Počet dnů:</label>
-            <input type="number" class="form-control" id="days4" placeholder="1" min="1" max="14" name="days" required>
-            <button type="submit" class="products-main-btn-product" name="hire" value="4">
-              <i class="fas fa-shopping-basket"></i>
-              Vypůjčit
-            </button>
-          </form>
-
-        </div>
-      </div>
-    </div>
-    <div class="col-lg-4 col-md-6 products-main-item">
-      <div class="card">
-        <div class="zoom" onmousemove="zoom(event)" style="background-image: url('img/default_ufo2.png')">
-          <img class="card-img-top" src="img/default_ufo2.png" alt="Card image">
-        </div>
-        <div class="card-body">
-          <a href="#" class="products-main-name-link">
-            <h4 class="card-title">Default UFO 2</h4>
-          </a>
-          <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
-
-          <!-- Formular pro vypujceni vozidla -->
-          <form method="post">
-            <label for="days5" class="form-label">Počet dnů:</label>
-            <input type="number" class="form-control" id="days5" placeholder="1" min="1" max="14" name="days" required>
-            <button type="submit" class="products-main-btn-product" name="hire" value="5">
-              <i class="fas fa-shopping-basket"></i>
-              Vypůjčit
-            </button>
-          </form>
-
-        </div>
-      </div>
-    </div>
-    <div class="col-lg-4 col-md-6 products-main-item">
-      <div class="card">
-        <div class="zoom" onmousemove="zoom(event)" style="background-image: url('img/default_ufo3.png')">
-          <img class="card-img-top" src="img/default_ufo3.png" alt="Card image">
-        </div>
-        <div class="card-body">
-          <a href="#" class="products-main-name-link">
-            <h4 class="card-title">Default UFO 3</h4>
-          </a>
-          <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
-
-          <!-- Formular pro vypujceni vozidla -->
-          <form method="post">
-            <label for="days6" class="form-label">Počet dnů:</label>
-            <input type="number" class="form-control" id="days6" placeholder="1" min="1" max="14" name="days" required>
-            <button type="submit" class="products-main-btn-product" name="hire" value="6">
-              <i class="fas fa-shopping-basket"></i>
-              Vypůjčit
-            </button>
-          </form>
-
-        </div>
-      </div>
     </div>
   </div>
 

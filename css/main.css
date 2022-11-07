@@ -67,6 +67,7 @@ body {
   border-radius: 10px;
   border: lightgray solid 1px;
   padding: 5px;
+  margin: 5px;
 }
 
 #footer {
@@ -224,6 +225,11 @@ body {
   background-color: black;
   color: white;
   transition: 0.5s ease;
+}
+
+.registration-main-check {
+  color: indianred;
+  font-weight: bold;
 }
 
 .registration-main-heading-secondary {

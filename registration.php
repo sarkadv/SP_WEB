@@ -1,20 +1,38 @@
 <?php
 
-require_once "php/LoginClass.php";
-$login = new Login;
+  require_once "php/DatabaseConnectionClass.php";
+  $dbconnection = new DatabaseConnection();
 
-if(isset($_POST["action"])) {
-  if($_POST["action"] == "login") {
-    if(isset($_POST["email"])) {
-      if($_POST["email"] != "") {
-        $login->login("email");
+  if(isset($_POST["action"])) {
+    if($_POST["action"] == "login") {
+      if(isset($_POST["email"]) && isset($_POST["pswd"])) {
+        if($_POST["email"] != "" && $_POST["pswd"] != "") {
+          $result = $dbconnection->loginUser($_POST["email"], $_POST["pswd"]);
+
+          if(!$result) {
+            echo '<script>alert("Nesprávný e-mail nebo heslo.")</script>';
+          }
+        }
       }
     }
+    else if($_POST["action"] == "logout") {
+      $dbconnection->logoutUser();
+    }
+    else if($_POST["action"] == "register") {
+
+      if($dbconnection->doesUserExist($_POST["email"])) {
+        echo '<script>alert("Uživatel s touto e-mailovou adresou již existuje.")</script>';
+      }
+      else {
+        $result = $dbconnection->addUser($_POST["email"], $_POST["pswd1"], $_POST["pswd2"], $_POST["first-name"], $_POST["last-name"], $_POST["birth-date"], $_POST["phone"], $_POST["street"], $_POST["city"], $_POST["zip-code"], $_POST["planet"]);
+
+        if(!$result) {
+          echo '<script>alert("Nebyli jste zaregistrováni - chybně vyplněný registrační formulář.")</script>';
+        }
+      }
+
+    }
   }
-  else if($_POST["action"] == "logout") {
-    $login->logout();
-  }
-}
 
 ?>
 
@@ -69,7 +87,7 @@ if(isset($_POST["action"])) {
           <div class="btn-group">
 
             <?php
-            if(!$login->isUserLoggedIn()) {
+            if(!$dbconnection->isUserLoggedIn()) {
               ?>
               <!-- Pro neprihlasene uzivatele -->
               <button type="button" id="btn-account" data-bs-toggle="offcanvas" data-bs-target="#demo-sidebar">
@@ -158,7 +176,13 @@ if(isset($_POST["action"])) {
     <h2 class="registration-main-heading">
       Registrace
     </h2>
-    <form action="">
+
+    <?php
+      if(!$dbconnection->isUserLoggedIn()) {
+    ?>
+
+    <!-- Pro neprihlasene uzivatele -->
+    <form action="" method="POST" oninput="pswdcheck.value=(pswd1.value == pswd2.value)?'':'Hesla se neshodují.'">
       <div class="row">
         <div class="col-12 registration-main-item">
           <label for="email" class="form-label">E-mail</label>
@@ -166,29 +190,34 @@ if(isset($_POST["action"])) {
             <div class="input-group-text">
               <i class="fas fa-at"></i>
             </div>
-            <input type="email" class="form-control" id="email" placeholder="ufon@gmail.com" name="email" required>
+            <input type="email" oninput="" class="form-control" id="email" placeholder="ufon@gmail.com" name="email" required>
           </div>
         </div>
       </div>
+
       <div class="row">
         <div class="col-md-6 registration-main-item">
-          <label for="pwd" class="form-label">Heslo</label>
+          <label for="psw1" class="form-label">Heslo</label>
           <div class="input-group">
             <div class="input-group-text">
               <i class="fas fa-key"></i>
             </div>
-            <input type="password" class="form-control" id="pwd" placeholder="Heslo" name="pswd" required>
+            <input type="password" class="form-control" id="pswd1" placeholder="Heslo" name="pswd1" required>
           </div>
         </div>
         <div class="col-md-6 registration-main-item">
-          <label for="pwd-again" class="form-label">Heslo podruhé</label>
+          <label for="pswd2" class="form-label">Heslo podruhé</label>
           <div class="input-group">
             <div class="input-group-text">
               <i class="fas fa-lock"></i>
             </div>
-            <input type="password" class="form-control" id="pwd-again" placeholder="Heslo podruhé" name="pswd" required>
+            <input type="password" class="form-control" id="pswd2" placeholder="Heslo podruhé" name="pswd2" required>
           </div>
         </div>
+      </div>
+
+      <div class="row">
+        <output class="registration-main-check" name="pswdcheck" for="pswd1 pswd2"></output>
       </div>
 
       <h4 class="registration-main-heading-secondary">
@@ -287,8 +316,26 @@ if(isset($_POST["action"])) {
           </datalist>
         </div>
       </div>
-      <button type="submit" id="registration-main-btn-submit">Zaregistrovat se</button>
+      <button type="submit" name="action" value="register" id="registration-main-btn-submit">Zaregistrovat se</button>
     </form>
+
+    <?php
+      }
+      else {
+    ?>
+    <!-- Pro prihlasene uzivatele -->
+    <div class="row">
+      <div class="col-12 registration-main-item">
+        <p>
+          Přihlášený uživatel se nemůže znovu registrovat.
+        </p>
+      </div>
+    </div>
+
+    <?php
+      }
+    ?>
+
   </div>
 
   <!-- Paticka stranky -->

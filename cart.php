@@ -1,29 +1,32 @@
 <?php
 
-  require_once "php/LoginClass.php";
-  $login = new Login;
+  require_once "php/DatabaseConnectionClass.php";
+  $dbconnection = new DatabaseConnection();
 
   require_once "php/HireUFOClass.php";
   $hireUFO = new HireUFO();
 
   if(isset($_POST["action"])) {
     if($_POST["action"] == "login") {
-      if(isset($_POST["email"])) {
-        if($_POST["email"] != "") {
-          $login->login("email");
+      if(isset($_POST["email"]) && isset($_POST["pswd"])) {
+        if($_POST["email"] != "" && $_POST["pswd"] != "") {
+          $result = $dbconnection->loginUser($_POST["email"], $_POST["pswd"]);
+
+          if(!$result) {
+            echo '<script>alert("Nesprávný e-mail nebo heslo.")</script>';
+          }
         }
       }
     }
     else if($_POST["action"] == "logout") {
-      $login->logout();
+      $dbconnection->logoutUser();
     }
   }
 
   else if(isset($_POST["remove"])) {
-    if ($_POST["remove"] == 1) {
-      $hireUFO->deleteUFOData();
-    }
-    header("Refresh:0");
+      $hireUFO->deleteUFOData($_POST["remove"]);
+
+      header("Refresh:0");
   }
 
 ?>
@@ -79,7 +82,7 @@
           <div class="btn-group">
 
             <?php
-            if(!$login->isUserLoggedIn()) {
+            if(!$dbconnection->isUserLoggedIn()) {
               ?>
               <!-- Pro neprihlasene uzivatele -->
               <button type="button" id="btn-account" data-bs-toggle="offcanvas" data-bs-target="#demo-sidebar">
@@ -170,64 +173,70 @@
     </h2>
 
     <?php
-      if($hireUFO->isUFOSaved()) {
-    ?>
-    <!-- Kosik neni prazdny -->
-    <div class="jumbotron">
-      <div class="row cart-main-item">
-        <div class="col-sm-4">
-          <div class="cart-main-item-name">
-            <?php echo $hireUFO->getModel() ?>
-          </div>
-        </div>
-        <div class="col-sm-4">
-          <div class="cart-main-item-days">
-            Dny: <?php echo $hireUFO->getDays() ?>
-          </div>
-        </div>
-        <div class="col-sm-3">
-          <div class="cart-main-item-price">
-            <?php echo $hireUFO->getPrice() ?> kreditů
-          </div>
-        </div>
-        <div class="col-sm-1">
-          <form method="post">
-            <div class="cart-main-item-remove">
-              <button type="submit" class="cart-main-item-remove-btn" name="remove" value="1">
-                <i class="fas fa-times-circle"></i>
-              </button>
+      if($hireUFO->isUFOSaved(0)) {   // kosik neni prazdny - obsahuje alespon jednu polozku
+        $allUFOs = $hireUFO->getAllSavedUFOs();
+        $i = 0;
+
+        foreach ($allUFOs as $UFO) {
+          $model = $hireUFO->getModel($i);
+          $days = $hireUFO->getDays($i);
+          $price = $hireUFO->getPrice($i);
+          echo "
+            <div class='jumbotron'>
+              <div class='row cart-main-item'>
+                <div class='col-sm-4'>
+                  <div class='cart-main-item-name'>
+                    $model
+                  </div>
+                </div>
+                <div class='col-sm-4'>
+                  <div class='cart-main-item-days'>
+                    Dny: $days
+                  </div>
+                </div>
+                <div class='col-sm-3'>
+                  <div class='cart-main-item-price'>
+                    $price kreditů
+                  </div>
+                </div>
+                <div class='col-sm-1'>
+                  <form method='post'>
+                    <div class='cart-main-item-remove'>
+                      <button type='submit' class='cart-main-item-remove-btn' name='remove' value=$i>
+                        <i class='fas fa-times-circle'></i>
+                      </button>
+                    </div>
+                  </form>
+                </div>
+              </div>
             </div>
-          </form>
-        </div>
-      </div>
-    </div>
+          ";
 
-    <div class="row">
-      <div class="col-12">
-        <div class="cart-main-price">
-          Celkem: <?php echo $hireUFO->getPrice() ?> kreditů
-        </div>
-      </div>
-    </div>
+          $i++;
+        }
 
-    <?php
-    }
-    else {
-    ?>
-    <!-- Kosik je prazdny -->
-    <div class="row">
-      <div class="col-12">
-        Košík je prázdný.
-      </div>
-    </div>
+        $totalPrice = $hireUFO->getTotalPrice();
+        echo "
+          <div class='row'>
+            <div class='col-12'>
+                <div class='cart-main-price'>
+                    Celkem: $totalPrice kreditů
+                </div>
+            </div>
+          </div>
+        ";
+      }
+      else {  // kosik je prazdny
+        echo '
+          <div class="row">
+            <div class="col-12">
+              Košík je prázdný.
+            </div>
+          </div>
+        ';
+      }
 
-    <?php
-    }
-    ?>
-
-    <?php
-
-    if($login->isUserLoggedIn()) {
+    if($dbconnection->isUserLoggedIn()) {
 
     ?>
 

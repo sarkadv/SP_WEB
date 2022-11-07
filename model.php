@@ -1,21 +1,25 @@
 <?php
 
-  require_once "php/LoginClass.php";
-  $login = new Login;
+  require_once "php/DatabaseConnectionClass.php";
+  $dbconnection = new DatabaseConnection();
 
   require_once "php/HireUFOClass.php";
   $hireUFO = new HireUFO;
 
   if(isset($_POST["action"])) {
     if($_POST["action"] == "login") {
-      if(isset($_POST["email"])) {
-        if($_POST["email"] != "") {
-          $login->login("email");
+      if(isset($_POST["email"]) && isset($_POST["pswd"])) {
+        if($_POST["email"] != "" && $_POST["pswd"] != "") {
+          $result = $dbconnection->loginUser($_POST["email"], $_POST["pswd"]);
+
+          if(!$result) {
+            echo '<script>alert("Nesprávný e-mail nebo heslo.")</script>';
+          }
         }
       }
     }
     else if($_POST["action"] == "logout") {
-      $login->logout();
+      $dbconnection->logoutUser();
     }
   }
 
@@ -80,7 +84,7 @@
           <div class="btn-group">
 
             <?php
-            if(!$login->isUserLoggedIn()) {
+            if(!$dbconnection->isUserLoggedIn()) {
               ?>
               <!-- Pro neprihlasene uzivatele -->
               <button type="button" id="btn-account" data-bs-toggle="offcanvas" data-bs-target="#demo-sidebar">
