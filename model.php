@@ -24,11 +24,21 @@
   }
 
   else if(isset($_POST["hire"])) {
-    if($_POST["hire"] == 1) {
-      $hireUFO->saveUFOData("The Timeless Classic", $_POST["days"], $_POST["days"] * 20000);
+    $model = $dbconnection->getUFOModelByNumber($_POST["hire"]);
+
+    if($model != null) {
+      $hireUFO->saveUFOData($model["nazev"], $_POST["days"], $_POST["days"] * $model["cena_den"]);
     }
 
     header("Refresh:0");
+  }
+
+  $UFOModel = null;
+
+  if(isset($_GET["examine"])) {
+    if(ctype_digit($_GET["examine"]) || is_int($_GET["examine"])) {
+      $UFOModel = $dbconnection->getUFOModelByNumber($_GET["examine"]);
+    }
   }
 
 ?>
@@ -39,6 +49,7 @@
 <head>
   <meta charset="utf-8">
   <title>Půjčovna UFO Andromeda</title>
+  <link rel="icon" type="image/x-icon" href="img/logo.png">
   <meta name="description" content="">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
@@ -169,13 +180,37 @@
   </div>
 
   <!-- Stred stranky - obrazek UFO a zakladni informace -->
+  <?php
+    if($UFOModel == null) {
+  ?>
+  <!-- Neexistuje UFO model s pozadovanym cislem -->
   <div class="row" id="model-main-content">
     <h2 class="model-main-heading">
-      The Timeless Classic
+      Požadovaná stránka neexistuje.
+    </h2>
+  </div>
+
+  <?php
+    }
+    else {
+      $modelName = $UFOModel["nazev"];
+      $pictureUrl = $UFOModel["obrazek_url"];
+      $people = $UFOModel["pocet_osob"];
+      $battery = $UFOModel["vydrz_baterie"];
+      $speed = $UFOModel["rychlost_ly"];
+      $price = $UFOModel["cena_den"];
+      $modelNumber = $_GET["examine"];
+      $shortDesc = $UFOModel["popis_kratky"];
+  ?>
+
+  <!-- Existuje UFO model s pozadovanym cislem -->
+  <div class="row" id="model-main-content">
+    <h2 class="model-main-heading">
+      <?php echo $modelName; ?>
     </h2>
     <div class="col-lg-8">
-      <div class="zoom" onmousemove="zoom(event)" style="background-image: url('img/the_timeless_classic.png')">
-        <img src="img/the_timeless_classic.png" class="model-main-img" alt="Obrázek modelu">
+      <div class="zoom" onmousemove="zoom(event)" style="background-image: url('<?php echo $pictureUrl; ?>')">
+        <img src="<?php echo $pictureUrl; ?>" class="model-main-img" alt="Obrázek modelu">
       </div>
     </div>
     <div class="col-lg-4">
@@ -185,7 +220,7 @@
             Počet osob
           </span>
           <span class="model-main-content-list-value">
-            2
+            <?php echo $people; ?>
           </span>
         </li>
         <li class="list-group-item list-group-item-action">
@@ -193,7 +228,7 @@
             Výdrž baterie
           </span>
           <span class="model-main-content-list-value">
-            68 hodin
+            <?php echo $battery; ?> hodin
           </span>
         </li>
         <li class="list-group-item list-group-item-action">
@@ -201,23 +236,39 @@
             Maximální rychlost
           </span>
           <span class="model-main-content-list-value">
-            2000 ly / hod
+            <?php echo $speed; ?> ly / hod
           </span>
         </li>
       </ul>
       <div class="model-main-content-price">
-        20 000 kreditů / den
+        <?php echo $price; ?> kreditů / den
       </div>
 
       <!-- Formular pro vypujceni vozidla -->
-      <form method="post">
-        <label for="days" class="form-label">Počet dnů:</label>
-        <input type="number" class="form-control" id="days" placeholder="1" min="1" max="14" name="days" required>
-        <button type="submit" class="products-main-btn-product" name="hire" value="1">
-          <i class="fas fa-shopping-basket"></i>
-          Vypůjčit
-        </button>
-      </form>
+      <?php
+        if($dbconnection->getNumberOfUFOsAvailableByModelNumber($modelNumber) > 0) {
+      ?>
+        <!-- Model neni vyprodany -->
+        <form method="post">
+          <label for="days" class="form-label">Počet dnů:</label>
+          <input type="number" class="form-control" id="days" placeholder="1" min="1" max="14" name="days" required>
+          <button type="submit" class="products-main-btn-product" name="hire" value="<?php echo $modelNumber; ?>">
+            <i class="fas fa-shopping-basket"></i>
+            Vypůjčit
+          </button>
+        </form>
+
+      <?php
+        }
+        else {
+      ?>
+
+        <!-- Model je vyprodany -->
+        <p class="model-main-info">Tento model je momentálně nedostupný.</p>
+
+      <?php
+        }
+      ?>
 
     </div>
   </div>
@@ -237,7 +288,7 @@
         <div id="collapseOne" class="collapse show" data-bs-parent="#accordion">
           <div class="card-body">
             <h5>
-              Lorem ipsum...
+              <?php echo $shortDesc; ?>
             </h5>
             <p>
               Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Sed convallis magna eu sem. Aenean vel massa quis mauris vehicula lacinia. Etiam posuere lacus quis dolor. Mauris elementum mauris vitae tortor. Morbi imperdiet, mauris ac auctor dictum, nisl ligula egestas nulla, et sollicitudin sem purus in lacus. Etiam commodo dui eget wisi. Vestibulum fermentum tortor id mi. Nulla accumsan, elit sit amet varius semper, nulla mauris mollis quam, tempor suscipit diam nulla vel leo. Fusce tellus. Integer tempor. Nullam eget nisl. Maecenas libero. Pellentesque ipsum.
@@ -305,6 +356,10 @@
 
     </div>
   </div>
+
+  <?php
+    }
+  ?>
 
   <!-- Paticka stranky -->
   <div class="row" id="footer">

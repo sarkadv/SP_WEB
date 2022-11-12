@@ -28,6 +28,7 @@
 <head>
   <meta charset="utf-8">
   <title>Půjčovna UFO Andromeda</title>
+  <link rel="icon" type="image/x-icon" href="img/logo.png">
   <meta name="description" content="">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
@@ -165,6 +166,12 @@
 
     <?php
     if($dbconnection->isUserLoggedIn()) {
+      $user = $dbconnection->getLoggedUser();
+      $adress = $dbconnection->getAdressByNumber($user["c_adresy_fk"]);
+      $street = $adress["ulice"];
+      $city = ($dbconnection->getCityByNumber($adress["c_mesta_fk"]))["nazev"];
+      $zip = ($dbconnection->getCityByNumber($adress["c_mesta_fk"]))["psc"];
+      $planet = $adress["planeta"];
     ?>
 
     <!-- Pro prihlasene uzivatele -->
@@ -182,7 +189,7 @@
             <div class="input-group-text">
               <i class="fas fa-home"></i>
             </div>
-            <input type="text" class="form-control" id="street" placeholder="Mimozemská 108" name="street" required disabled>
+            <input type="text" class="form-control" id="street" placeholder="Ulice a číslo popisné" value="<?php echo $street;?>" name="street" required disabled>
           </div>
         </div>
       </div>
@@ -193,7 +200,7 @@
             <div class="input-group-text">
               <i class="fas fa-city"></i>
             </div>
-            <input type="text" class="form-control" id="city" placeholder="Město" name="city" required disabled>
+            <input type="text" class="form-control" id="city" placeholder="Město" value="<?php echo $city;?>" name="city" required disabled>
           </div>
         </div>
         <div class="col-md-4 shipping-main-item">
@@ -202,7 +209,7 @@
             <div class="input-group-text">
               <i class="far fa-envelope-open"></i>
             </div>
-            <input type="text" class="form-control" id="zip-code" placeholder="123 45" name="zip-code" required disabled>
+            <input type="text" class="form-control" id="zip-code" placeholder="PSČ" value="<?php echo $zip;?>" name="zip-code" required disabled>
           </div>
         </div>
         <div class="col-md-4 shipping-main-item">
@@ -211,7 +218,7 @@
             <div class="input-group-text">
               <i class="fas fa-globe"></i>
             </div>
-            <input class="form-control" id="planet" list ="planets" placeholder="Domovská planeta" name="planet" required disabled>
+            <input class="form-control" id="planet" list ="planets" placeholder="Domovská planeta" value="<?php echo $planet;?>" name="planet" required disabled>
           </div>
           <datalist id="planets">
             <option value="Kepler-452b">
@@ -300,6 +307,16 @@
 <script>
   function disableAdress() {
     var checkbox = document.getElementById("use-default");
+
+    var street = "<?php echo $street;?>";
+    var city = "<?php echo $city;?>";
+    var zip = "<?php echo $zip;?>";
+    var planet = "<?php echo $planet;?>";
+
+    document.getElementById("street").value = street;
+    document.getElementById("city").value = city;
+    document.getElementById("zip-code").value = zip;
+    document.getElementById("planet").value = planet;
 
     document.getElementById("street").disabled = checkbox.checked;
     document.getElementById("city").disabled = checkbox.checked;

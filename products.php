@@ -42,6 +42,7 @@
 <head>
   <meta charset="utf-8">
   <title>Půjčovna UFO Andromeda</title>
+  <link rel="icon" type="image/x-icon" href="img/logo.png">
   <meta name="description" content="">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
@@ -184,7 +185,7 @@
         $img = $model["obrazek_url"];
         $name = $model["nazev"];
         $description = $model["popis_kratky"];
-        $c_modelu = $model["c_modelu"];
+        $c_modelu = $model["c_modelu_pk"];
         $input_id = "days".$c_modelu;
         echo "
         <div class='col-lg-4 col-md-6 products-main-item'>
@@ -193,9 +194,12 @@
               <img class='card-img-top' src='$img' alt='Obrazek modelu'>
             </div>
             <div class='card-body'>
-              <a href='model.php' class='products-main-name-link'>
-                <h4 class='card-title'>$name</h4>
-              </a>
+                <!-- Formular pro rozkliknuti stranky vozidla -->
+                <form action='model.php' method='get'>
+                    <button type='submit' name='examine' value='$c_modelu' class='products-main-name-btn'>
+                        <h4 class='card-title'>$name</h4>
+                    </button>
+                </form>
               <p class='card-text'>$description</p>
 
               <!-- Formular pro vypujceni vozidla -->

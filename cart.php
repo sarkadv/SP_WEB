@@ -37,6 +37,7 @@
 <head>
   <meta charset="utf-8">
   <title>Půjčovna UFO Andromeda</title>
+  <link rel="icon" type="image/x-icon" href="img/logo.png">
   <meta name="description" content="">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
@@ -236,11 +237,11 @@
         ';
       }
 
-    if($dbconnection->isUserLoggedIn()) {
+    if($dbconnection->isUserLoggedIn() && $hireUFO->isUFOSaved(0)) {
 
     ?>
 
-    <!-- Pro prihlasene uzivatele -->
+    <!-- Pro prihlasene uzivatele kdyz kosik neni prazdny -->
     <div class="row">
       <div class="col-12">
         <button type="button" class="cart-main-continue-btn" onclick="location.href='shipping.php'">
@@ -252,7 +253,7 @@
 
     <?php
     }
-    else {
+    else if (!$dbconnection->isUserLoggedIn()){
     ?>
 
     <!-- Pro neprihlasene uzivatele -->

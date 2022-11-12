@@ -22,4 +22,11 @@ class Session
     session_unset();
   }
 
+  public function readSession(string $key) {
+    if(isset($_SESSION[$key])) {
+      return $_SESSION[$key];
+    }
+    return null;
+  }
+
 }

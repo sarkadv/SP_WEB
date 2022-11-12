@@ -11,4 +11,7 @@ define("TABLE_MODEL","MODEL");
 define("TABLE_UFO","UFO");
 define("TABLE_REVIEW","RECENZE");
 define("TABLE_HIRE","VYPUJCKA");
+define("TABLE_CITY","MESTO");
+define("TABLE_ROLE","PRAVO");
+define("TABLE_ADRESS","ADRESA");
 

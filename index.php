@@ -28,6 +28,7 @@
 <head>
   <meta charset="utf-8">
   <title>Půjčovna UFO Andromeda</title>
+  <link rel="icon" type="image/x-icon" href="img/logo.png">
   <meta name="description" content="">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
@@ -175,7 +176,7 @@
         <ul id="home-main-list">
           <li class="home-main-list-item">
             <i class="fas fa-clock fa-2x home-main-list-icon"></i>
-            <span class="home-main-list-text">Více než <b>80 let</b> zkušeností v oboru</span>
+            <span class="home-main-list-text">Více než <b>800 let</b> zkušeností v oboru</span>
           </li>
           <li class="home-main-list-item">
             <i class="fas fa-wrench fa-2x home-main-list-icon"></i>
@@ -250,6 +251,13 @@
     </h2>
   </div>
 
+  <?php
+    // modely zobrazene v carouselu
+    $UFO1 = $dbconnection->getUFOModelByNumber(1);
+    $UFO2 = $dbconnection->getUFOModelByNumber(2);
+    $UFO3 = $dbconnection->getUFOModelByNumber(3);
+  ?>
+
   <!-- Carousel -->
   <div class="row">
     <div id="demo" class="carousel slide" data-bs-ride="carousel">
@@ -264,27 +272,27 @@
       <!-- Obrazky -->
       <div class="carousel-inner">
         <div class="carousel-item active">
-          <img src="img/the_timeless_classic.png" alt="The Timeless Classic" class="d-block w-100">
+          <img src="<?php echo $UFO1["obrazek_url"]; ?>" alt="<?php echo $UFO1["nazev"]; ?>" class="d-block w-100">
           <p class="home-carousel-bottom-paragraph"></p>
           <div class="carousel-caption">
-            <h3>The Timeless Classic</h3>
-            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+            <h3><?php echo $UFO1["nazev"]; ?></h3>
+            <p><?php echo $UFO1["popis_kratky"]; ?></p>
           </div>
         </div>
         <div class="carousel-item">
-          <img src="img/the_cubicle.png" alt="The Cubicle" class="d-block w-100">
+          <img src="<?php echo $UFO2["obrazek_url"]; ?>" alt="<?php echo $UFO2["nazev"]; ?>" class="d-block w-100">
           <p class="home-carousel-bottom-paragraph"></p>
           <div class="carousel-caption">
-            <h3>The Cubicle</h3>
-            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+            <h3><?php echo $UFO2["nazev"]; ?></h3>
+            <p><?php echo $UFO2["popis_kratky"]; ?></p>
           </div>
         </div>
         <div class="carousel-item">
-          <img src="img/skoda_4000.png" alt="Škoda 4000" class="d-block w-100">
+          <img src="<?php echo $UFO3["obrazek_url"]; ?>" alt="<?php echo $UFO3["nazev"]; ?>" class="d-block w-100">
           <p class="home-carousel-bottom-paragraph"></p>
           <div class="carousel-caption">
-            <h3>Škoda 4000</h3>
-            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+            <h3><?php echo $UFO3["nazev"]; ?></h3>
+            <p><?php echo $UFO3["popis_kratky"]; ?></p>
           </div>
         </div>
       </div>

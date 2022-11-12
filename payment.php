@@ -28,6 +28,7 @@
 <head>
   <meta charset="utf-8">
   <title>Půjčovna UFO Andromeda</title>
+  <link rel="icon" type="image/x-icon" href="img/logo.png">
   <meta name="description" content="">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
@@ -178,7 +179,7 @@
 
     <form action="">
       <div class="col-12 payment-main-item">
-        <label for="account" class="form-label">Číslo vesmírného účtu</label>
+        <label for="account" class="form-label">Číslo účtu</label>
         <div class="input-group">
           <div class="input-group-text">
             <i class="far fa-credit-card"></i>

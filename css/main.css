@@ -250,28 +250,18 @@ body {
   margin: 0 0 15px 0;
 }
 
-/* unvisited link */
-.products-main-name-link:link {
+.products-main-name-btn {
   color: rgb(43, 89, 136);
+  background: transparent;
+  padding: 0;
+  border: none;
   text-decoration: none;
 }
 
-/* visited link */
-.products-main-name-link:visited {
-  color: rgb(43, 89, 136);
-  text-decoration: none;
-}
-
-/* mouse over link */
-.products-main-name-link:hover {
+.products-main-name-btn:hover {
   color: grey;
+  padding: 0;
   text-decoration: underline;
-}
-
-/* selected link */
-.products-main-name-link:active {
-  color: rgb(43, 89, 136);
-  text-decoration: none;
 }
 
 .products-main-btn-product {
@@ -337,6 +327,11 @@ body {
 #model-other-content {
   background-color: white;
   padding: 30px;
+}
+
+.model-main-info {
+  margin: 0 0 0 5px;
+  color: indianred;
 }
 
 /* CSS pro stranku s obsahem kosiku */
