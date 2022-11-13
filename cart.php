@@ -180,6 +180,7 @@
 
         foreach ($allUFOs as $UFO) {
           $model = $hireUFO->getModel($i);
+          $modelName = $dbconnection->getUFOModelByNumber($model)["nazev"];
           $days = $hireUFO->getDays($i);
           $price = $hireUFO->getPrice($i);
           echo "
@@ -187,7 +188,7 @@
               <div class='row cart-main-item'>
                 <div class='col-sm-4'>
                   <div class='cart-main-item-name'>
-                    $model
+                    $modelName
                   </div>
                 </div>
                 <div class='col-sm-4'>

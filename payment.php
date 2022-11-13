@@ -3,6 +3,9 @@
   require_once "php/DatabaseConnectionClass.php";
   $dbconnection = new DatabaseConnection();
 
+  require_once "php/HireUFOClass.php";
+  $hireUFO = new HireUFO();
+
   if(isset($_POST["action"])) {
     if($_POST["action"] == "login") {
       if(isset($_POST["email"]) && isset($_POST["pswd"])) {
@@ -18,6 +21,17 @@
     else if($_POST["action"] == "logout") {
       $dbconnection->logoutUser();
     }
+  }
+  else if(isset($_POST["hire"])) {  // formular ze stranky shipping.php
+    if($_POST["hire"] == "adress") {
+      if(isset($_POST["street"]) && isset($_POST["city"]) && isset($_POST["zip-code"]) && isset($_POST["planet"])) {
+        if($_POST["street"] != "" && $_POST["city"] != "" && $_POST["zip-code"] != "" && $_POST["planet"] != "") {
+          $hireUFO->saveAdressData($_POST["city"], $_POST["zip-code"], $_POST["street"], $_POST["planet"]);
+        }
+      }
+    }
+
+    header("Refresh:0");
   }
 
 ?>
@@ -177,20 +191,20 @@
       </div>
     </div>
 
-    <form action="">
+    <form action="order.php" method="post">
       <div class="col-12 payment-main-item">
         <label for="account" class="form-label">Číslo účtu</label>
         <div class="input-group">
           <div class="input-group-text">
             <i class="far fa-credit-card"></i>
           </div>
-          <input type="number" class="form-control" id="account" placeholder="1111000011110000" name="account" min="0" max="1111111111111111" required>
+          <input type="number" class="form-control" id="account" placeholder="1111000011110000" name="account-number" min="0" max="1111111111111111" required>
         </div>
         <p class="payment-main-info">
           Po potvrzení platby ve Vašem chytrém zařízení budou peníze automaticky odeslány.
         </p>
       </div>
-      <button type="button" class="payment-main-continue-btn" onclick="location.href='order.php'">
+      <button type="submit" name="hire" value="payment" class="payment-main-continue-btn">
         <i class="fas fa-angle-double-right"></i>
         Objednat
       </button>

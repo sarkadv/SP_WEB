@@ -23,6 +23,16 @@
     }
   }
 
+  $hireResult = [];
+
+  if(isset($_POST["hire"])) {
+    if($_POST["hire"] == "payment") {
+      if($_POST["account-number"] != "") {
+        $hireResult = $dbconnection->createNewHire($_POST["account-number"]);
+      }
+    }
+  }
+
 ?>
 
 <!doctype html>
@@ -163,103 +173,139 @@
 
   <!-- Stred stranky - obsah kosiku -->
   <div class="row" id="order-main-content">
-    <h2 class="order-main-heading">
-      Děkujeme za objednávku!
-    </h2>
-
-    <div class="row">
-      <div class="col-12">
-        <h6>
-          Vozidlo bude ihned posláno na Vaši adresu.
-        </h6>
-      </div>
-    </div>
-
-    <hr>
 
     <?php
-    if($hireUFO->isUFOSaved()) {
+    if(count($hireResult) > 0) {   // vypujcka byla uspesne realizovana
     ?>
 
-    <div class="row">
-      <div class="col-12">
-        <div class="order-main-heading">
-          <h5>
-            Shrnutí objednávky
-          </h5>
+      <h2 class="order-main-heading">
+        Děkujeme za objednávku!
+      </h2>
+
+      <div class="row">
+        <div class="col-12">
+          <h6>
+            Vybraná vozidla budou ihned poslána na Vaši adresu.
+          </h6>
         </div>
       </div>
-    </div>
 
-    <div class="jumbotron">
-      <div class="row order-main-item">
-        <div class="col-sm-4">
-          <div class="order-main-item-name">
-            <?php echo $hireUFO->getModel() ?>
-          </div>
-        </div>
-        <div class="col-sm-4">
-          <div class="order-main-item-days">
-            Dny: <?php echo $hireUFO->getDays() ?>
-          </div>
-        </div>
-        <div class="col-sm-4">
-          <div class="order-main-item-price">
-            <?php echo $hireUFO->getPrice() ?> kreditů
+      <hr>
+
+      <div class="row">
+        <div class="col-12">
+          <div class="order-main-heading">
+            <h5>
+              Shrnutí objednávky
+            </h5>
           </div>
         </div>
       </div>
-    </div>
 
-    <div class="row">
-      <div class="col-12">
-        <div class="order-main-heading">
-          Celkem: <?php echo $hireUFO->getPrice() ?> kreditů
+      <?php
+        $hire = $dbconnection->getHireByNumber($hireResult[0]);
+        $adress = $dbconnection->getAdressByNumber($hire["c_adresy_fk"]);
+        $street = $adress["ulice"];
+        $planet = $adress["planeta"];
+        $city = $dbconnection->getCityByNumber($adress["c_mesta_fk"]);
+        $cityName = $city["nazev"];
+        $zip = $city["psc"];
+        $totalPrice = 0;
+        $accountNumber = $hire["c_platebniho_uctu"];
+
+        foreach($hireResult as $hireNumber) {
+          $hire = $dbconnection->getHireByNumber($hireNumber);
+          $UFO = $dbconnection->getUFOByNumber($hire["c_ufo_fk"]);
+          $model = $dbconnection->getUFOModelByNumber($UFO["c_modelu_fk"]);
+          $modelName = $model["nazev"];
+          $dates = $hire["d_vypujceni"]." až ".$hire["d_vraceni"];
+          $days = ceil((strtotime($hire["d_vraceni"]) - strtotime($hire["d_vypujceni"])) / (60 * 60 * 24));
+          $price = $days * $model["cena_den"];
+          $totalPrice += $price;
+      ?>
+
+      <div class="jumbotron">
+        <div class="row order-main-item">
+          <div class="col-sm-4">
+            <div class="order-main-item-name">
+              <?php echo $modelName; ?>
+            </div>
+          </div>
+          <div class="col-sm-4">
+            <div class="order-main-item-days">
+              Dny: <?php echo $days. " (".$dates.")"; ?>
+            </div>
+          </div>
+          <div class="col-sm-4">
+            <div class="order-main-item-price">
+              <?php echo $price; ?> kreditů
+            </div>
+          </div>
         </div>
       </div>
-    </div>
 
-    <div class="row">
-      <div class="col-12">
-        <div class="order-main-heading">
-          <h5>
-            Doručovací adresa
-          </h5>
+      <?php
+        }
+      ?>
+
+      <div class="row">
+        <div class="col-12">
+          <div class="order-main-heading">
+            Celkem: <?php echo $totalPrice; ?> kreditů
+          </div>
         </div>
       </div>
-    </div>
 
-    <div class="row">
-      <div class="col-12">
-        <div>
-          Mimozemská 108
-        </div>
-        <div>
-          Megaton, 123 45
-        </div>
-        <div>
-          Gliese 667Cc
+      <div class="row">
+        <div class="col-12">
+          <div class="order-main-heading">
+            <h5>
+              Doručovací adresa
+            </h5>
+          </div>
         </div>
       </div>
-    </div>
 
-    <div class="row">
-      <div class="col-12">
-        <div class="order-main-heading">
-          <h5>
-            Číslo účtu
-          </h5>
+      <div class="row">
+        <div class="col-12">
+          <div>
+            <?php echo $street; ?>
+          </div>
+          <div>
+            <?php echo $cityName.", ".$zip; ?>
+          </div>
+          <div>
+            <?php echo $planet; ?>
+          </div>
         </div>
       </div>
-    </div>
 
-    <div class="row">
-      <div class="col-12">
-        <div>
-          1111000011110000
+      <div class="row">
+        <div class="col-12">
+          <div class="order-main-heading">
+            <h5>
+              Číslo účtu
+            </h5>
+          </div>
         </div>
       </div>
-    </div>
+
+      <div class="row">
+        <div class="col-12">
+          <div>
+            <?php echo $accountNumber; ?>
+          </div>
+        </div>
+      </div>
+
+    <?php
+    }
+    else {
+    ?>
+
+      <h3 class="order-main-info">
+        Při objednávce došlo k chybě.
+      </h3>
 
     <?php
     }

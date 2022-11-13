@@ -4,7 +4,11 @@ class DatabaseConnection
 {
   private $conn;
 
+  /* Pro prihlasovani / odhlasovani uzivatele */
   private Session $session;
+
+  /* Pro vytvareni vypujcek */
+  private HireUFO $hireUFO;
 
   private const KEY_USER = "user";
 
@@ -15,6 +19,9 @@ class DatabaseConnection
 
     require_once "php/SessionClass.php";
     $this->session = new Session();
+
+    require_once "php/HireUFOClass.php";
+    $this->hireUFO = new HireUFO();
   }
 
   public function query(string $query):array {
@@ -87,10 +94,18 @@ class DatabaseConnection
       $query = "INSERT INTO ".TABLE_CITY." (c_mesta_pk, nazev, psc) "."VALUES ('$cityNumber', '$city', '$zip')";
       $this->query($query);
 
+      if(!$this->doesCityExist($city)) {  // mesto se nepodarilo vlozit
+        return false;
+      }
+
       // pokud mesto neexistovalo, adresa urcite take neexistuje
       $adressNumber = $this->getAdressCount() + 1;
       $query = "INSERT INTO ".TABLE_ADRESS." (c_adresy_pk, ulice, planeta, c_mesta_fk) "."VALUES ('$adressNumber', '$street', '$planet', '$cityNumber')";
       $this->query($query);
+
+      if(!$this->doesAdressExist($city, $street, $planet)) {  // adresu se nepodarilo vlozit
+        return false;
+      }
     }
     else {
       // mesto noveho uzivatele je v tabulace MESTO
@@ -101,6 +116,10 @@ class DatabaseConnection
         $cityNumber = $this->getCityNumber($city);
         $query = "INSERT INTO ".TABLE_ADRESS." (c_adresy_pk, ulice, planeta, c_mesta_fk) "."VALUES ('$adressNumber', '$street', '$planet', '$cityNumber')";
         $this->query($query);
+
+        if(!$this->doesAdressExist($city, $street, $planet)) {  // adresu se nepodarilo vlozit
+          return false;
+        }
       }
     }
 
@@ -109,9 +128,9 @@ class DatabaseConnection
     $query = "INSERT INTO ".TABLE_USER." (c_uzivatele_pk, email, heslo, jmeno, prijmeni, d_narozeni, tel_cislo, c_prava_fk, c_adresy_fk)"
     ." VALUES ('$userNumber', '$email', '$password1', '$name', '$surname', '$birthDate', '$tel', '3', '$adressNumber')";
 
-    $result = $this->query($query);
+    $this->query($query);
 
-    if($result == 0){ // bylo vlozeno 0 radku
+    if(!$this->doesUserExist($email)){  // uzivatel nebyl vlozen
       return false;
     }
     else {
@@ -138,6 +157,14 @@ class DatabaseConnection
 
   public function getAdressCount():int {
     $query = "SELECT * FROM ".TABLE_ADRESS;
+
+    $result = $this->query($query);
+
+    return count($result);
+  }
+
+  public function getHireCount():int {
+    $query = "SELECT * FROM ".TABLE_HIRE;
 
     $result = $this->query($query);
 
@@ -186,8 +213,33 @@ class DatabaseConnection
     }
   }
 
-  public function getUFOModelByNumber (int $number) {
+  public function doesHireExist(int $hireNumber):bool {
+    $query = "SELECT * FROM ".TABLE_HIRE." WHERE c_vypujcky_pk='$hireNumber'";
+    $result = $this->query($query);
+
+    if(count($result) == 0) {
+      return false;
+    }
+    else {
+      return true;
+    }
+  }
+
+  public function getUFOModelByNumber ($number) {
     $query = "SELECT * FROM ".TABLE_MODEL." WHERE c_modelu_pk='$number'";
+
+    $result = $this->query($query);
+
+    if(count($result) > 0) {
+      return $result[0];
+    }
+    else {
+      return null;
+    }
+  }
+
+  public function getUserByNumber ($number) {
+    $query = "SELECT * FROM ".TABLE_USER." WHERE c_uzivatele_pk='$number'";
 
     $result = $this->query($query);
 
@@ -214,6 +266,32 @@ class DatabaseConnection
 
   public function getAdressByNumber($number) {
     $query = "SELECT * FROM ".TABLE_ADRESS." WHERE c_adresy_pk='$number'";
+
+    $result = $this->query($query);
+
+    if(count($result) > 0) {
+      return $result[0];
+    }
+    else {
+      return null;
+    }
+  }
+
+  public function getUFOByNumber($number) {
+    $query = "SELECT * FROM ".TABLE_UFO." WHERE c_ufo_pk='$number'";
+
+    $result = $this->query($query);
+
+    if(count($result) > 0) {
+      return $result[0];
+    }
+    else {
+      return null;
+    }
+  }
+
+  public function getHireByNumber($number) {
+    $query = "SELECT * FROM ".TABLE_HIRE." WHERE c_vypujcky_pk='$number'";
 
     $result = $this->query($query);
 
@@ -267,6 +345,7 @@ class DatabaseConnection
     $query = "SELECT * FROM ".TABLE_UFO." WHERE c_modelu_fk='$modelNumber'";
     $allUFOs = $this->query($query);
 
+    // napocitame pocet vozidel, ktera nejsou v tabulce VYPUJCKA
     $count = 0;
     foreach($allUFOs as $UFO) {
       if($this->isUFOFree($UFO["c_ufo_pk"])) {
@@ -274,7 +353,34 @@ class DatabaseConnection
       }
     }
 
+    // odecteme pocet vozidel, ktera jsou v kosiku
+    $UFOsInCart = $this->hireUFO->getAllSavedUFOs();
+
+    foreach($UFOsInCart as $UFO) {
+      $UFO = json_decode($UFO, true);
+
+      if($UFO["model"] == $modelNumber) {
+        $count--;
+      }
+    }
+
     return $count;
+  }
+
+  /*
+   * Vrati primarni klic prvniho dostupneho UFO podle modelu.
+   */
+  public function getAvailableUFONumberByModelNumber(int $modelNumber) {
+    $query = "SELECT * FROM ".TABLE_UFO." WHERE c_modelu_fk='$modelNumber'";
+    $allUFOs = $this->query($query);
+
+    foreach($allUFOs as $UFO) {
+      if($this->isUFOFree($UFO["c_ufo_pk"])) {
+        return $UFO["c_ufo_pk"];
+      }
+    }
+
+    return null;
   }
 
   public function isUFOFree($UFONumber):bool {
@@ -299,5 +405,109 @@ class DatabaseConnection
     }
 
     return false;
+  }
+
+  /*
+   * Metoda vytvori novou vypujcku a vlozi ji do tabulky VYPUJCKA.
+   * Vraci primarni klice vsech vytvorenych vypujcek.
+   */
+  public function createNewHire(string $accountNumber):array {
+    $allUFOS = $this->hireUFO->getAllSavedUFOs();
+    $hireResult = [];
+
+    if(count($allUFOS) == 0) {  // zadne UFO k vypujceni
+      return [];
+    }
+
+    $adress = $this->hireUFO->loadAdressData();
+
+    if($adress == null) {
+      return [];
+    }
+
+    if($accountNumber == null) {
+      return [];
+    }
+
+    $dateNow = date("Y-m-d");
+
+    $i = 0;
+    foreach($allUFOS as $UFO) {
+      $UFO = json_decode($UFO, true);
+      $modelNumber = $UFO["model"];
+
+      $availableUFONumber = $this->getAvailableUFONumberByModelNumber($modelNumber);
+
+      if($availableUFONumber == null) {   // UFO je momentalne nedostupne
+        return [];
+      }
+
+      $days = $UFO["days"];
+      $dateEnd = date('Y-m-d', strtotime($dateNow. ' + '.$days.' days'));
+      $userNumber = $this->getLoggedUser()["c_uzivatele_pk"];
+      $cityName = $adress["city"];
+      $street = $adress["street"];
+      $planet = $adress["planet"];
+      $zip = $adress["zip"];
+
+      if(!$this->doesCityExist($cityName)) { // mesto jeste neexistuje -> vytvorime ho
+        $cityNumber = $this->getCityCount() + 1;
+        $queryCity = "INSERT INTO ".TABLE_CITY." (c_mesta_pk, nazev, psc)"." VALUES ('$cityNumber', '$cityName', '$zip')";
+        $this->query($queryCity);
+
+        if(!$this->doesCityExist($cityName)) {  // nepodarilo se vlozit nove mesto
+          return [];
+        }
+
+        // mesto neexistovalo, proto adresa take urcite neexistuje
+        $adressNumber = $this->getAdressCount() + 1;
+        $queryAdress = "INSERT INTO ".TABLE_ADRESS." (c_adresy_pk, ulice, planeta, c_mesta_fk)"." VALUES ('$adressNumber', '$street', '$planet', '$cityNumber')";
+        $this->query($queryAdress);
+
+        if(!$this->doesAdressExist($cityName, $street, $planet)) {  // nepodarilo se vlozit novou adresu
+          return [];
+        }
+      }
+      else if(!$this->doesAdressExist($cityName, $street, $planet)) {   // mesto existuje, ale adresa ne
+        $cityNumber = $this->getCityNumber($cityName);
+        $adressNumber = $this->getAdressCount() + 1;
+        $queryAdress = "INSERT INTO ".TABLE_ADRESS." (c_adresy_pk, ulice, planeta, c_mesta_fk)"." VALUES ('$adressNumber', '$street', '$planet', '$cityNumber')";
+        $this->query($queryAdress);
+
+        if(!$this->doesAdressExist($cityName, $street, $planet)) {  // nepodarilo se vlozit novou adresu
+          return [];
+        }
+      }
+
+      $hireNumber = $this->getHireCount() + 1;
+      $adressNumber = $this->getAdressNumber($cityName, $street, $planet);
+
+      // vytvorime novy radek v tabulce VYPUJCKA
+      $queryHire = "INSERT INTO ".TABLE_HIRE." (c_vypujcky_pk, d_vypujceni, d_vraceni, c_platebniho_uctu, c_uzivatele_fk, c_ufo_fk, c_adresy_fk)"
+        ." VALUES ('$hireNumber', '$dateNow', '$dateEnd', '$accountNumber', '$userNumber', '$availableUFONumber', '$adressNumber')";
+
+      $this->query($queryHire);
+
+      if(!$this->doesHireExist($hireNumber)) {  // nepodarilo se vlozit novou vypujcku
+        return [];
+      }
+
+      array_push($hireResult, $hireNumber);
+
+      $i++;
+    }
+
+    // odstranime cookies pro vypujcku
+    $this->hireUFO->removeAllHireCookies();
+    return $hireResult;
+  }
+
+  public function getReviewsByModelNumber($modelNumber):array {
+    $query = "SELECT * FROM ".TABLE_REVIEW." WHERE c_modelu_fk='$modelNumber'";
+
+    $result = $this->query($query);
+
+    return $result;
+
   }
 }

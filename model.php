@@ -27,7 +27,7 @@
     $model = $dbconnection->getUFOModelByNumber($_POST["hire"]);
 
     if($model != null) {
-      $hireUFO->saveUFOData($model["nazev"], $_POST["days"], $_POST["days"] * $model["cena_den"]);
+      $hireUFO->saveUFOData($_POST["hire"], $_POST["days"], $_POST["days"] * $model["cena_den"]);
     }
 
     header("Refresh:0");
@@ -264,7 +264,7 @@
       ?>
 
         <!-- Model je vyprodany -->
-        <p class="model-main-info">Tento model je momentálně nedostupný.</p>
+        <p class="model-main-info">Vyprodáno.</p>
 
       <?php
         }
@@ -307,49 +307,59 @@
         </div>
         <div id="collapseTwo" class="collapse" data-bs-parent="#accordion">
           <div class="card-body">
+            <?php
+              $allReviews = $dbconnection->getReviewsByModelNumber($modelNumber);
+              if(count($allReviews) > 0) {
+            ?>
             <table class="table table-hover table-striped">
               <thead class="table-danger">
               <tr>
                 <th>Uživatel</th>
+                <th>Datum a čas</th>
                 <th>Hodnocení</th>
                 <th>Text recenze</th>
               </tr>
               </thead>
               <tbody>
-              <tr>
-                <td>John</td>
-                <td>
-                  <i class="fas fa-star home-main-table-stars"></i>
-                  <i class="fas fa-star home-main-table-stars"></i>
-                  <i class="fas fa-star home-main-table-stars"></i>
-                  <i class="fas fa-star home-main-table-stars"></i>
-                  <i class="fas fa-star home-main-table-stars"></i>
-                </td>
-                <td class="home-main-table-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</td>
-              </tr>
-              <tr>
-                <td>Mary</td>
-                <td>
-                  <i class="fas fa-star home-main-table-stars"></i>
-                  <i class="fas fa-star home-main-table-stars"></i>
-                  <i class="fas fa-star home-main-table-stars"></i>
-                  <i class="fas fa-star home-main-table-stars"></i>
-                </td>
-                <td class="home-main-table-text">Maecenas convallis lectus pretium lectus luctus suscipit.</td>
-              </tr>
-              <tr>
-                <td>July</td>
-                <td>
-                  <i class="fas fa-star home-main-table-stars"></i>
-                  <i class="fas fa-star home-main-table-stars"></i>
-                  <i class="fas fa-star home-main-table-stars"></i>
-                  <i class="fas fa-star home-main-table-stars"></i>
-                  <i class="fas fa-star home-main-table-stars"></i>
-                </td>
-                <td class="home-main-table-text">Donec facilisis egestas enim et maximus.</td>
-              </tr>
+
+              <?php
+                foreach($allReviews as $review) {
+                $user = $dbconnection->getUserByNumber($review["c_uzivatele_fk"]);
+                $firstName = $user["jmeno"];
+                $datetime = $review["datum_cas"];
+                $rating = $review["hodnoceni"];
+                $text = $review["text"];
+              ?>
+                <tr>
+                  <td><?php echo $firstName; ?></td>
+                  <td><?php echo $datetime; ?></td>
+                  <td>
+                    <?php
+                      for($i = 0; $i < $rating; $i++) {
+                    ?>
+                      <i class="fas fa-star home-main-table-stars"></i>
+                    <?php
+                      }
+                    ?>
+                  </td>
+                  <td class="home-main-table-text"><?php echo $text; ?></td>
+                </tr>
+              <?php
+                }
+              ?>
               </tbody>
             </table>
+
+            <?php
+              }
+              else {
+            ?>
+              <p>
+                Pro tento model ještě nebyly napsány žádné recenze.
+              </p>
+            <?php
+              }
+            ?>
           </div>
         </div>
       </div>

@@ -175,7 +175,7 @@
     ?>
 
     <!-- Pro prihlasene uzivatele -->
-    <form action="">
+    <form action="payment.php" method="post">
       <div class="row">
         <div class="col-12 shipping-main-item">
           <input type="checkbox" class="form-check-input" id="use-default" name="use-default" checked oninput="disableAdress()">
@@ -189,7 +189,7 @@
             <div class="input-group-text">
               <i class="fas fa-home"></i>
             </div>
-            <input type="text" class="form-control" id="street" placeholder="Ulice a číslo popisné" value="<?php echo $street;?>" name="street" required disabled>
+            <input type="text" class="form-control" id="street" placeholder="Ulice a číslo popisné" value="<?php echo $street;?>" name="street" readonly required>
           </div>
         </div>
       </div>
@@ -200,7 +200,7 @@
             <div class="input-group-text">
               <i class="fas fa-city"></i>
             </div>
-            <input type="text" class="form-control" id="city" placeholder="Město" value="<?php echo $city;?>" name="city" required disabled>
+            <input type="text" class="form-control" id="city" placeholder="Město" value="<?php echo $city;?>" name="city" readonly required>
           </div>
         </div>
         <div class="col-md-4 shipping-main-item">
@@ -209,7 +209,7 @@
             <div class="input-group-text">
               <i class="far fa-envelope-open"></i>
             </div>
-            <input type="text" class="form-control" id="zip-code" placeholder="PSČ" value="<?php echo $zip;?>" name="zip-code" required disabled>
+            <input type="text" class="form-control" id="zip-code" placeholder="PSČ" value="<?php echo $zip;?>" name="zip-code" readonly required>
           </div>
         </div>
         <div class="col-md-4 shipping-main-item">
@@ -218,7 +218,7 @@
             <div class="input-group-text">
               <i class="fas fa-globe"></i>
             </div>
-            <input class="form-control" id="planet" list ="planets" placeholder="Domovská planeta" value="<?php echo $planet;?>" name="planet" required disabled>
+            <input class="form-control" id="planet" list ="planets" placeholder="Domovská planeta" value="<?php echo $planet;?>" name="planet" readonly required>
           </div>
           <datalist id="planets">
             <option value="Kepler-452b">
@@ -229,7 +229,7 @@
           </datalist>
         </div>
       </div>
-      <button type="button" class="shipping-main-continue-btn" onclick="location.href='payment.php'">
+      <button type="submit" name="hire" value="adress" class="shipping-main-continue-btn">
         <i class="fas fa-angle-double-right"></i>
         Pokračovat
       </button>
@@ -318,10 +318,10 @@
     document.getElementById("zip-code").value = zip;
     document.getElementById("planet").value = planet;
 
-    document.getElementById("street").disabled = checkbox.checked;
-    document.getElementById("city").disabled = checkbox.checked;
-    document.getElementById("zip-code").disabled = checkbox.checked;
-    document.getElementById("planet").disabled = checkbox.checked;
+    document.getElementById("street").readOnly = checkbox.checked;
+    document.getElementById("city").readOnly = checkbox.checked;
+    document.getElementById("zip-code").readOnly = checkbox.checked;
+    document.getElementById("planet").readOnly = checkbox.checked;
   }
 </script>
 

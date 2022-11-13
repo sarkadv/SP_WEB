@@ -27,10 +27,11 @@
     $model = $dbconnection->getUFOModelByNumber($_POST["hire"]);
 
     if($model != null) {
-      $hireUFO->saveUFOData($model["nazev"], $_POST["days"], $_POST["days"] * $model["cena_den"]);
+      $hireUFO->saveUFOData($_POST["hire"], $_POST["days"], $_POST["days"] * $model["cena_den"]);
     }
 
     header("Refresh:0");
+
   }
 
 
@@ -187,34 +188,50 @@
         $description = $model["popis_kratky"];
         $c_modelu = $model["c_modelu_pk"];
         $input_id = "days".$c_modelu;
-        echo "
+    ?>
         <div class='col-lg-4 col-md-6 products-main-item'>
           <div class='card'>
-            <div class='zoom' onmousemove='zoom(event)' style='background-image: url($img)'>
-              <img class='card-img-top' src='$img' alt='Obrazek modelu'>
+            <div class='zoom' onmousemove='zoom(event)' style='background-image: url(<?php echo $img;?>)'>
+              <img class='card-img-top' src='<?php echo $img;?>' alt='Obrazek modelu'>
             </div>
-            <div class='card-body'>
+            <div class='card-body products-main-card'>
                 <!-- Formular pro rozkliknuti stranky vozidla -->
                 <form action='model.php' method='get'>
-                    <button type='submit' name='examine' value='$c_modelu' class='products-main-name-btn'>
-                        <h4 class='card-title'>$name</h4>
+                    <button type='submit' name='examine' value='<?php echo $c_modelu;?>' class='products-main-name-btn'>
+                        <h4 class='card-title'><?php echo $name;?></h4>
                     </button>
                 </form>
-              <p class='card-text'>$description</p>
+              <p class='card-text'><?php echo $description;?></p>
 
+              <?php
+                if($dbconnection->getNumberOfUFOsAvailableByModelNumber($c_modelu) > 0) {
+              ?>
               <!-- Formular pro vypujceni vozidla -->
               <form method='post'>
                 <label for='$input_id' class='form-label'>Počet dnů:</label>
-                <input type='number' class='form-control' id='$input_id' placeholder='1' min='1' max='14' name='days' required>
-                <button type='submit' class='products-main-btn-product' name='hire' value='$c_modelu'>
+                <input type='number' class='form-control' id='<?php echo $input_id;?>' placeholder='1' min='1' max='14' name='days' required>
+                <button type='submit' class='products-main-btn-product' name='hire' value='<?php echo $c_modelu;?>'>
                   <i class='fas fa-shopping-basket'></i>
                   Vypůjčit
                 </button>
               </form>
 
+              <?php
+                }
+                else {
+              ?>
+
+                  <!-- Model je vyprodany -->
+                  <p class="products-main-info">Vyprodáno.</p>
+
+              <?php
+                }
+              ?>
+
             </div>
           </div>
-        </div>";
+        </div>
+    <?php
       }
     ?>
 

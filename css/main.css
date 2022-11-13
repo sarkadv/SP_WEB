@@ -278,6 +278,15 @@ body {
   transition: 0.5s ease;
 }
 
+.products-main-card {
+  height: 250px;
+}
+
+.products-main-info {
+  color: indianred;
+  margin: 115px 0 0 0;
+}
+
 /* CSS pro stranku s jednim modelem */
 #model-main-content {
   background-color: white;
@@ -499,6 +508,10 @@ body {
   float: right;
   color: rgb(43, 89, 136);
   font-weight: bold;
+}
+
+.order-main-info {
+  color: indianred;
 }
 
 
