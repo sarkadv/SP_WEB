@@ -171,6 +171,14 @@ class DatabaseConnection
     return count($result);
   }
 
+  public function getReviewCount():int {
+    $query = "SELECT * FROM ".TABLE_REVIEW;
+
+    $result = $this->query($query);
+
+    return count($result);
+  }
+
   public function doesUserExist(string $email):bool {
     $query = "SELECT * FROM ".TABLE_USER ." WHERE email='$email'";
     $result = $this->query($query);
@@ -215,6 +223,18 @@ class DatabaseConnection
 
   public function doesHireExist(int $hireNumber):bool {
     $query = "SELECT * FROM ".TABLE_HIRE." WHERE c_vypujcky_pk='$hireNumber'";
+    $result = $this->query($query);
+
+    if(count($result) == 0) {
+      return false;
+    }
+    else {
+      return true;
+    }
+  }
+
+  public function doesReviewExist(int $reviewNumber):bool {
+    $query = "SELECT * FROM ".TABLE_REVIEW." WHERE c_recenze_pk='$reviewNumber'";
     $result = $this->query($query);
 
     if(count($result) == 0) {
@@ -508,6 +528,32 @@ class DatabaseConnection
     $result = $this->query($query);
 
     return $result;
+
+  }
+
+  public function createNewReview(int $rating, string $text, int $modelNumber):bool {
+    $user = $this->getLoggedUser();
+    $userNumber = $user["c_uzivatele_pk"];
+    $reviewNumber = $this->getReviewCount() + 1;
+    $datetime = date("Y-m-d H:i:s");
+
+    if($rating < 0 || $rating > 5) {
+      return false;
+    }
+
+    if($text == null) {
+      $text = "";
+    }
+
+    $query = "INSERT INTO ".TABLE_REVIEW." (c_recenze_pk, text, hodnoceni, datum_cas, c_modelu_fk, c_uzivatele_fk)"
+      ." VALUES ('$reviewNumber', '$text', '$rating', '$datetime', '$modelNumber', '$userNumber')";
+    $this->query($query);
+
+    if(!$this->doesReviewExist($reviewNumber)) {
+      return false;
+    }
+
+    return true;
 
   }
 }

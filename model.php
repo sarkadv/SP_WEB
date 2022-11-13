@@ -41,6 +41,20 @@
     }
   }
 
+  if(isset($_POST["review"])) {
+    if($_POST["review"] == "create") {
+      if(isset($_POST["rating"]) && isset($_POST["text"])) {
+        if($UFOModel != null) {
+          $result = $dbconnection->createNewReview($_POST["rating"], $_POST["text"], $UFOModel["c_modelu_pk"]);
+
+          if(!$result) {
+            echo '<script>alert("Recenzi se nepodařilo vytvořit.")</script>';
+          }
+        }
+      }
+    }
+  }
+
 ?>
 
 <!doctype html>
@@ -201,6 +215,7 @@
       $price = $UFOModel["cena_den"];
       $modelNumber = $_GET["examine"];
       $shortDesc = $UFOModel["popis_kratky"];
+      $longDesc = $UFOModel["popis_dlouhy"];
   ?>
 
   <!-- Existuje UFO model s pozadovanym cislem -->
@@ -291,7 +306,7 @@
               <?php echo $shortDesc; ?>
             </h5>
             <p>
-              Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Sed convallis magna eu sem. Aenean vel massa quis mauris vehicula lacinia. Etiam posuere lacus quis dolor. Mauris elementum mauris vitae tortor. Morbi imperdiet, mauris ac auctor dictum, nisl ligula egestas nulla, et sollicitudin sem purus in lacus. Etiam commodo dui eget wisi. Vestibulum fermentum tortor id mi. Nulla accumsan, elit sit amet varius semper, nulla mauris mollis quam, tempor suscipit diam nulla vel leo. Fusce tellus. Integer tempor. Nullam eget nisl. Maecenas libero. Pellentesque ipsum.
+              <?php echo $longDesc; ?>
             </p>
           </div>
         </div>
@@ -301,16 +316,76 @@
         <div class="card-header">
           <a class="collapsed btn" data-bs-toggle="collapse" href="#collapseTwo">
             <h4>
-              Recenze
+              Všechny recenze
             </h4>
           </a>
         </div>
         <div id="collapseTwo" class="collapse" data-bs-parent="#accordion">
           <div class="card-body">
+
+            <!-- Rozbalovaci formular pro napsani nove recenze -->
+            <button type="button" class="btn btn-secondary model-main-content-form-collapse-btn" data-bs-toggle="collapse" data-bs-target="#review-form">
+              Napsat recenzi
+            </button>
+
+            <?php
+            if($dbconnection->isUserLoggedIn()) {
+            ?>
+            <!-- Prihlaseny uzivatel vidi formular pro recenzi -->
+            <form action="" method="post" id="review-form" class="model-main-content-form collapse">
+              <label for="range-rating" class="form-label">Celkové hodnocení</label>
+              <output id="star-rating">
+                5
+              </output>
+              <i class="fas fa-star"></i>
+              <input type="range" id="range-rating" name="rating" class="form-range" value="5" min="0" max="5" oninput="document.getElementById('star-rating').value = this.value">
+
+              <label for="review-text">Zde napište text recenze:</label>
+              <textarea class="form-control" rows="5" id="review-text" name="text"></textarea>
+
+              <button type="submit" class="model-main-content-form-submit-btn" name="review" value="create">
+                Potvrdit recenzi
+              </button>
+            </form>
+
+            <?php
+              }
+              else {
+            ?>
+
+            <!-- Pro neprihlasene uzivatele - nemohou napsat recenzi-->
+            <div>
+              Pro napsání recenze se nejdříve musíte
+              <a href="" data-bs-toggle="offcanvas" data-bs-target="#demo-sidebar">
+                přihlásit
+              </a>
+            </div>
+
+            <?php
+              }
+            ?>
+
+            <hr>
             <?php
               $allReviews = $dbconnection->getReviewsByModelNumber($modelNumber);
+              $count = 0;
+              $averageRating = 0;
+
+              foreach($allReviews as $review) {
+                $averageRating += $review["hodnoceni"];
+                $count++;
+              }
+
+              $averageRating /= $count;
+
               if(count($allReviews) > 0) {
             ?>
+            <p class="model-main-content-rating">
+              Průměrné hodnocení:
+              <?php echo number_format((float)$averageRating, 1, '.', ''); ?>
+              / 5
+              <i class="fas fa-star"></i>
+            </p>
             <table class="table table-hover table-striped">
               <thead class="table-danger">
               <tr>
@@ -324,11 +399,15 @@
 
               <?php
                 foreach($allReviews as $review) {
-                $user = $dbconnection->getUserByNumber($review["c_uzivatele_fk"]);
-                $firstName = $user["jmeno"];
-                $datetime = $review["datum_cas"];
-                $rating = $review["hodnoceni"];
-                $text = $review["text"];
+                  $user = $dbconnection->getUserByNumber($review["c_uzivatele_fk"]);
+                  $firstName = $user["jmeno"];
+                  $datetime = $review["datum_cas"];
+                  $rating = $review["hodnoceni"];
+                  $text = $review["text"];
+
+                  if($text == null) {
+                    $text = "";
+                  }
               ?>
                 <tr>
                   <td><?php echo $firstName; ?></td>
@@ -360,6 +439,7 @@
             <?php
               }
             ?>
+
           </div>
         </div>
       </div>

@@ -343,6 +343,34 @@ body {
   color: indianred;
 }
 
+.model-main-content-rating {
+  color: rgb(43, 89, 136);
+  font-weight: bold;
+  font-size: large;
+}
+
+.model-main-content-form {
+  padding: 10px 0 10px 0;
+}
+
+.model-main-content-form-submit-btn {
+  margin: 10px 0 15px 0;
+  background-color: aquamarine;
+  border: rgb(33, 37, 41) solid 2px;
+  padding: 5px 10px 5px 10px;
+  border-radius: 10px;
+}
+
+.model-main-content-form-submit-btn:hover {
+  background-color: black;
+  color: white;
+  transition: 0.5s ease;
+}
+
+.model-main-content-form-collapse-btn {
+  margin: 10px 0 15px 0;
+}
+
 /* CSS pro stranku s obsahem kosiku */
 #cart-main-content {
   background-color: white;
