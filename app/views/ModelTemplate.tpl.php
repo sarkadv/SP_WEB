@@ -194,12 +194,15 @@ $templateBasics->getLoginSidebar();
             $count = 0;
             $averageRating = 0;
 
-            foreach($reviews as $review) {
-              $averageRating += $review["rating"];
-              $count++;
-            }
+            if(count($reviews) > 0) {
 
-            $averageRating /= $count;
+              foreach($reviews as $review) {
+                $averageRating += $review["rating"];
+                $count++;
+              }
+
+              $averageRating /= $count;
+            }
 
             if(count($reviews) > 0) {
               ?>
