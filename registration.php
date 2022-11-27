@@ -172,7 +172,7 @@
     </div>
   </div>
 
-  <!-- Stred stranky - formular -->
+  <!-- Stred stranky - formular pro registraci -->
   <div class="row" id="registration-main-content">
     <h2 class="registration-main-heading">
       Registrace

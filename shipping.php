@@ -158,7 +158,7 @@
     </div>
   </div>
 
-  <!-- Stred stranky - obsah kosiku -->
+  <!-- Stred stranky - formular pro adresu -->
   <div class="row" id="shipping-main-content">
     <h2 class="shipping-main-heading">
       Doručovací údaje

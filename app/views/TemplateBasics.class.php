@@ -163,7 +163,7 @@ class TemplateBasics
           <hr>
           <p>
             Ještě u nás nemáte účet?
-            <a href="/index.php?page=registration">
+            <a href="index.php?page=registration">
               Zaregistrujte se.
             </a>
           </p>

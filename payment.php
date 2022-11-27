@@ -172,7 +172,7 @@
     </div>
   </div>
 
-  <!-- Stred stranky - obsah kosiku -->
+  <!-- Stred stranky - formular pro placeni -->
   <div class="row" id="payment-main-content">
     <h2 class="payment-main-heading">
       Platba

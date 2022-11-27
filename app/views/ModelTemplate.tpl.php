@@ -274,7 +274,8 @@ $templateBasics->getLoginSidebar();
 
     <script>
       function zoom(e){
-        var zoomer = e.currentTarget;
+        let x, y, offsetX, offsetY;
+        let zoomer = e.currentTarget;
         e.offsetX ? offsetX = e.offsetX : offsetX = e.touches[0].pageX;
         e.offsetY ? offsetY = e.offsetY : offsetY = e.touches[0].pageY;
         x = offsetX/zoomer.offsetWidth*100;
