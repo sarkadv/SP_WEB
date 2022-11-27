@@ -1,6 +1,6 @@
 <?php
 
-  require_once "php/DatabaseConnectionClass.php";
+  require_once "php/DatabaseConnection.class.php";
   $dbconnection = new DatabaseConnection();
 
   require_once "php/HireUFOClass.php";
@@ -73,7 +73,7 @@
         <div class="collapse navbar-collapse" id="mynavbar">
           <ul class="navbar-nav me-auto">
             <li class="nav-item">
-              <a class="nav-link" href="index.php">
+              <a class="nav-link" href="introduction.php">
                 <i class="fas fa-home"></i>
               </a>
             </li>

@@ -2,7 +2,7 @@
 
 class DatabaseConnection
 {
-  private $conn;
+  private PDO $conn;
 
   /* Pro prihlasovani / odhlasovani uzivatele */
   private Session $session;
@@ -13,14 +13,14 @@ class DatabaseConnection
   private const KEY_USER = "user";
 
   public function __construct () {
-    require_once "databaseSettings.inc.php";
+    require_once "settings.inc.php";
     $this->conn = new PDO("mysql:host=".DATABASE_SERVER.";dbname=".DATABASE_NAME, DATABASE_USER, DATABASE_PASSWORD);
     $this->conn->exec("set names utf8");
 
-    require_once "php/SessionClass.php";
+    require_once CONTROLLERS_PATH."Session.class.php";
     $this->session = new Session();
 
-    require_once "php/HireUFOClass.php";
+    require_once CONTROLLERS_PATH."HireUFOClass.php";
     $this->hireUFO = new HireUFO();
   }
 
@@ -356,9 +356,7 @@ class DatabaseConnection
   public function getAllUFOModels():array {
     $query = "SELECT * FROM ".TABLE_MODEL;
 
-    $result = $this->query($query);
-
-    return $result;
+    return $this->query($query);
   }
 
   public function getNumberOfUFOsAvailableByModelNumber(int $modelNumber):int {
@@ -525,9 +523,7 @@ class DatabaseConnection
   public function getReviewsByModelNumber($modelNumber):array {
     $query = "SELECT * FROM ".TABLE_REVIEW." WHERE c_modelu_fk='$modelNumber'";
 
-    $result = $this->query($query);
-
-    return $result;
+    return $this->query($query);
 
   }
 

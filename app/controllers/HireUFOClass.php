@@ -21,7 +21,7 @@ class HireUFO
   private const KEY_INDEX = "index";
 
   public function __construct() {
-    require_once "CookiesClass.php";
+    require_once "Cookies.class.php";
 
     $this->cookie = new Cookies();
   }
