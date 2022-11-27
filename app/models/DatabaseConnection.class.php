@@ -81,7 +81,6 @@ class DatabaseConnection
   }
 
   public function addUser(string $email, string $password1, string $password2, string $name, string $surname, string $rawDate, string $tel, string $city, string $street, string $zip, string $planet):bool {
-    $userNumber = $this->getUserCount() + 1;
     $birthDate = date('Y-m-d', strtotime($rawDate));
 
     if($password1 != $password2) {
@@ -90,17 +89,17 @@ class DatabaseConnection
 
     // mesto noveho uzivatele jeste neni v tabulce MESTO
     if(!$this->doesCityExist($city)) {
-      $cityNumber = $this->getCityCount() + 1;
-      $query = "INSERT INTO ".TABLE_CITY." (c_mesta_pk, nazev, psc) "."VALUES ('$cityNumber', '$city', '$zip')";
+      $query = "INSERT INTO ".TABLE_CITY." (nazev, psc) "."VALUES ('$city', '$zip')";
       $this->query($query);
 
       if(!$this->doesCityExist($city)) {  // mesto se nepodarilo vlozit
         return false;
       }
 
+      $cityNumber = $this->getCityNumber($city);
+
       // pokud mesto neexistovalo, adresa urcite take neexistuje
-      $adressNumber = $this->getAdressCount() + 1;
-      $query = "INSERT INTO ".TABLE_ADRESS." (c_adresy_pk, ulice, planeta, c_mesta_fk) "."VALUES ('$adressNumber', '$street', '$planet', '$cityNumber')";
+      $query = "INSERT INTO ".TABLE_ADRESS." (ulice, planeta, c_mesta_fk) "."VALUES ('$street', '$planet', '$cityNumber')";
       $this->query($query);
 
       if(!$this->doesAdressExist($city, $street, $planet)) {  // adresu se nepodarilo vlozit
@@ -112,9 +111,8 @@ class DatabaseConnection
 
       // mesto existuje, ale adresa neexistuje
       if(!$this->doesAdressExist($city, $street, $planet)) {
-        $adressNumber = $this->getAdressCount() + 1;
         $cityNumber = $this->getCityNumber($city);
-        $query = "INSERT INTO ".TABLE_ADRESS." (c_adresy_pk, ulice, planeta, c_mesta_fk) "."VALUES ('$adressNumber', '$street', '$planet', '$cityNumber')";
+        $query = "INSERT INTO ".TABLE_ADRESS." (ulice, planeta, c_mesta_fk) "."VALUES ('$street', '$planet', '$cityNumber')";
         $this->query($query);
 
         if(!$this->doesAdressExist($city, $street, $planet)) {  // adresu se nepodarilo vlozit
@@ -125,8 +123,8 @@ class DatabaseConnection
 
     $adressNumber = $this->getAdressNumber($city, $street, $planet);
 
-    $query = "INSERT INTO ".TABLE_USER." (c_uzivatele_pk, email, heslo, jmeno, prijmeni, d_narozeni, tel_cislo, c_prava_fk, c_adresy_fk)"
-    ." VALUES ('$userNumber', '$email', '$password1', '$name', '$surname', '$birthDate', '$tel', '3', '$adressNumber')";
+    $query = "INSERT INTO ".TABLE_USER." (email, heslo, jmeno, prijmeni, d_narozeni, tel_cislo, c_prava_fk, c_adresy_fk)"
+    ." VALUES ('$email', '$password1', '$name', '$surname', '$birthDate', '$tel', '3', '$adressNumber')";
 
     $this->query($query);
 
@@ -137,14 +135,6 @@ class DatabaseConnection
       $this->loginUser($email, $password1);
       return true;
     }
-  }
-
-  public function getUserCount():int {
-    $query = "SELECT * FROM ".TABLE_USER;
-
-    $result = $this->query($query);
-
-    return count($result);
   }
 
   public function getCityCount():int {
@@ -385,8 +375,10 @@ class DatabaseConnection
     return $count;
   }
 
-  /*
+  /**
    * Vrati primarni klic prvniho dostupneho UFO podle modelu.
+   * @param int $modelNumber    cislo modelu UFO
+   * @return mixed|null         primarni klic UFO / null
    */
   public function getAvailableUFONumberByModelNumber(int $modelNumber) {
     $query = "SELECT * FROM ".TABLE_UFO." WHERE c_modelu_fk='$modelNumber'";
@@ -425,9 +417,11 @@ class DatabaseConnection
     return false;
   }
 
-  /*
+  /**
    * Metoda vytvori novou vypujcku a vlozi ji do tabulky VYPUJCKA.
    * Vraci primarni klice vsech vytvorenych vypujcek.
+   * @param string $accountNumber   cislo uctu pro zaplaceni vypujcky
+   * @return array                  pole primarnich klicu vytvorenych vypujcek
    */
   public function createNewHire(string $accountNumber):array {
     $allUFOS = $this->hireUFO->getAllSavedUFOs();
@@ -469,8 +463,7 @@ class DatabaseConnection
       $zip = $adress["zip"];
 
       if(!$this->doesCityExist($cityName)) { // mesto jeste neexistuje -> vytvorime ho
-        $cityNumber = $this->getCityCount() + 1;
-        $queryCity = "INSERT INTO ".TABLE_CITY." (c_mesta_pk, nazev, psc)"." VALUES ('$cityNumber', '$cityName', '$zip')";
+        $queryCity = "INSERT INTO ".TABLE_CITY." (nazev, psc)"." VALUES ('$cityName', '$zip')";
         $this->query($queryCity);
 
         if(!$this->doesCityExist($cityName)) {  // nepodarilo se vlozit nove mesto
@@ -478,8 +471,8 @@ class DatabaseConnection
         }
 
         // mesto neexistovalo, proto adresa take urcite neexistuje
-        $adressNumber = $this->getAdressCount() + 1;
-        $queryAdress = "INSERT INTO ".TABLE_ADRESS." (c_adresy_pk, ulice, planeta, c_mesta_fk)"." VALUES ('$adressNumber', '$street', '$planet', '$cityNumber')";
+        $cityNumber = $this->getCityNumber($cityName);
+        $queryAdress = "INSERT INTO ".TABLE_ADRESS." (ulice, planeta, c_mesta_fk)"." VALUES ('$street', '$planet', '$cityNumber')";
         $this->query($queryAdress);
 
         if(!$this->doesAdressExist($cityName, $street, $planet)) {  // nepodarilo se vlozit novou adresu
@@ -488,8 +481,7 @@ class DatabaseConnection
       }
       else if(!$this->doesAdressExist($cityName, $street, $planet)) {   // mesto existuje, ale adresa ne
         $cityNumber = $this->getCityNumber($cityName);
-        $adressNumber = $this->getAdressCount() + 1;
-        $queryAdress = "INSERT INTO ".TABLE_ADRESS." (c_adresy_pk, ulice, planeta, c_mesta_fk)"." VALUES ('$adressNumber', '$street', '$planet', '$cityNumber')";
+        $queryAdress = "INSERT INTO ".TABLE_ADRESS." (ulice, planeta, c_mesta_fk)"." VALUES ('$street', '$planet', '$cityNumber')";
         $this->query($queryAdress);
 
         if(!$this->doesAdressExist($cityName, $street, $planet)) {  // nepodarilo se vlozit novou adresu
@@ -497,20 +489,21 @@ class DatabaseConnection
         }
       }
 
-      $hireNumber = $this->getHireCount() + 1;
       $adressNumber = $this->getAdressNumber($cityName, $street, $planet);
 
       // vytvorime novy radek v tabulce VYPUJCKA
-      $queryHire = "INSERT INTO ".TABLE_HIRE." (c_vypujcky_pk, d_vypujceni, d_vraceni, c_platebniho_uctu, c_uzivatele_fk, c_ufo_fk, c_adresy_fk)"
-        ." VALUES ('$hireNumber', '$dateNow', '$dateEnd', '$accountNumber', '$userNumber', '$availableUFONumber', '$adressNumber')";
+      $queryHire = "INSERT INTO ".TABLE_HIRE." (d_vypujceni, d_vraceni, c_platebniho_uctu, c_uzivatele_fk, c_ufo_fk, c_adresy_fk)"
+        ." VALUES ('$dateNow', '$dateEnd', '$accountNumber', '$userNumber', '$availableUFONumber', '$adressNumber')";
 
       $this->query($queryHire);
 
-      if(!$this->doesHireExist($hireNumber)) {  // nepodarilo se vlozit novou vypujcku
+      $id = $this->conn->lastInsertId();   // primarni klic nove vypujcky
+
+      if(!$this->doesHireExist($id)) {  // nepodarilo se vlozit novou vypujcku
         return [];
       }
 
-      array_push($hireResult, $hireNumber);
+      array_push($hireResult, $id);
 
       $i++;
     }
@@ -530,7 +523,6 @@ class DatabaseConnection
   public function createNewReview(int $rating, string $text, int $modelNumber):bool {
     $user = $this->getLoggedUser();
     $userNumber = $user["c_uzivatele_pk"];
-    $reviewNumber = $this->getReviewCount() + 1;
     $datetime = date("Y-m-d H:i:s");
 
     if($rating < 0 || $rating > 5) {
@@ -541,11 +533,13 @@ class DatabaseConnection
       $text = "";
     }
 
-    $query = "INSERT INTO ".TABLE_REVIEW." (c_recenze_pk, text, hodnoceni, datum_cas, c_modelu_fk, c_uzivatele_fk)"
-      ." VALUES ('$reviewNumber', '$text', '$rating', '$datetime', '$modelNumber', '$userNumber')";
+    $query = "INSERT INTO ".TABLE_REVIEW." (text, hodnoceni, datum_cas, c_modelu_fk, c_uzivatele_fk)"
+      ." VALUES ('$text', '$rating', '$datetime', '$modelNumber', '$userNumber')";
     $this->query($query);
 
-    if(!$this->doesReviewExist($reviewNumber)) {
+    $id = $this->conn->lastInsertId();    // primarni klic nove recenze
+
+    if(!$this->doesReviewExist($id)) {
       return false;
     }
 

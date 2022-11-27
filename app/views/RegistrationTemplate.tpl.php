@@ -170,7 +170,7 @@ $templateBasics->getLoginSidebar();
       <div class="row">
         <div class="col-12 registration-main-item">
           <p>
-            Přihlášený uživatel se nemůže znovu registrovat.
+            Byli jste úspěšně zaregistrováni.
           </p>
         </div>
       </div>
