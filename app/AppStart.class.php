@@ -8,8 +8,11 @@ class AppStart
 
   public function start() {
     if(isset($_GET["page"])) {
-      if(array_key_exists($_GET["page"], PAGES)) {
-        $pageName = $_GET["page"];
+      $value = $_GET["page"];
+      $value = preg_replace('/[0-9]+/', '', $value);
+
+      if(array_key_exists($value, PAGES)) {
+        $pageName = $value;
       }
       else {
         $pageName = DEFAULT_PAGE_KEY;

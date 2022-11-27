@@ -20,7 +20,7 @@ class DatabaseConnection
     require_once CONTROLLERS_PATH."Session.class.php";
     $this->session = new Session();
 
-    require_once CONTROLLERS_PATH."HireUFOClass.php";
+    require_once CONTROLLERS_PATH."HireUFO.class.php";
     $this->hireUFO = new HireUFO();
   }
 

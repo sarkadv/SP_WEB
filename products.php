@@ -3,7 +3,7 @@
   require_once "php/DatabaseConnection.class.php";
   $dbconnection = new DatabaseConnection();
 
-  require_once "php/HireUFOClass.php";
+  require_once "php/HireUFO.class.php";
   $hireUFO = new HireUFO;
 
   if(isset($_POST["action"])) {

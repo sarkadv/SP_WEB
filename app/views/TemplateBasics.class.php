@@ -65,15 +65,12 @@ class TemplateBasics
           <div class="collapse navbar-collapse" id="mynavbar">
             <ul class="navbar-nav me-auto">
               <li class="nav-item">
-                <a class="nav-link" href="/index.php?page=introduction">
+                <a class="nav-link" href="index.php?page=introduction">
                   <i class="fas fa-home"></i>
                 </a>
               </li>
               <li class="nav-item">
-                <a class="nav-link" href="/index.php?page=products">Nabídka</a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link" href="#">O Nás</a>
+                <a class="nav-link" href="index.php?page=products">Nabídka</a>
               </li>
             </ul>
             <div class="btn-group">

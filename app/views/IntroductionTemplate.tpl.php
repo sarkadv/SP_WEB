@@ -12,8 +12,6 @@ $templateBasics->getHeader($templateData["title"]);
 $templateBasics->getMenu($templateData["user_logged"]);
 $templateBasics->getLoginSidebar();
 
-
-
 ?>
 
   <!-- Stred stranky - seznam a tabulka-->
