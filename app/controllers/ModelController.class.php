@@ -51,10 +51,9 @@ class ModelController implements IController
 
     $UFOModel = null;
 
-    if(isset($_GET["page"])) {
-      $modelNumber = (int) filter_var($_GET["page"], FILTER_SANITIZE_NUMBER_INT);
-      if(!empty($modelNumber) && (ctype_digit($modelNumber) || is_int($modelNumber))) {
-        $UFOModel = $this->dbconnection->getUFOModelByNumber($modelNumber);
+    if(isset($_GET["examine"])) {
+      if((ctype_digit($_GET["examine"]) || is_int($_GET["examine"]))) {
+        $UFOModel = $this->dbconnection->getUFOModelByNumber($_GET["examine"]);
       }
     }
 

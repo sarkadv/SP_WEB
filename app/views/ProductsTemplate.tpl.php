@@ -39,9 +39,10 @@ $templateBasics->getLoginSidebar();
           <div class='card-body products-main-card'>
             <!-- Formular pro rozkliknuti stranky vozidla -->
             <form action='index.php?' method='get'>
-              <button type='submit' name='page' value='model<?php echo $modelNumber;?>' class='products-main-name-btn'>
+              <button type='submit' name='page' value='model' class='products-main-name-btn'>
                 <h4 class='card-title'><?php echo $name;?></h4>
               </button>
+              <input type="hidden" name="examine" value='<?php echo $modelNumber;?>'>
             </form>
             <p class='card-text'><?php echo $description;?></p>
 
