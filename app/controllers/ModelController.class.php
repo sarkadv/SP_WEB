@@ -99,6 +99,13 @@ class ModelController implements IController
       $templateData["reviews"] = $reviewsInfo;
     }
 
+    if($templateData["user_logged"]) {
+      $user = $this->dbconnection->getLoggedUser();
+      $userNumber = $user["c_uzivatele_pk"];
+      $templateData["rewrite"] = $this->dbconnection->doesReviewByThisUserExist($userNumber, $modelNumber);
+      $templateData["can_review"] = $this->dbconnection->hasUserEverHiredThisModel($userNumber, $modelNumber);
+    }
+
     // odchycovani vystupu (html kodu) do bufferu
     ob_start();
 

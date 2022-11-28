@@ -313,6 +313,19 @@ class DatabaseConnection
     }
   }
 
+  public function getReviewByNumber($number) {
+    $query = "SELECT * FROM ".TABLE_REVIEW." WHERE c_recenze_pk='$number'";
+
+    $result = $this->query($query);
+
+    if(count($result) > 0) {
+      return $result[0];
+    }
+    else {
+      return null;
+    }
+  }
+
   public function getCityNumber($city) {
     $query = "SELECT * FROM ".TABLE_CITY." WHERE nazev='$city'";
 
@@ -544,6 +557,71 @@ class DatabaseConnection
     }
 
     return true;
+  }
+
+  /**
+   * Metoda zjisti, zda uz uzivatel napsat recenzi na tento model.
+   * @param int $userNumber       primarni klic uzivatele
+   * @param int $modelNumber      primarni klic modelu
+   * @return bool             true - uzivatel uz napsal na tento model recenzi / false jinak
+   */
+  public function doesReviewByThisUserExist($userNumber, $modelNumber):bool {
+      $query = "SELECT * FROM ".TABLE_REVIEW." WHERE c_uzivatele_fk=".$userNumber." AND c_modelu_fk=".$modelNumber;
+
+      $result = $this->query($query);
+
+      if(count($result) > 0) {
+        return true;
+      }
+      else {
+        return false;
+      }
+  }
+
+  /**
+   * Metoda zjisti, zda si uzivatel nekdy v minulosti / pritomnosti tento model vypujcil.
+   * @param int $userNumber     primarni klic uzivatele
+   * @param int $modelNumber    primarni klic modelu
+   * @return bool               true - uzivatel si nekdy model zapujcil / false jinak
+   */
+  public function hasUserEverHiredThisModel($userNumber, $modelNumber):bool {
+
+    $query = "SELECT * FROM ".TABLE_HIRE." INNER JOIN ".TABLE_UFO." ON ".TABLE_HIRE.".c_ufo_fk = ".TABLE_UFO.".c_ufo_pk WHERE c_uzivatele_fk=".$userNumber." AND c_modelu_fk=".$modelNumber;
+
+    $result = $this->query($query);
+
+    if(count($result) > 0) {
+      return true;
+    }
+    else {
+      return false;
+    }
+  }
+
+  /**
+   * Metoda ziska urcity pocet nejnovejsich recenzi podle parametru.
+   * @param int $numberOfReviews    kolik nejnovejsich recenzi chceme
+   * @return array                  pole nejnovejsich recenzi
+   */
+  public function getNewestReviews(int $numberOfReviews):array {
+    $query = "SELECT c_recenze_pk FROM ".TABLE_REVIEW;
+    $primaryKeys = $this->query($query);
+
+    $i = 0;
+    foreach($primaryKeys as $row) {
+      $primaryKeys[$i] = $row["c_recenze_pk"];
+      $i++;
+    }
+    sort($primaryKeys, SORT_NUMERIC);   // seradime primarni klice recenzi od nejnizsiho do nejvyssiho
+    $count = count($primaryKeys);
+
+    $result = array();    // do vysledku dame nekolik nejnovejsich recenzi
+    for($i = 0; $i < $numberOfReviews && $i < $count; $i++) {
+      $review = $this->getReviewByNumber($primaryKeys[$count - $i - 1]);
+      array_push($result, $review);
+    }
+
+    return $result;
 
   }
 }

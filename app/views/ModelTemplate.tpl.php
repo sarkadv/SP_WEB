@@ -152,7 +152,7 @@ $templateBasics->getLoginSidebar();
             </button>
 
             <?php
-            if($templateData["user_logged"]) {
+            if($templateData["user_logged"] && $templateData["can_review"]) {   // uzivatel je prihlaseny a model si nekdy vypujcil
               ?>
               <!-- Prihlaseny uzivatel vidi formular pro recenzi -->
               <form action="" method="post" id="review-form" class="model-main-content-form collapse">
@@ -172,8 +172,26 @@ $templateBasics->getLoginSidebar();
               </form>
 
               <?php
-            }
-            else {
+                if($templateData["rewrite"]) {    // uzivatel uz recenzi na tento model napsal
+              ?>
+
+                <div>
+                  Na tento model už jste recenzi napsali. Napsáním nové recenze tu starou přepíšete.
+                </div>
+
+              <?php
+                }
+              }
+              else if ($templateData["user_logged"] && !$templateData["can_review"]) {  // uzivatel si model jeste nevypujcil
+              ?>
+
+                <div>
+                  Tento model jste si nikdy nevypůjčili, a nemůžete na něj tedy napsat recenzi.
+                </div>
+
+              <?php
+              }
+              else {  // uzivatel neni prihlaseny
               ?>
 
               <!-- Pro neprihlasene uzivatele - nemohou napsat recenzi-->
@@ -184,7 +202,7 @@ $templateBasics->getLoginSidebar();
                 </a>
               </div>
 
-              <?php
+            <?php
             }
             ?>
 

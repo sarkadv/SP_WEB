@@ -46,6 +46,23 @@ class IntroductionController implements IController
     $templateData["ufo_2"] = $this->dbconnection->getUFOModelByNumber(2);
     $templateData["ufo_3"] = $this->dbconnection->getUFOModelByNumber(3);
 
+    $recentReviews = $this->dbconnection->getNewestReviews(3);
+    $reviewsInfo = array();
+    $i = 0;
+    foreach($recentReviews as $review) {
+      $user = $this->dbconnection->getUserByNumber($review["c_uzivatele_fk"]);
+      $model = $this->dbconnection->getUFOModelByNumber($review["c_modelu_fk"]);
+      $reviewsInfo[$i] = array(
+        "username" => $user["jmeno"],
+        "datetime" => $review["datum_cas"],
+        "rating" => $review["hodnoceni"],
+        "model" => $model["nazev"],
+      );
+
+      $i++;
+    }
+    $templateData["reviews"] = $reviewsInfo;
+
     // odchycovani vystupu (html kodu) do bufferu
     ob_start();
 

@@ -58,43 +58,40 @@ $templateBasics->getLoginSidebar();
         <thead class="table-danger">
         <tr>
           <th>Uživatel</th>
+          <th>Datum</th>
           <th>Hodnocení</th>
-          <th>Text recenze</th>
+          <th>Model</th>
         </tr>
         </thead>
         <tbody>
-        <tr>
-          <td>John</td>
-          <td>
-            <i class="fas fa-star home-main-table-stars"></i>
-            <i class="fas fa-star home-main-table-stars"></i>
-            <i class="fas fa-star home-main-table-stars"></i>
-            <i class="fas fa-star home-main-table-stars"></i>
-            <i class="fas fa-star home-main-table-stars"></i>
-          </td>
-          <td class="home-main-table-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</td>
-        </tr>
-        <tr>
-          <td>Mary</td>
-          <td>
-            <i class="fas fa-star home-main-table-stars"></i>
-            <i class="fas fa-star home-main-table-stars"></i>
-            <i class="fas fa-star home-main-table-stars"></i>
-            <i class="fas fa-star home-main-table-stars"></i>
-          </td>
-          <td class="home-main-table-text">Maecenas convallis lectus pretium lectus luctus suscipit.</td>
-        </tr>
-        <tr>
-          <td>July</td>
-          <td>
-            <i class="fas fa-star home-main-table-stars"></i>
-            <i class="fas fa-star home-main-table-stars"></i>
-            <i class="fas fa-star home-main-table-stars"></i>
-            <i class="fas fa-star home-main-table-stars"></i>
-            <i class="fas fa-star home-main-table-stars"></i>
-          </td>
-          <td class="home-main-table-text">Donec facilisis egestas enim et maximus.</td>
-        </tr>
+
+        <?php
+        $reviews = $templateData["reviews"];
+
+        foreach($reviews as $review) {
+          $firstName = $review["username"];
+          $datetime = $review["datetime"];
+          $rating = $review["rating"];
+          $model = $review["model"];
+
+          ?>
+          <tr>
+            <td><?php echo $firstName; ?></td>
+            <td><?php echo $datetime; ?></td>
+            <td>
+              <?php
+              for($i = 0; $i < $rating; $i++) {
+                ?>
+                <i class="fas fa-star home-main-table-stars"></i>
+                <?php
+              }
+              ?>
+            </td>
+            <td class="home-main-table-text"><?php echo $model; ?></td>
+          </tr>
+          <?php
+        }
+        ?>
         </tbody>
       </table>
     </div>
