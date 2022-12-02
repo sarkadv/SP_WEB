@@ -22,8 +22,8 @@ class TemplateBasics
       <head>
         <meta charset="utf-8">
         <title><?php echo $title?></title>
-        <link rel="icon" type="image/x-icon" href="/img/logo.png">
-        <meta name="description" content="">
+        <link rel="icon" type="image/x-icon" href="img/logo.png">
+        <meta name="description" content="Půjčovna UFO">
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
         <link rel="stylesheet" href="css/main.css">
@@ -92,7 +92,7 @@ class TemplateBasics
               else {
                 ?>
                 <!-- Pro prihlasene uzivatele -->
-                <button type="button" id="btn-account" onclick="location.href='#'">
+                <button type="button" id="btn-account" onclick="location.href='index.php?page=account'">
                   <i class="fas fa-user"></i>
                   Můj účet
                 </button>

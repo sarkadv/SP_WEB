@@ -38,13 +38,18 @@ class DatabaseConnection
   }
 
   public function loginUser(string $email, string $password):bool {
-    $query = "SELECT * FROM ".TABLE_USER." WHERE email='$email' AND heslo='$password'";
+    $query = "SELECT * FROM ".TABLE_USER." WHERE email='$email'";
 
     $result = $this->query($query);
 
     if(count($result) == 1) {
-      $this->session->setSession(self::KEY_USER, $result[0]["email"]);
-      return true;
+      if(password_verify($password, $result[0]["heslo"])) {
+        $this->session->setSession(self::KEY_USER, $result[0]["email"]);
+        return true;
+      }
+      else {
+        return false;
+      }
     }
     else {
       return false;
@@ -123,8 +128,10 @@ class DatabaseConnection
 
     $adressNumber = $this->getAdressNumber($city, $street, $planet);
 
+    $encryptedPassword = password_hash($password1, PASSWORD_DEFAULT);
+
     $query = "INSERT INTO ".TABLE_USER." (email, heslo, jmeno, prijmeni, d_narozeni, tel_cislo, c_prava_fk, c_adresy_fk)"
-    ." VALUES ('$email', '$password1', '$name', '$surname', '$birthDate', '$tel', '3', '$adressNumber')";
+    ." VALUES ('$email', '$encryptedPassword', '$name', '$surname', '$birthDate', '$tel', '3', '$adressNumber')";
 
     $this->query($query);
 
@@ -137,36 +144,60 @@ class DatabaseConnection
     }
   }
 
-  public function getCityCount():int {
-    $query = "SELECT * FROM ".TABLE_CITY;
+  public function modifyUser(string $password1, string $password2, string $name, string $surname, string $rawDate, string $tel, string $city, string $street, string $zip, string $planet):bool {
+    $user = $this->getLoggedUser();
+    $birthDate = date('Y-m-d', strtotime($rawDate));
 
-    $result = $this->query($query);
+    if($password1 != $password2) {
+      return false;
+    }
 
-    return count($result);
-  }
+    // mesto uzivatele jeste neni v tabulce MESTO
+    if(!$this->doesCityExist($city)) {
+      $query = "INSERT INTO ".TABLE_CITY." (nazev, psc) "."VALUES ('$city', '$zip')";
+      $this->query($query);
 
-  public function getAdressCount():int {
-    $query = "SELECT * FROM ".TABLE_ADRESS;
+      if(!$this->doesCityExist($city)) {  // mesto se nepodarilo vlozit
+        return false;
+      }
 
-    $result = $this->query($query);
+      $cityNumber = $this->getCityNumber($city);
 
-    return count($result);
-  }
+      // pokud mesto neexistovalo, adresa urcite take neexistuje
+      $query = "INSERT INTO ".TABLE_ADRESS." (ulice, planeta, c_mesta_fk) "."VALUES ('$street', '$planet', '$cityNumber')";
+      $this->query($query);
 
-  public function getHireCount():int {
-    $query = "SELECT * FROM ".TABLE_HIRE;
+      if(!$this->doesAdressExist($city, $street, $planet)) {  // adresu se nepodarilo vlozit
+        return false;
+      }
+    }
+    else {
+      // mesto uzivatele je v tabulace MESTO
 
-    $result = $this->query($query);
+      // mesto existuje, ale adresa neexistuje
+      if(!$this->doesAdressExist($city, $street, $planet)) {
+        $cityNumber = $this->getCityNumber($city);
+        $query = "INSERT INTO ".TABLE_ADRESS." (ulice, planeta, c_mesta_fk) "."VALUES ('$street', '$planet', '$cityNumber')";
+        $this->query($query);
 
-    return count($result);
-  }
+        if(!$this->doesAdressExist($city, $street, $planet)) {  // adresu se nepodarilo vlozit
+          return false;
+        }
+      }
+    }
 
-  public function getReviewCount():int {
-    $query = "SELECT * FROM ".TABLE_REVIEW;
+    $adressNumber = $this->getAdressNumber($city, $street, $planet);
 
-    $result = $this->query($query);
+    $encryptedPassword = password_hash($password1, PASSWORD_DEFAULT);
 
-    return count($result);
+    $query = "UPDATE ".TABLE_USER." SET heslo='".$encryptedPassword."', jmeno='".$name."', prijmeni='".$surname."', d_narozeni='".$birthDate
+      ."', tel_cislo='".$tel."', c_adresy_fk='".$adressNumber."' WHERE c_uzivatele_pk=".$user["c_uzivatele_pk"];
+
+    echo $query;
+
+    $this->query($query);
+
+    return true;
   }
 
   public function doesUserExist(string $email):bool {
@@ -536,14 +567,21 @@ class DatabaseConnection
   public function createNewReview(int $rating, string $text, int $modelNumber):bool {
     $user = $this->getLoggedUser();
     $userNumber = $user["c_uzivatele_pk"];
+
     $datetime = date("Y-m-d H:i:s");
 
-    if($rating < 0 || $rating > 5) {
+    if($rating < 1 || $rating > 5) {
       return false;
     }
 
     if($text == null) {
       $text = "";
+    }
+
+    if($this->doesReviewByThisUserExist($user["c_uzivatele_pk"], $modelNumber)) {
+      // smazeme starou recenzi
+      $query = "DELETE FROM ".TABLE_REVIEW." WHERE c_uzivatele_fk=".$userNumber." AND c_modelu_fk=".$modelNumber;
+      $this->query($query);
     }
 
     $query = "INSERT INTO ".TABLE_REVIEW." (text, hodnoceni, datum_cas, c_modelu_fk, c_uzivatele_fk)"
@@ -560,7 +598,7 @@ class DatabaseConnection
   }
 
   /**
-   * Metoda zjisti, zda uz uzivatel napsat recenzi na tento model.
+   * Metoda zjisti, zda uz uzivatel napsal recenzi na tento model.
    * @param int $userNumber       primarni klic uzivatele
    * @param int $modelNumber      primarni klic modelu
    * @return bool             true - uzivatel uz napsal na tento model recenzi / false jinak
@@ -623,5 +661,27 @@ class DatabaseConnection
 
     return $result;
 
+  }
+
+  /**
+   * Metoda vrati vsechny vypujcky, ktere realizoval konkretni uzivatel.
+   * @param int $userNumber   primarni klic uzivatele
+   * @return array            pole vypujcek uzivatele
+   */
+  public function getHiresByUser(int $userNumber):array {
+    $query = "SELECT * FROM ".TABLE_HIRE." WHERE c_uzivatele_fk=".$userNumber;
+
+    return $this->query($query);
+  }
+
+  /**
+   * Metoda vrati vsechny recenze, ktere napsal konkretni uzivatel.
+   * @param int $userNumber   primarni klic uzivatele
+   * @return array            pole recenzi uzivatele
+   */
+  public function getReviewsByUser(int $userNumber):array {
+    $query = "SELECT * FROM ".TABLE_REVIEW." WHERE c_uzivatele_fk=".$userNumber;
+
+    return $this->query($query);
   }
 }

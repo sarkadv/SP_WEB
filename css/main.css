@@ -542,7 +542,46 @@ body {
   color: indianred;
 }
 
+/* CSS pro stranku s informacemi o uctu */
 
+#account-main-content {
+  background-color: white;
+  padding: 30px;
+}
+
+.account-main-heading {
+  margin: 15px 0 15px 0;
+}
+
+.account-main-table-stars {
+  font-size: 10px;
+}
+
+.account-main-table-text {
+  font-size: smaller;
+}
+
+.account-main-content-form {
+  padding: 10px 0 10px 0;
+}
+
+.account-main-content-form-collapse-btn {
+  margin: 10px 0 15px 0;
+}
+
+.account-main-content-form-submit-btn {
+  margin: 10px 0 15px 0;
+  background-color: aquamarine;
+  border: rgb(33, 37, 41) solid 2px;
+  padding: 5px 10px 5px 10px;
+  border-radius: 10px;
+}
+
+.account-main-content-form-submit-btn:hover {
+  background-color: black;
+  color: white;
+  transition: 0.5s ease;
+}
 
 
 

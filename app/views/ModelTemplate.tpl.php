@@ -161,7 +161,7 @@ $templateBasics->getLoginSidebar();
                   5
                 </output>
                 <i class="fas fa-star"></i>
-                <input type="range" id="range-rating" name="rating" class="form-range" value="5" min="0" max="5" oninput="document.getElementById('star-rating').value = this.value">
+                <input type="range" id="range-rating" name="rating" class="form-range" value="5" min="1" max="5" oninput="document.getElementById('star-rating').value = this.value">
 
                 <label for="review-text">Zde napište text recenze:</label>
                 <textarea class="form-control" rows="5" id="review-text" name="text"></textarea>

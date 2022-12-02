@@ -14,33 +14,21 @@ $templateBasics->getLoginSidebar();
 
 ?>
 
-  <!-- Stred stranky - formular pro registraci -->
+  <!-- Stred stranky - formular pro upravu osobnich udaju - stejny jako pri registraci -->
   <div class="row" id="registration-main-content">
     <h2 class="registration-main-heading">
-      Registrace
+      Změna osobních údajů
     </h2>
 
     <?php
-    if(!$templateData["user_logged"]) {
+    if($templateData["user_logged"]) {
       ?>
 
-      <!-- Pro neprihlasene uzivatele -->
+      <!-- Pro prihlasene uzivatele -->
       <form action="" method="POST" oninput="pswdcheck.value=(pswd1.value === pswd2.value)?'':'Hesla se neshodují.'">
         <div class="row">
-          <div class="col-12 registration-main-item">
-            <label for="email" class="form-label">E-mail</label>
-            <div class="input-group">
-              <div class="input-group-text">
-                <i class="fas fa-at"></i>
-              </div>
-              <input type="email" oninput="" class="form-control" id="email" placeholder="ufon@gmail.com" name="email" required>
-            </div>
-          </div>
-        </div>
-
-        <div class="row">
           <div class="col-md-6 registration-main-item">
-            <label for="psw1" class="form-label">Heslo</label>
+            <label for="psw1" class="form-label">Nové heslo</label>
             <div class="input-group">
               <div class="input-group-text">
                 <i class="fas fa-key"></i>
@@ -49,7 +37,7 @@ $templateBasics->getLoginSidebar();
             </div>
           </div>
           <div class="col-md-6 registration-main-item">
-            <label for="pswd2" class="form-label">Heslo podruhé</label>
+            <label for="pswd2" class="form-label">Nové heslo podruhé</label>
             <div class="input-group">
               <div class="input-group-text">
                 <i class="fas fa-lock"></i>
@@ -63,9 +51,6 @@ $templateBasics->getLoginSidebar();
           <output class="registration-main-check" name="pswdcheck" for="pswd1 pswd2"></output>
         </div>
 
-        <h4 class="registration-main-heading-secondary">
-          Osobní údaje
-        </h4>
         <div class="row">
           <div class="col-md-6 registration-main-item">
             <label for="first-name" class="form-label">Jméno</label>
@@ -73,7 +58,7 @@ $templateBasics->getLoginSidebar();
               <div class="input-group-text">
                 <i class="fas fa-user-circle"></i>
               </div>
-              <input type="text" class="form-control" id="first-name" placeholder="Jméno" name="first-name" required>
+              <input type="text" class="form-control" id="first-name" placeholder="Jméno" name="first-name" value="<?php echo $templateData["name"];?>" required>
             </div>
           </div>
           <div class="col-md-6 registration-main-item">
@@ -82,7 +67,7 @@ $templateBasics->getLoginSidebar();
               <div class="input-group-text">
                 <i class="far fa-user-circle"></i>
               </div>
-              <input type="text" class="form-control" id="last-name" placeholder="Příjmení" name="last-name" required>
+              <input type="text" class="form-control" id="last-name" placeholder="Příjmení" name="last-name" value="<?php echo $templateData["surname"];?>" required>
             </div>
           </div>
         </div>
@@ -93,7 +78,7 @@ $templateBasics->getLoginSidebar();
               <div class="input-group-text">
                 <i class="fas fa-birthday-cake"></i>
               </div>
-              <input type="date" class="form-control" id="birth-date" placeholder="Datum narození" name="birth-date" required>
+              <input type="date" class="form-control" id="birth-date" placeholder="Datum narození" name="birth-date" value="<?php echo $templateData["birthday"];?>" required>
             </div>
           </div>
         </div>
@@ -104,7 +89,7 @@ $templateBasics->getLoginSidebar();
               <div class="input-group-text">
                 <i class="fas fa-phone"></i>
               </div>
-              <input type="tel" class="form-control" id="phone" placeholder="628 267 170" name="phone" required>
+              <input type="tel" class="form-control" id="phone" placeholder="628 267 170" name="phone" value="<?php echo $templateData["phone"];?>" required>
             </div>
           </div>
         </div>
@@ -119,7 +104,7 @@ $templateBasics->getLoginSidebar();
               <div class="input-group-text">
                 <i class="fas fa-home"></i>
               </div>
-              <input type="text" class="form-control" id="street" placeholder="Mimozemská 108" name="street" required>
+              <input type="text" class="form-control" id="street" placeholder="Mimozemská 108" name="street" value="<?php echo $templateData["street"];?>" required>
             </div>
           </div>
         </div>
@@ -130,7 +115,7 @@ $templateBasics->getLoginSidebar();
               <div class="input-group-text">
                 <i class="fas fa-city"></i>
               </div>
-              <input type="text" class="form-control" id="city" placeholder="Město" name="city" required>
+              <input type="text" class="form-control" id="city" placeholder="Město" name="city" value="<?php echo $templateData["city"];?>" required>
             </div>
           </div>
           <div class="col-md-4 registration-main-item">
@@ -139,7 +124,7 @@ $templateBasics->getLoginSidebar();
               <div class="input-group-text">
                 <i class="far fa-envelope-open"></i>
               </div>
-              <input type="text" class="form-control" id="zip-code" placeholder="123 45" name="zip-code" required>
+              <input type="text" class="form-control" id="zip-code" placeholder="123 45" name="zip-code" value="<?php echo $templateData["zip"];?>" required>
             </div>
           </div>
           <div class="col-md-4 registration-main-item">
@@ -148,7 +133,7 @@ $templateBasics->getLoginSidebar();
               <div class="input-group-text">
                 <i class="fas fa-globe"></i>
               </div>
-              <input class="form-control" id="planet" list ="planets" placeholder="Domovská planeta" name="planet" required>
+              <input class="form-control" id="planet" list ="planets" placeholder="Domovská planeta" name="planet" value="<?php echo $templateData["planet"];?>" required>
             </div>
             <datalist id="planets">
               <option value="Kepler-452b">
@@ -159,18 +144,18 @@ $templateBasics->getLoginSidebar();
             </datalist>
           </div>
         </div>
-        <button type="submit" name="action" value="register" id="registration-main-btn-submit">Zaregistrovat se</button>
+        <button type="submit" name="action" value="modify" id="registration-main-btn-submit">Upravit osobní údaje</button>
       </form>
 
       <?php
     }
     else {
       ?>
-      <!-- Pro prihlasene uzivatele -->
+      <!-- Pro neprihlasene uzivatele -->
       <div class="row">
         <div class="col-12 registration-main-item">
           <p>
-            Byli jste úspěšně zaregistrováni.
+            Pro úpravu osobních informací se nejdříve musíte přihlásit.
           </p>
         </div>
       </div>
@@ -184,5 +169,6 @@ $templateBasics->getLoginSidebar();
 <?php
 
 $templateBasics->getFooter();
+
 
 

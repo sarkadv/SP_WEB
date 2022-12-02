@@ -4,7 +4,7 @@
 define("DATABASE_SERVER","localhost");
 define("DATABASE_NAME","SP");
 define("DATABASE_USER","root");
-define("DATABASE_PASSWORD","");
+define("DATABASE_PASSWORD","root");
 
 // nazvy tabulek do anglictiny
 define("TABLE_USER","UZIVATEL");
@@ -52,7 +52,7 @@ const PAGES = array(
   ),
 
   "shipping" => array(
-    "title" => "Doručovací údaje",
+    "title" => "Doručovací Údaje",
     "controller_file_name" => "ShippingController.class.php",
     "controller_class_name" => "ShippingController"
   ),
@@ -67,6 +67,18 @@ const PAGES = array(
     "title" => "Objednávka",
     "controller_file_name" => "OrderController.class.php",
     "controller_class_name" => "OrderController"
+  ),
+
+  "account" => array(
+    "title" => "Můj Účet",
+    "controller_file_name" => "AccountController.class.php",
+    "controller_class_name" => "AccountController"
+  ),
+
+  "change_info" => array(
+    "title" => "Změnit osobní údaje",
+    "controller_file_name" => "ChangeInfoController.class.php",
+    "controller_class_name" => "ChangeInfoController"
   ),
 );
 
