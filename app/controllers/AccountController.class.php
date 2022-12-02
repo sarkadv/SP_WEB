@@ -46,6 +46,21 @@ class AccountController implements IController
           }
         }
       }
+      else if($_POST["review"] == "delete") {
+        if(isset($_POST["model-number"])) {
+          $user = $this->dbconnection->getLoggedUser();
+          $review = $this->dbconnection->getReviewByUserModel($user["c_uzivatele_pk"], $_POST["model-number"]);
+          $result = false;
+
+          if($review != null) {
+            $result = $this->dbconnection->deleteReview($review["c_recenze_pk"]);
+          }
+
+          if(!$result) {
+            echo '<script>alert("Recenzi se nepodařilo odstranit.")</script>';
+          }
+        }
+      }
     }
 
     global $templateData;   // globalni promenna s daty pro sablonu

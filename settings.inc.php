@@ -34,7 +34,7 @@ const PAGES = array(
   ),
 
   "products" => array(
-    "title" => "Dostupné UFO Modely",
+    "title" => "UFO Modely",
     "controller_file_name" => "ProductsController.class.php",
     "controller_class_name" => "ProductsController"
   ),

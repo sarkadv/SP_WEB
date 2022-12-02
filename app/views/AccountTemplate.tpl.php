@@ -169,6 +169,7 @@ $templateBasics->getLoginSidebar();
             <th>Hodnocení</th>
             <th>Text recenze</th>
             <th> </th>
+            <th> </th>
           </tr>
           </thead>
           <tbody>
@@ -201,9 +202,18 @@ $templateBasics->getLoginSidebar();
               <td class="account-main-table-text"><?php echo $text; ?></td>
               <td class="account-main-table-text">
                 <!-- Rozbalovaci formular pro upravu recenze -->
-                <button type="button" class="btn btn-secondary account-main-content-form-collapse-btn" data-bs-toggle="collapse" data-bs-target="#review-form-<?php echo $count; ?>" onclick="collapse(<?php echo $count; ?>)">
+                <button type="button" class="btn btn-secondary" data-bs-toggle="collapse" data-bs-target="#review-form-<?php echo $count; ?>" onclick="collapse(<?php echo $count; ?>)">
                   Upravit
                 </button>
+              </td>
+              <td class="account-main-table-text">
+                <!-- Formular pro odstraneni recenze -->
+                <form action="" method="post">
+                  <input type="hidden" name="model-number" value="<?php echo $modelNumber; ?>">
+                  <button type="submit" name="review" value="delete" class="btn btn-danger">
+                    Vymazat
+                  </button>
+                </form>
               </td>
             </tr>
             <?php

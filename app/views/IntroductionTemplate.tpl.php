@@ -58,7 +58,7 @@ $templateBasics->getLoginSidebar();
         <thead class="table-danger">
         <tr>
           <th>Uživatel</th>
-          <th>Datum</th>
+          <th>Datum a čas</th>
           <th>Hodnocení</th>
           <th>Model</th>
         </tr>
@@ -87,7 +87,7 @@ $templateBasics->getLoginSidebar();
               }
               ?>
             </td>
-            <td class="home-main-table-text"><?php echo $model; ?></td>
+            <td><?php echo $model; ?></td>
           </tr>
           <?php
         }

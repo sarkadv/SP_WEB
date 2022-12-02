@@ -266,6 +266,30 @@ class DatabaseConnection
     }
   }
 
+  public function doesModelExist(int $modelNumber):bool {
+    $query = "SELECT * FROM ".TABLE_MODEL." WHERE c_modelu_pk='$modelNumber'";
+    $result = $this->query($query);
+
+    if(count($result) == 0) {
+      return false;
+    }
+    else {
+      return true;
+    }
+  }
+
+  public function doesUFOExist(int $UFONumber):bool {
+    $query = "SELECT * FROM ".TABLE_UFO." WHERE c_ufo_pk='$UFONumber'";
+    $result = $this->query($query);
+
+    if(count($result) == 0) {
+      return false;
+    }
+    else {
+      return true;
+    }
+  }
+
   public function getUFOModelByNumber ($number) {
     $query = "SELECT * FROM ".TABLE_MODEL." WHERE c_modelu_pk='$number'";
 
@@ -393,6 +417,12 @@ class DatabaseConnection
     return $this->query($query);
   }
 
+  public function getAllReviews():array {
+    $query = "SELECT * FROM ".TABLE_REVIEW." ORDER BY c_modelu_fk";
+
+    return $this->query($query);
+  }
+
   public function getNumberOfUFOsAvailableByModelNumber(int $modelNumber):int {
     $query = "SELECT * FROM ".TABLE_UFO." WHERE c_modelu_fk='$modelNumber'";
     $allUFOs = $this->query($query);
@@ -435,6 +465,19 @@ class DatabaseConnection
     }
 
     return null;
+  }
+
+  public function getReviewByUserModel(int $userNumber, int $modelNumber) {
+    $query = "SELECT * FROM ".TABLE_REVIEW." WHERE c_uzivatele_fk='$userNumber' AND c_modelu_fk='$modelNumber'";
+
+    $result = $this->query($query);
+
+    if(count($result) == 1) {
+      return $result[0];
+    }
+    else {
+      return null;
+    }
   }
 
   public function isUFOFree($UFONumber):bool {
@@ -683,5 +726,87 @@ class DatabaseConnection
     $query = "SELECT * FROM ".TABLE_REVIEW." WHERE c_uzivatele_fk=".$userNumber;
 
     return $this->query($query);
+  }
+
+  /**
+   * Metoda odstrani recenzi podle jejiho primarniho klice.
+   * @param int $reviewNumber   primarni klic recenze
+   * @return bool               true - recenze byla odstranena / false jinak
+   */
+  public function deleteReview(int $reviewNumber):bool {
+    $query = "DELETE FROM ".TABLE_REVIEW." WHERE c_recenze_pk=".$reviewNumber;
+
+    $this->query($query);
+
+    if($this->doesReviewExist($reviewNumber)) {   // recenzi se nepodarilo odstranit
+      return false;
+    }
+    else {
+      return true;
+    }
+  }
+
+  /**
+   * Metoda vlozi do databaze novy UFO model.
+   * @param string $name          nazev modelu
+   * @param int $price            cena za den
+   * @param string $descShort     kratky popisek
+   * @param string $descLong      dlouhy popis
+   * @param int $people           pocet osob
+   * @param int $battery          vydrz baterie [hod]
+   * @param int $speed            rychlost [ly]
+   * @param string $img           cesta k souboru obrazku
+   * @param int $units            pocet UFO tohoto modelu na sklade
+   * @return bool                 true - model se podarilo vlozit / false jinak
+   */
+  public function createNewModel(string $name, int $price, string $descShort, string $descLong, int $people, int $battery, int $speed, string $img, int $units):bool {
+    if($descLong == null) {
+      $descLong = "";
+    }
+
+    if(is_dir($img)) {
+      $img = "img/default_ufo1.png";
+    }
+    if(!file_exists($img)) {
+      $img = "img/default_ufo1.png";
+    }
+
+
+    $query = "INSERT INTO ".TABLE_MODEL." (nazev, cena_den, pocet_osob, vydrz_baterie, rychlost_ly, popis_kratky, popis_dlouhy, obrazek_url)"
+      ." VALUES ('$name', '$price', '$people', '$battery', '$speed', '$descShort', '$descLong', '$img')";
+
+    $this->query($query);
+
+    $id = $this->conn->lastInsertId();   // primarni klic noveho modelu
+
+    if(!$this->doesModelExist($id)) {  // nepodarilo se vlozit novy model
+      return false;
+    }
+    else {
+      for($i = 0; $i < $units; $i++) {
+        $result = $this->createNewUFO($id);
+
+        if(!$result) {
+          return false;
+        }
+      }
+
+      return true;
+    }
+  }
+
+  public function createNewUFO($modelNumber):bool {
+    $query = "INSERT INTO ".TABLE_UFO." (c_modelu_fk) VALUES ('$modelNumber')";
+
+    $this->query($query);
+
+    $id = $this->conn->lastInsertId();   // primarni klic noveho UFO
+
+    if(!$this->doesUFOExist($id)) {  // nepodarilo se vlozit nove UFO
+      return false;
+    }
+    else {
+      return true;
+    }
   }
 }

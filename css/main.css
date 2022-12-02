@@ -543,7 +543,6 @@ body {
 }
 
 /* CSS pro stranku s informacemi o uctu */
-
 #account-main-content {
   background-color: white;
   padding: 30px;
@@ -565,10 +564,6 @@ body {
   padding: 10px 0 10px 0;
 }
 
-.account-main-content-form-collapse-btn {
-  margin: 10px 0 15px 0;
-}
-
 .account-main-content-form-submit-btn {
   margin: 10px 0 15px 0;
   background-color: aquamarine;
@@ -583,6 +578,33 @@ body {
   transition: 0.5s ease;
 }
 
+/* CSS pro spravu webu */
+#management-main-content {
+  background-color: white;
+  padding: 30px;
+}
+
+.management-main-heading {
+  margin: 15px 0 15px 0;
+}
+
+.management-form-main-item {
+  margin: 20px 0 20px 0;
+}
+
+#management-main-btn-submit {
+  margin: 15px 0 0 0;
+  background-color: aquamarine;
+  border: rgb(33, 37, 41) solid 2px;
+  padding: 5px 10px 5px 10px;
+  border-radius: 10px;
+}
+
+#management-main-btn-submit:hover {
+  background-color: black;
+  color: white;
+  transition: 0.5s ease;
+}
 
 
 
