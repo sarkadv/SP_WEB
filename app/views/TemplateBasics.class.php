@@ -46,10 +46,11 @@ class TemplateBasics
 
   /**
    * Metoda vytvori hlavni menu s odkazy na dalsi stranky.
-   * @param bool $userLogged    je uzivatel prihlaseny?
-   * @return void               HTML kod hlavniho menu
+   * @param bool $userLogged      je uzivatel prihlaseny?
+   * @param int $userRoleNumber   cislo prava uzivatele
+   * @return void                 HTML kod hlavniho menu
    */
-  public function getMenu(bool $userLogged) {
+  public function getMenu(bool $userLogged, int $userRoleNumber) {
     ?>
 
     <!-- Hlavni menu -->
@@ -72,6 +73,27 @@ class TemplateBasics
               <li class="nav-item">
                 <a class="nav-link" href="index.php?page=products">Nabídka</a>
               </li>
+
+              <?php
+                if($userRoleNumber <= 2) {  // pro spravce + administratory
+              ?>
+                  <li class="nav-item">
+                    <a class="nav-link" href="index.php?page=management">Správa</a>
+                  </li>
+              <?php
+                }
+              ?>
+
+              <?php
+              if($userRoleNumber <= 1) {  // pro administratory
+                ?>
+                <li class="nav-item">
+                  <a class="nav-link" href="index.php?page=administration">Administrace</a>
+                </li>
+                <?php
+              }
+              ?>
+
             </ul>
             <div class="btn-group">
 

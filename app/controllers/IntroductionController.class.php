@@ -40,6 +40,12 @@ class IntroductionController implements IController
 
     $templateData["title"] = $title;
     $templateData["user_logged"] = $this->dbconnection->isUserLoggedIn();
+    $templateData["user_role"] = 4;
+
+    if($templateData["user_logged"]) {
+      $user = $this->dbconnection->getLoggedUser();
+      $templateData["user_role"] = $user["c_prava_fk"];
+    }
 
     // modely pro zobrazeni v carouselu
     $templateData["ufo_1"] = $this->dbconnection->getUFOModelByNumber(1);

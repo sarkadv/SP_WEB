@@ -9,7 +9,7 @@ $templateBasics = new TemplateBasics();
 //--------------------------------------
 
 $templateBasics->getHeader($templateData["title"]);
-$templateBasics->getMenu($templateData["user_logged"]);
+$templateBasics->getMenu($templateData["user_logged"], $templateData["user_role"]);
 $templateBasics->getLoginSidebar();
 
 ?>

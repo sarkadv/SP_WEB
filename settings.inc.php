@@ -80,6 +80,18 @@ const PAGES = array(
     "controller_file_name" => "ChangeInfoController.class.php",
     "controller_class_name" => "ChangeInfoController"
   ),
+
+  "management" => array(
+    "title" => "Správa webu",
+    "controller_file_name" => "ManagementController.class.php",
+    "controller_class_name" => "ManagementController"
+  ),
+
+  "administration" => array(
+    "title" => "Administrace webu",
+    "controller_file_name" => "AdministrationController.class.php",
+    "controller_class_name" => "AdministrationController"
+  ),
 );
 
 // cesty ke kontrolerum, modelum, sablonam

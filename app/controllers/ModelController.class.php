@@ -75,6 +75,7 @@ class ModelController implements IController
 
     $templateData["title"] = $title;
     $templateData["user_logged"] = $this->dbconnection->isUserLoggedIn();
+    $templateData["user_role"] = 4;
     $templateData["ufo"] = $UFOModel;
 
     if($UFOModel != null) {
@@ -101,7 +102,9 @@ class ModelController implements IController
 
     if($templateData["user_logged"]) {
       $user = $this->dbconnection->getLoggedUser();
+      $templateData["user_role"] = $user["c_prava_fk"];
       $userNumber = $user["c_uzivatele_pk"];
+
       $templateData["rewrite"] = $this->dbconnection->doesReviewByThisUserExist($userNumber, $modelNumber);
       $templateData["can_review"] = $this->dbconnection->hasUserEverHiredThisModel($userNumber, $modelNumber);
     }

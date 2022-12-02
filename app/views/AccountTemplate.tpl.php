@@ -9,7 +9,7 @@ $templateBasics = new TemplateBasics();
 //--------------------------------------
 
 $templateBasics->getHeader($templateData["title"]);
-$templateBasics->getMenu($templateData["user_logged"]);
+$templateBasics->getMenu($templateData["user_logged"], $templateData["user_role"]);
 $templateBasics->getLoginSidebar();
 
 ?>
@@ -154,14 +154,13 @@ $templateBasics->getLoginSidebar();
         </div>
       </div>
 
-      <div class="row">
-        <div class="col-12">
-
         <?php
         $reviews = $templateData["reviews"];
 
         if(count($reviews) > 0) {
         ?>
+        <div class="row">
+        <div class="col-12">
         <table class="table table-hover table-striped">
           <thead class="table-danger">
           <tr>
@@ -274,21 +273,22 @@ $templateBasics->getLoginSidebar();
 
   </div>
 
-  <script>
-    function collapse(formNumber){
-      let count = <?php echo count($templateData["reviews"]);?>;
-      let form = "review-form-";
-
-      for(let i = 0; i < count; i++) {
-        document.getElementById(form.concat(i)).classList.remove("show");
-      }
-
-      document.getElementById(form.concat(formNumber)).classList.add("show");
-    }
-  </script>
-
 <?php
-
 $templateBasics->getFooter();
+?>
+
+<script>
+  function collapse(formNumber){
+    let count = <?php echo count($templateData["reviews"]);?>;
+    let form = "review-form-";
+
+    for(let i = 0; i < count; i++) {
+      document.getElementById(form.concat(i)).classList.remove("show");
+    }
+
+    document.getElementById(form.concat(formNumber)).classList.add("show");
+  }
+</script>
+
 
 

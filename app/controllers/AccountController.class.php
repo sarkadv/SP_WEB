@@ -52,10 +52,12 @@ class AccountController implements IController
 
     $templateData["title"] = $title;
     $templateData["user_logged"] = $this->dbconnection->isUserLoggedIn();
+    $templateData["user_role"] = 4; // neprihlaseny
 
     // data o uzivateli
     if($templateData["user_logged"]) {
       $user = $this->dbconnection->getLoggedUser();
+      $templateData["user_role"] = $user["c_prava_fk"];
       $adress = $this->dbconnection->getAdressByNumber($user["c_adresy_fk"]);
       $city = $this->dbconnection->getCityByNumber($adress["c_mesta_fk"]);
 

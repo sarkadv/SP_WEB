@@ -55,8 +55,11 @@ class PaymentController implements IController
 
     $templateData["title"] = $title;
     $templateData["user_logged"] = $this->dbconnection->isUserLoggedIn();
+    $templateData["user_role"] = 4;
 
     if($templateData["user_logged"]) {
+      $user = $this->dbconnection->getLoggedUser();
+      $templateData["user_role"] = $user["c_prava_fk"];
       $templateData["total_price"] = $this->hireUFO->getTotalPrice();
     }
 
