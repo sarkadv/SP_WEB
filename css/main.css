@@ -606,6 +606,18 @@ body {
   transition: 0.5s ease;
 }
 
+/* CSS pro administraci webu */
+#administration-main-content {
+  background-color: white;
+  padding: 30px;
+}
 
+.administration-main-heading {
+  margin: 15px 0 15px 0;
+}
+
+.administration-main-delete-btn {
+  float: right;
+}
 
 

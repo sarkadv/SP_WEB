@@ -85,7 +85,7 @@ class DatabaseConnection
     }
   }
 
-  public function addUser(string $email, string $password1, string $password2, string $name, string $surname, string $rawDate, string $tel, string $city, string $street, string $zip, string $planet):bool {
+  public function addUser(string $email, string $password1, string $password2, string $name, string $surname, string $rawDate, string $tel, string $city, string $street, string $zip, string $planet, int $role):bool {
     $birthDate = date('Y-m-d', strtotime($rawDate));
 
     if($password1 != $password2) {
@@ -131,7 +131,7 @@ class DatabaseConnection
     $encryptedPassword = password_hash($password1, PASSWORD_DEFAULT);
 
     $query = "INSERT INTO ".TABLE_USER." (email, heslo, jmeno, prijmeni, d_narozeni, tel_cislo, c_prava_fk, c_adresy_fk)"
-    ." VALUES ('$email', '$encryptedPassword', '$name', '$surname', '$birthDate', '$tel', '3', '$adressNumber')";
+    ." VALUES ('$email', '$encryptedPassword', '$name', '$surname', '$birthDate', '$tel', '$role', '$adressNumber')";
 
     $this->query($query);
 
@@ -139,7 +139,6 @@ class DatabaseConnection
       return false;
     }
     else {
-      $this->loginUser($email, $password1);
       return true;
     }
   }
@@ -381,6 +380,19 @@ class DatabaseConnection
     }
   }
 
+  public function getRoleByNumber(int $number) {
+    $query = "SELECT * FROM ".TABLE_ROLE." WHERE c_prava_pk='$number'";
+
+    $result = $this->query($query);
+
+    if(count($result) > 0) {
+      return $result[0];
+    }
+    else {
+      return null;
+    }
+  }
+
   public function getCityNumber($city) {
     $query = "SELECT * FROM ".TABLE_CITY." WHERE nazev='$city'";
 
@@ -419,6 +431,12 @@ class DatabaseConnection
 
   public function getAllReviews():array {
     $query = "SELECT * FROM ".TABLE_REVIEW." ORDER BY c_modelu_fk";
+
+    return $this->query($query);
+  }
+
+  public function getAllUsers():array {
+    $query = "SELECT * FROM ".TABLE_USER." ORDER BY c_prava_fk";
 
     return $this->query($query);
   }
@@ -739,6 +757,36 @@ class DatabaseConnection
     $this->query($query);
 
     if($this->doesReviewExist($reviewNumber)) {   // recenzi se nepodarilo odstranit
+      return false;
+    }
+    else {
+      return true;
+    }
+  }
+
+  /**
+   * Metoda odstrani uzivatele podle jeho primarniho klice.
+   * Nejdrive se museji vymazat vsechny vypujcky a recenze tohoto uzivatele.
+   * @param int $userNumber     primarni klic uzivatele
+   * @return bool               true - uzivatel byl odstranen / false jinak
+   */
+  public function deleteUser(int $userNumber):bool {
+    $user = $this->getUserByNumber($userNumber);
+    $email = $user["email"];
+
+    // odstraneni vypujcek
+    $query = "DELETE FROM ".TABLE_HIRE." WHERE c_uzivatele_fk=".$userNumber;
+    $this->query($query);
+
+    // odstraneni recenzi
+    $query = "DELETE FROM ".TABLE_REVIEW." WHERE c_uzivatele_fk=".$userNumber;
+    $this->query($query);
+
+    $query = "DELETE FROM ".TABLE_USER." WHERE c_uzivatele_pk=".$userNumber;
+
+    $this->query($query);
+
+    if($this->doesUserExist($email)) {   // uzivatele se nepodarilo odstranit
       return false;
     }
     else {

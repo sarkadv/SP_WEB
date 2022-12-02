@@ -34,18 +34,24 @@ class RegistrationController implements IController
         $this->dbconnection->logoutUser();
       }
       else if($_POST["action"] == "register") {
+        if(isset($_POST["email"]) && isset($_POST["pswd1"]) && isset($_POST["pswd2"]) && isset($_POST["first-name"]) && isset($_POST["last-name"]) && isset($_POST["birth-date"]) && isset($_POST["phone"]) && isset($_POST["city"]) && isset($_POST["street"]) && isset($_POST["zip-code"]) && isset($_POST["planet"])) {
+          if($this->dbconnection->doesUserExist($_POST["email"])) {
+            echo '<script>alert("Uživatel s touto e-mailovou adresou již existuje.")</script>';
+          }
+          else {
+            $result = $this->dbconnection->addUser($_POST["email"], $_POST["pswd1"], $_POST["pswd2"], $_POST["first-name"], $_POST["last-name"], $_POST["birth-date"], $_POST["phone"], $_POST["city"], $_POST["street"], $_POST["zip-code"], $_POST["planet"], 3);
 
-        if($this->dbconnection->doesUserExist($_POST["email"])) {
-          echo '<script>alert("Uživatel s touto e-mailovou adresou již existuje.")</script>';
-        }
-        else {
-          $result = $this->dbconnection->addUser($_POST["email"], $_POST["pswd1"], $_POST["pswd2"], $_POST["first-name"], $_POST["last-name"], $_POST["birth-date"], $_POST["phone"], $_POST["city"], $_POST["street"], $_POST["zip-code"], $_POST["planet"]);
-
-          if(!$result) {
-            echo '<script>alert("Nebyli jste zaregistrováni - chybně vyplněný registrační formulář.")</script>';
+            if(!$result) {
+              echo '<script>alert("Nebyli jste zaregistrováni - chybně vyplněný registrační formulář.")</script>';
+            }
+            else {
+              $this->dbconnection->loginUser($_POST["email"], $_POST["pswd1"]);
+            }
           }
         }
-
+        else {
+          echo '<script>alert("Nebyli jste zaregistrováni - chybně vyplněný registrační formulář.")</script>';
+        }
       }
     }
 
