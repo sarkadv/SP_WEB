@@ -41,11 +41,11 @@ class DatabaseConnection
     $email = htmlspecialchars($email);
     $password = htmlspecialchars($password);
 
-    $query = "SELECT * FROM ".TABLE_USER." WHERE email='$email'";
+    $query = "SELECT * FROM ".TABLE_USER." WHERE email=?";
+    $result = $this->conn->prepare($query);
 
-    $result = $this->query($query);
-
-    if(count($result) == 1) {
+    if($result->execute(array($email))) {
+      $result = $result->fetchAll();
       if(password_verify($password, $result[0]["heslo"])) {
         $this->session->setSession(self::KEY_USER, $result[0]["email"]);
         return true;
@@ -109,20 +109,20 @@ class DatabaseConnection
 
     // mesto noveho uzivatele jeste neni v tabulce MESTO
     if(!$this->doesCityExist($city)) {
-      $query = "INSERT INTO ".TABLE_CITY." (nazev, psc) "."VALUES ('$city', '$zip')";
-      $this->query($query);
+      $query = "INSERT INTO ".TABLE_CITY." (nazev, psc) "."VALUES (?, ?)";
+      $result = $this->conn->prepare($query);
 
-      if(!$this->doesCityExist($city)) {  // mesto se nepodarilo vlozit
+      if(!$result->execute(array($city, $zip))) {  // mesto se nepodarilo vlozit
         return false;
       }
 
       $cityNumber = $this->getCityNumber($city);
 
       // pokud mesto neexistovalo, adresa urcite take neexistuje
-      $query = "INSERT INTO ".TABLE_ADRESS." (ulice, planeta, c_mesta_fk) "."VALUES ('$street', '$planet', '$cityNumber')";
-      $this->query($query);
+      $query = "INSERT INTO ".TABLE_ADRESS." (ulice, planeta, c_mesta_fk) "."VALUES (?, ?, ?)";
+      $result = $this->conn->prepare($query);
 
-      if(!$this->doesAdressExist($city, $street, $planet)) {  // adresu se nepodarilo vlozit
+      if(!$result->execute(array($street, $planet, $cityNumber))) {  // adresu se nepodarilo vlozit
         return false;
       }
     }
@@ -132,10 +132,10 @@ class DatabaseConnection
       // mesto existuje, ale adresa neexistuje
       if(!$this->doesAdressExist($city, $street, $planet)) {
         $cityNumber = $this->getCityNumber($city);
-        $query = "INSERT INTO ".TABLE_ADRESS." (ulice, planeta, c_mesta_fk) "."VALUES ('$street', '$planet', '$cityNumber')";
-        $this->query($query);
+        $query = "INSERT INTO ".TABLE_ADRESS." (ulice, planeta, c_mesta_fk) "."VALUES (?, ?, ?)";
+        $result = $this->conn->prepare($query);
 
-        if(!$this->doesAdressExist($city, $street, $planet)) {  // adresu se nepodarilo vlozit
+        if(!$result->execute(array($street, $planet, $cityNumber))) {  // adresu se nepodarilo vlozit
           return false;
         }
       }
@@ -146,11 +146,11 @@ class DatabaseConnection
     $encryptedPassword = password_hash($password1, PASSWORD_DEFAULT);
 
     $query = "INSERT INTO ".TABLE_USER." (email, heslo, jmeno, prijmeni, d_narozeni, tel_cislo, c_prava_fk, c_adresy_fk)"
-    ." VALUES ('$email', '$encryptedPassword', '$name', '$surname', '$birthDate', '$tel', '3', '$adressNumber')";
+    ." VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 
-    $this->query($query);
+    $result = $this->conn->prepare($query);
 
-    if(!$this->doesUserExist($email)){  // uzivatel nebyl vlozen
+    if(!$result->execute(array($email, $encryptedPassword, $name, $surname, $birthDate, $tel, '3', $adressNumber))){  // uzivatel nebyl vlozen
       return false;
     }
     else {
@@ -179,20 +179,20 @@ class DatabaseConnection
 
     // mesto uzivatele jeste neni v tabulce MESTO
     if(!$this->doesCityExist($city)) {
-      $query = "INSERT INTO ".TABLE_CITY." (nazev, psc) "."VALUES ('$city', '$zip')";
-      $this->query($query);
+      $query = "INSERT INTO ".TABLE_CITY." (nazev, psc) "."VALUES (?, ?)";
+      $result = $this->conn->prepare($query);
 
-      if(!$this->doesCityExist($city)) {  // mesto se nepodarilo vlozit
+      if(!$result->execute(array($city, $zip))) {  // mesto se nepodarilo vlozit
         return false;
       }
 
       $cityNumber = $this->getCityNumber($city);
 
       // pokud mesto neexistovalo, adresa urcite take neexistuje
-      $query = "INSERT INTO ".TABLE_ADRESS." (ulice, planeta, c_mesta_fk) "."VALUES ('$street', '$planet', '$cityNumber')";
-      $this->query($query);
+      $query = "INSERT INTO ".TABLE_ADRESS." (ulice, planeta, c_mesta_fk) "."VALUES (?, ?, ?)";
+      $result = $this->conn->prepare($query);
 
-      if(!$this->doesAdressExist($city, $street, $planet)) {  // adresu se nepodarilo vlozit
+      if(!$result->execute(array($street, $planet, $cityNumber))) {  // adresu se nepodarilo vlozit
         return false;
       }
     }
@@ -202,10 +202,10 @@ class DatabaseConnection
       // mesto existuje, ale adresa neexistuje
       if(!$this->doesAdressExist($city, $street, $planet)) {
         $cityNumber = $this->getCityNumber($city);
-        $query = "INSERT INTO ".TABLE_ADRESS." (ulice, planeta, c_mesta_fk) "."VALUES ('$street', '$planet', '$cityNumber')";
-        $this->query($query);
+        $query = "INSERT INTO ".TABLE_ADRESS." (ulice, planeta, c_mesta_fk) "."VALUES (?, ?, ?)";
+        $result = $this->conn->prepare($query);
 
-        if(!$this->doesAdressExist($city, $street, $planet)) {  // adresu se nepodarilo vlozit
+        if(!$result->execute(array($street, $planet, $cityNumber))) {  // adresu se nepodarilo vlozit
           return false;
         }
       }
@@ -215,12 +215,12 @@ class DatabaseConnection
 
     $encryptedPassword = password_hash($password1, PASSWORD_DEFAULT);
 
-    $query = "UPDATE ".TABLE_USER." SET heslo='".$encryptedPassword."', jmeno='".$name."', prijmeni='".$surname."', d_narozeni='".$birthDate
-      ."', tel_cislo='".$tel."', c_adresy_fk='".$adressNumber."' WHERE c_uzivatele_pk=".$user["c_uzivatele_pk"];
+    $query = "UPDATE ".TABLE_USER." SET heslo=?, jmeno=?, prijmeni=?, d_narozeni=?, tel_cislo=?, c_adresy_fk=? WHERE c_uzivatele_pk=?";
+    $result = $this->conn->prepare($query);
 
-    echo $query;
-
-    $this->query($query);
+    if(!$result->execute(array($encryptedPassword, $name, $surname, $birthDate, $tel, $adressNumber, $user["c_uzivatele_pk"]))) {  // adresu se nepodarilo vlozit
+      return false;
+    }
 
     return true;
   }
@@ -237,11 +237,10 @@ class DatabaseConnection
       return false;
     }
 
-    $query = "UPDATE ".TABLE_USER." SET c_prava_fk=".$roleNumber." WHERE c_uzivatele_pk=".$userNumber;
+    $query = "UPDATE ".TABLE_USER." SET c_prava_fk=? WHERE c_uzivatele_pk=?";
+    $result = $this->conn->prepare($query);
 
-    $this->query($query);
-
-    if($this->getUserByNumber($userNumber)["c_prava_fk"] != $roleNumber) {
+    if(!$result->execute(array($roleNumber, $userNumber))) {
       return false;
     }
     else {
@@ -261,11 +260,10 @@ class DatabaseConnection
       return false;
     }
 
-    $query = "UPDATE ".TABLE_USER." SET c_prava_fk=".$roleNumber." WHERE c_uzivatele_pk=".$userNumber;
+    $query = "UPDATE ".TABLE_USER." SET c_prava_fk=? WHERE c_uzivatele_pk=?";
+    $result = $this->conn->prepare($query);
 
-    $this->query($query);
-
-    if($this->getUserByNumber($userNumber)["c_prava_fk"] != $roleNumber) {
+    if(!$result->execute(array($roleNumber, $userNumber))) {
       return false;
     }
     else {
@@ -276,28 +274,40 @@ class DatabaseConnection
   public function doesUserExist(string $email):bool {
     $email = htmlspecialchars($email);
 
-    $query = "SELECT * FROM ".TABLE_USER ." WHERE email='$email'";
-    $result = $this->query($query);
+    $query = "SELECT * FROM ".TABLE_USER ." WHERE email=?";
+    $result = $this->conn->prepare($query);
 
-    if(count($result) == 0) {
+    if(!$result->execute(array($email))) {
       return false;
     }
     else {
-      return true;
+      $result = $result->fetchAll();
+      if(count($result) > 0) {
+        return true;
+      }
+      else {
+        return false;
+      }
     }
   }
 
   public function doesCityExist(string $city):bool {
     $city = htmlspecialchars($city);
 
-    $query = "SELECT * FROM ".TABLE_CITY." WHERE nazev='$city'";
-    $result = $this->query($query);
+    $query = "SELECT * FROM ".TABLE_CITY." WHERE nazev=?";
+    $result = $this->conn->prepare($query);
 
-    if(count($result) == 0) {
+    if(!$result->execute(array($city))) {
       return false;
     }
     else {
-      return true;
+      $result = $result->fetchAll();
+      if(count($result) > 0) {
+        return true;
+      }
+      else {
+        return false;
+      }
     }
   }
 
@@ -312,183 +322,258 @@ class DatabaseConnection
       return false;
     }
 
-    $query = "SELECT * FROM ".TABLE_ADRESS." WHERE ulice='$street' AND planeta='$planet' AND c_mesta_fk='$cityNumber'";
-    $result = $this->query($query);
+    $query = "SELECT * FROM ".TABLE_ADRESS." WHERE ulice=? AND planeta=? AND c_mesta_fk=?";
+    $result = $this->conn->prepare($query);
 
-    if(count($result) == 0) {
+    if(!$result->execute(array($street, $planet, $cityNumber))) {
       return false;
     }
     else {
-      return true;
+      $result = $result->fetchAll();
+      if(count($result) > 0) {
+        return true;
+      }
+      else {
+        return false;
+      }
     }
   }
 
   public function doesHireExist(int $hireNumber):bool {
-    $query = "SELECT * FROM ".TABLE_HIRE." WHERE c_vypujcky_pk='$hireNumber'";
-    $result = $this->query($query);
+    $query = "SELECT * FROM ".TABLE_HIRE." WHERE c_vypujcky_pk=?";
+    $result = $this->conn->prepare($query);
 
-    if(count($result) == 0) {
+    if(!$result->execute(array($hireNumber))) {
       return false;
     }
     else {
-      return true;
+      $result = $result->fetchAll();
+      if(count($result) > 0) {
+        return true;
+      }
+      else {
+        return false;
+      }
     }
   }
 
   public function doesReviewExist(int $reviewNumber):bool {
-    $query = "SELECT * FROM ".TABLE_REVIEW." WHERE c_recenze_pk='$reviewNumber'";
-    $result = $this->query($query);
+    $query = "SELECT * FROM ".TABLE_REVIEW." WHERE c_recenze_pk=?";
+    $result = $this->conn->prepare($query);
 
-    if(count($result) == 0) {
+    if(!$result->execute(array($reviewNumber))) {
       return false;
     }
     else {
-      return true;
+      $result = $result->fetchAll();
+      if(count($result) > 0) {
+        return true;
+      }
+      else {
+        return false;
+      }
     }
   }
 
   public function doesModelExist(int $modelNumber):bool {
-    $query = "SELECT * FROM ".TABLE_MODEL." WHERE c_modelu_pk='$modelNumber'";
-    $result = $this->query($query);
+    $query = "SELECT * FROM ".TABLE_MODEL." WHERE c_modelu_pk=?";
+    $result = $this->conn->prepare($query);
 
-    if(count($result) == 0) {
+    if(!$result->execute(array($modelNumber))) {
       return false;
     }
     else {
-      return true;
+      $result = $result->fetchAll();
+      if(count($result) > 0) {
+        return true;
+      }
+      else {
+        return false;
+      }
     }
   }
 
   public function doesUFOExist(int $UFONumber):bool {
-    $query = "SELECT * FROM ".TABLE_UFO." WHERE c_ufo_pk='$UFONumber'";
-    $result = $this->query($query);
+    $query = "SELECT * FROM ".TABLE_UFO." WHERE c_ufo_pk=?";
+    $result = $this->conn->prepare($query);
 
-    if(count($result) == 0) {
+    if(!$result->execute(array($UFONumber))) {
       return false;
     }
     else {
-      return true;
+      $result = $result->fetchAll();
+      if(count($result) > 0) {
+        return true;
+      }
+      else {
+        return false;
+      }
     }
   }
 
   public function getUFOModelByNumber (int $modelNumber) {
-    $query = "SELECT * FROM ".TABLE_MODEL." WHERE c_modelu_pk='$modelNumber'";
+    $query = "SELECT * FROM ".TABLE_MODEL." WHERE c_modelu_pk=?";
+    $result = $this->conn->prepare($query);
 
-    $result = $this->query($query);
-
-    if(count($result) > 0) {
-      return $result[0];
+    if(!$result->execute(array($modelNumber))) {
+      return null;
     }
     else {
-      return null;
+      $result = $result->fetchAll();
+      if(count($result) > 0) {
+        return $result[0];
+      }
+      else {
+        return null;
+      }
     }
   }
 
   public function getUserByNumber (int $userNumber) {
-    $query = "SELECT * FROM ".TABLE_USER." WHERE c_uzivatele_pk='$userNumber'";
+    $query = "SELECT * FROM ".TABLE_USER." WHERE c_uzivatele_pk=?";
+    $result = $this->conn->prepare($query);
 
-    $result = $this->query($query);
-
-    if(count($result) > 0) {
-      return $result[0];
+    if(!$result->execute(array($userNumber))) {
+      return null;
     }
     else {
-      return null;
+      $result = $result->fetchAll();
+      if(count($result) > 0) {
+        return $result[0];
+      }
+      else {
+        return null;
+      }
     }
   }
 
   public function getCityByNumber(int $cityNumber) {
-    $query = "SELECT * FROM ".TABLE_CITY." WHERE c_mesta_pk='$cityNumber'";
+    $query = "SELECT * FROM ".TABLE_CITY." WHERE c_mesta_pk=?";
+    $result = $this->conn->prepare($query);
 
-    $result = $this->query($query);
-
-    if(count($result) > 0) {
-      return $result[0];
+    if(!$result->execute(array($cityNumber))) {
+      return null;
     }
     else {
-      return null;
+      $result = $result->fetchAll();
+      if(count($result) > 0) {
+        return $result[0];
+      }
+      else {
+        return null;
+      }
     }
   }
 
   public function getAdressByNumber(int $adressNumber) {
-    $query = "SELECT * FROM ".TABLE_ADRESS." WHERE c_adresy_pk='$adressNumber'";
+    $query = "SELECT * FROM ".TABLE_ADRESS." WHERE c_adresy_pk=?";
+    $result = $this->conn->prepare($query);
 
-    $result = $this->query($query);
-
-    if(count($result) > 0) {
-      return $result[0];
+    if(!$result->execute(array($adressNumber))) {
+      return null;
     }
     else {
-      return null;
+      $result = $result->fetchAll();
+      if(count($result) > 0) {
+        return $result[0];
+      }
+      else {
+        return null;
+      }
     }
   }
 
   public function getUFOByNumber(int $UFONumber) {
-    $query = "SELECT * FROM ".TABLE_UFO." WHERE c_ufo_pk='$UFONumber'";
+    $query = "SELECT * FROM ".TABLE_UFO." WHERE c_ufo_pk=?";
+    $result = $this->conn->prepare($query);
 
-    $result = $this->query($query);
-
-    if(count($result) > 0) {
-      return $result[0];
+    if(!$result->execute(array($UFONumber))) {
+      return null;
     }
     else {
-      return null;
+      $result = $result->fetchAll();
+      if(count($result) > 0) {
+        return $result[0];
+      }
+      else {
+        return null;
+      }
     }
   }
 
   public function getHireByNumber(int $hireNumber) {
-    $query = "SELECT * FROM ".TABLE_HIRE." WHERE c_vypujcky_pk='$hireNumber'";
+    $query = "SELECT * FROM ".TABLE_HIRE." WHERE c_vypujcky_pk=?";
+    $result = $this->conn->prepare($query);
 
-    $result = $this->query($query);
-
-    if(count($result) > 0) {
-      return $result[0];
+    if(!$result->execute(array($hireNumber))) {
+      return null;
     }
     else {
-      return null;
+      $result = $result->fetchAll();
+      if(count($result) > 0) {
+        return $result[0];
+      }
+      else {
+        return null;
+      }
     }
   }
 
   public function getReviewByNumber(int $reviewNumber) {
-    $query = "SELECT * FROM ".TABLE_REVIEW." WHERE c_recenze_pk='$reviewNumber'";
+    $query = "SELECT * FROM ".TABLE_REVIEW." WHERE c_recenze_pk=?";
+    $result = $this->conn->prepare($query);
 
-    $result = $this->query($query);
-
-    if(count($result) > 0) {
-      return $result[0];
+    if(!$result->execute(array($reviewNumber))) {
+      return null;
     }
     else {
-      return null;
+      $result = $result->fetchAll();
+      if(count($result) > 0) {
+        return $result[0];
+      }
+      else {
+        return null;
+      }
     }
   }
 
   public function getRoleByNumber(int $roleNumber) {
-    $query = "SELECT * FROM ".TABLE_ROLE." WHERE c_prava_pk='$roleNumber'";
+    $query = "SELECT * FROM ".TABLE_ROLE." WHERE c_prava_pk=?";
+    $result = $this->conn->prepare($query);
 
-    $result = $this->query($query);
-
-    if(count($result) > 0) {
-      return $result[0];
+    if(!$result->execute(array($roleNumber))) {
+      return null;
     }
     else {
-      return null;
+      $result = $result->fetchAll();
+      if(count($result) > 0) {
+        return $result[0];
+      }
+      else {
+        return null;
+      }
     }
   }
 
   public function getCityNumber(string $city) {
     $city = htmlspecialchars($city);
 
-    $query = "SELECT * FROM ".TABLE_CITY." WHERE nazev='$city'";
+    $query = "SELECT * FROM ".TABLE_CITY." WHERE nazev=?";
+    $result = $this->conn->prepare($query);
 
-    $result = $this->query($query);
-
-    if(count($result) > 0) {
-      return $result[0]["c_mesta_pk"];
-    }
-    else {
+    if(!$result->execute(array($city))) {
       return null;
     }
+    else {
+      $result = $result->fetchAll();
 
+      if(count($result) > 0) {
+        return $result[0]["c_mesta_pk"];
+      }
+      else {
+        return null;
+      }
+    }
   }
 
   public function getAdressNumber(string $city, string $street, string $planet) {
@@ -498,15 +583,21 @@ class DatabaseConnection
 
     $cityNumber = $this->getCityNumber($city);
 
-    $query = "SELECT * FROM ".TABLE_ADRESS." WHERE ulice='$street' AND planeta='$planet' AND c_mesta_fk='$cityNumber'";
+    $query = "SELECT * FROM ".TABLE_ADRESS." WHERE ulice=? AND planeta=? AND c_mesta_fk=?";
+    $result = $this->conn->prepare($query);
 
-    $result = $this->query($query);
-
-    if(count($result) > 0) {
-      return $result[0]["c_adresy_pk"];
+    if(!$result->execute(array($street, $planet, $cityNumber))) {
+      return null;
     }
     else {
-      return null;
+      $result = $result->fetchAll();
+
+      if(count($result) > 0) {
+        return $result[0]["c_adresy_pk"];
+      }
+      else {
+        return null;
+      }
     }
 
   }
@@ -530,8 +621,12 @@ class DatabaseConnection
   }
 
   public function getNumberOfUFOsAvailableByModelNumber(int $modelNumber):int {
-    $query = "SELECT * FROM ".TABLE_UFO." WHERE c_modelu_fk='$modelNumber'";
-    $allUFOs = $this->query($query);
+    $query = "SELECT * FROM ".TABLE_UFO." WHERE c_modelu_fk=?";
+    $allUFOs = $this->conn->prepare($query);
+
+    if(!$allUFOs->execute(array($modelNumber))) {
+      return 0;
+    }
 
     // napocitame pocet vozidel, ktera nejsou v tabulce VYPUJCKA
     $count = 0;
@@ -547,7 +642,7 @@ class DatabaseConnection
     foreach($UFOsInCart as $UFO) {
       $UFO = json_decode($UFO, true);
 
-      if($UFO["model"] == $modelNumber) {
+      if(intval($UFO["model"]) == $modelNumber) {
         $count--;
       }
     }
@@ -561,8 +656,12 @@ class DatabaseConnection
    * @return mixed|null         primarni klic UFO / null
    */
   public function getAvailableUFONumberByModelNumber(int $modelNumber) {
-    $query = "SELECT * FROM ".TABLE_UFO." WHERE c_modelu_fk='$modelNumber'";
-    $allUFOs = $this->query($query);
+    $query = "SELECT * FROM ".TABLE_UFO." WHERE c_modelu_fk=?";
+    $allUFOs = $this->conn->prepare($query);
+
+    if(!$allUFOs->execute(array($modelNumber))) {
+      return null;
+    }
 
     foreach($allUFOs as $UFO) {
       if($this->isUFOFree($UFO["c_ufo_pk"])) {
@@ -574,35 +673,45 @@ class DatabaseConnection
   }
 
   public function getReviewByUserModel(int $userNumber, int $modelNumber) {
-    $query = "SELECT * FROM ".TABLE_REVIEW." WHERE c_uzivatele_fk='$userNumber' AND c_modelu_fk='$modelNumber'";
+    $query = "SELECT * FROM ".TABLE_REVIEW." WHERE c_uzivatele_fk=? AND c_modelu_fk=?";
+    $result = $this->conn->prepare($query);
 
-    $result = $this->query($query);
-
-    if(count($result) == 1) {
-      return $result[0];
+    if(!$result->execute(array($userNumber, $modelNumber))) {
+      return null;
     }
     else {
-      return null;
+      $result = $result->fetchAll();
+      if(count($result) > 0) {
+        return $result[0];
+      }
+      else {
+        return null;
+      }
     }
   }
 
   public function isUFOFree(int $UFONumber):bool {
-    $query = "SELECT * FROM ".TABLE_HIRE." WHERE c_ufo_fk='$UFONumber'";
+    $query = "SELECT * FROM ".TABLE_HIRE." WHERE c_ufo_fk=?";
+    $result = $this->conn->prepare($query);
 
-    $result = $this->query($query);
-
-    if(count($result) == 0) {
-      return true;
+    if(!$result->execute(array($UFONumber))) {
+      return false;
     }
     else {
-      foreach($result as $hire) {
-        $dateNow = date("Y-m-d");
+      $result = $result->fetchAll();
 
-        if($hire["d_vypujceni"] > $dateNow) {
-          return true;
-        }
-        else if($hire["d_vraceni"] < $dateNow) {
-          return true;
+      if(count($result) == 0) {
+        return true;
+      }
+      else {
+        foreach ($result as $hire) {
+          $dateNow = date("Y-m-d");
+
+          if ($hire["d_vypujceni"] > $dateNow) {
+            return true;
+          } else if ($hire["d_vraceni"] < $dateNow) {
+            return true;
+          }
         }
       }
     }
@@ -658,28 +767,28 @@ class DatabaseConnection
       $zip = htmlspecialchars($adress["zip"]);
 
       if(!$this->doesCityExist($cityName)) { // mesto jeste neexistuje -> vytvorime ho
-        $queryCity = "INSERT INTO ".TABLE_CITY." (nazev, psc)"." VALUES ('$cityName', '$zip')";
-        $this->query($queryCity);
+        $queryCity = "INSERT INTO ".TABLE_CITY." (nazev, psc)"." VALUES (?, ?)";
+        $result = $this->conn->prepare($queryCity);
 
-        if(!$this->doesCityExist($cityName)) {  // nepodarilo se vlozit nove mesto
+        if(!$result->execute(array($cityName, $zip))) {  // nepodarilo se vlozit nove mesto
           return [];
         }
 
         // mesto neexistovalo, proto adresa take urcite neexistuje
         $cityNumber = $this->getCityNumber($cityName);
-        $queryAdress = "INSERT INTO ".TABLE_ADRESS." (ulice, planeta, c_mesta_fk)"." VALUES ('$street', '$planet', '$cityNumber')";
-        $this->query($queryAdress);
+        $queryAdress = "INSERT INTO ".TABLE_ADRESS." (ulice, planeta, c_mesta_fk)"." VALUES (?, ?, ?)";
+        $result = $this->conn->prepare($queryAdress);
 
-        if(!$this->doesAdressExist($cityName, $street, $planet)) {  // nepodarilo se vlozit novou adresu
+        if(!$result->execute(array($street, $planet, $cityNumber))) {  // nepodarilo se vlozit novou adresu
           return [];
         }
       }
       else if(!$this->doesAdressExist($cityName, $street, $planet)) {   // mesto existuje, ale adresa ne
         $cityNumber = $this->getCityNumber($cityName);
-        $queryAdress = "INSERT INTO ".TABLE_ADRESS." (ulice, planeta, c_mesta_fk)"." VALUES ('$street', '$planet', '$cityNumber')";
-        $this->query($queryAdress);
+        $queryAdress = "INSERT INTO ".TABLE_ADRESS." (ulice, planeta, c_mesta_fk)"." VALUES (?, ?, ?)";
+        $result = $this->conn->prepare($queryAdress);
 
-        if(!$this->doesAdressExist($cityName, $street, $planet)) {  // nepodarilo se vlozit novou adresu
+        if(!$result->execute(array($street, $planet, $cityNumber))) {  // nepodarilo se vlozit novou adresu
           return [];
         }
       }
@@ -688,16 +797,15 @@ class DatabaseConnection
 
       // vytvorime novy radek v tabulce VYPUJCKA
       $queryHire = "INSERT INTO ".TABLE_HIRE." (d_vypujceni, d_vraceni, c_platebniho_uctu, c_uzivatele_fk, c_ufo_fk, c_adresy_fk)"
-        ." VALUES ('$dateNow', '$dateEnd', '$accountNumber', '$userNumber', '$availableUFONumber', '$adressNumber')";
+        ." VALUES (?, ?, ?, ?, ?, ?)";
 
-      $this->query($queryHire);
+      $result = $this->conn->prepare($queryHire);
 
-      $id = $this->conn->lastInsertId();   // primarni klic nove vypujcky
-
-      if(!$this->doesHireExist($id)) {  // nepodarilo se vlozit novou vypujcku
+      if(!$result->execute(array($dateNow, $dateEnd, $accountNumber, $userNumber, $availableUFONumber, $adressNumber))) {
         return [];
       }
 
+      $id = $this->conn->lastInsertId();   // primarni klic nove vypujcky
       array_push($hireResult, $id);
 
       $i++;
@@ -709,10 +817,15 @@ class DatabaseConnection
   }
 
   public function getReviewsByModelNumber(int $modelNumber):array {
+    $query = "SELECT * FROM ".TABLE_REVIEW." WHERE c_modelu_fk=?";
+    $result = $this->conn->prepare($query);
 
-    $query = "SELECT * FROM ".TABLE_REVIEW." WHERE c_modelu_fk='$modelNumber'";
-
-    return $this->query($query);
+    if(!$result->execute(array($modelNumber))) {
+      return [];
+    }
+    else {
+      return $result->fetchAll();
+    }
 
   }
 
@@ -734,17 +847,18 @@ class DatabaseConnection
 
     if($this->doesReviewByThisUserExist($user["c_uzivatele_pk"], $modelNumber)) {
       // smazeme starou recenzi
-      $query = "DELETE FROM ".TABLE_REVIEW." WHERE c_uzivatele_fk=".$userNumber." AND c_modelu_fk=".$modelNumber;
-      $this->query($query);
+      $query = "DELETE FROM ".TABLE_REVIEW." WHERE c_uzivatele_fk=? AND c_modelu_fk=?";
+      $result = $this->conn->prepare($query);
+
+      if(!$result->execute(array($userNumber, $modelNumber))) {
+        return false;
+      }
     }
 
-    $query = "INSERT INTO ".TABLE_REVIEW." (text, hodnoceni, datum_cas, c_modelu_fk, c_uzivatele_fk)"
-      ." VALUES ('$text', '$rating', '$datetime', '$modelNumber', '$userNumber')";
-    $this->query($query);
+    $query = "INSERT INTO ".TABLE_REVIEW." (text, hodnoceni, datum_cas, c_modelu_fk, c_uzivatele_fk) VALUES (?, ?, ?, ?, ?)";
+    $result = $this->conn->prepare($query);
 
-    $id = $this->conn->lastInsertId();    // primarni klic nove recenze
-
-    if(!$this->doesReviewExist($id)) {
+    if(!$result->execute(array($text, $rating, $datetime, $modelNumber, $userNumber))) {
       return false;
     }
 
@@ -758,15 +872,21 @@ class DatabaseConnection
    * @return bool             true - uzivatel uz napsal na tento model recenzi / false jinak
    */
   public function doesReviewByThisUserExist(int $userNumber, int $modelNumber):bool {
-    $query = "SELECT * FROM ".TABLE_REVIEW." WHERE c_uzivatele_fk=".$userNumber." AND c_modelu_fk=".$modelNumber;
+    $query = "SELECT * FROM ".TABLE_REVIEW." WHERE c_uzivatele_fk=? AND c_modelu_fk=?";
+    $result = $this->conn->prepare($query);
 
-    $result = $this->query($query);
-
-    if(count($result) > 0) {
-      return true;
+    if(!$result->execute(array($userNumber, $modelNumber))) {
+      return false;
     }
     else {
-      return false;
+      $result = $result->fetchAll();
+
+      if(count($result) > 0) {
+        return true;
+      }
+      else {
+        return false;
+      }
     }
   }
 
@@ -777,15 +897,21 @@ class DatabaseConnection
    * @return bool               true - uzivatel si nekdy model zapujcil / false jinak
    */
   public function hasUserEverHiredThisModel($userNumber, $modelNumber):bool {
-    $query = "SELECT * FROM ".TABLE_HIRE." INNER JOIN ".TABLE_UFO." ON ".TABLE_HIRE.".c_ufo_fk = ".TABLE_UFO.".c_ufo_pk WHERE c_uzivatele_fk=".$userNumber." AND c_modelu_fk=".$modelNumber;
+    $query = "SELECT * FROM ".TABLE_HIRE." INNER JOIN ".TABLE_UFO." ON ".TABLE_HIRE.".c_ufo_fk = ".TABLE_UFO.".c_ufo_pk WHERE c_uzivatele_fk=? AND c_modelu_fk=?";
+    $result = $this->conn->prepare($query);
 
-    $result = $this->query($query);
-
-    if(count($result) > 0) {
-      return true;
+    if(!$result->execute(array($userNumber, $modelNumber))) {
+      return false;
     }
     else {
-      return false;
+      $result = $result->fetchAll();
+
+      if(count($result) > 0) {
+        return true;
+      }
+      else {
+        return false;
+      }
     }
   }
 
@@ -822,9 +948,15 @@ class DatabaseConnection
    * @return array            pole vypujcek uzivatele
    */
   public function getHiresByUser(int $userNumber):array {
-    $query = "SELECT * FROM ".TABLE_HIRE." WHERE c_uzivatele_fk=".$userNumber;
+    $query = "SELECT * FROM ".TABLE_HIRE." WHERE c_uzivatele_fk=?";
+    $result = $this->conn->prepare($query);
 
-    return $this->query($query);
+    if(!$result->execute(array($userNumber))) {
+      return [];
+    }
+    else {
+      return $result->fetchAll();
+    }
   }
 
   /**
@@ -833,9 +965,15 @@ class DatabaseConnection
    * @return array            pole recenzi uzivatele
    */
   public function getReviewsByUser(int $userNumber):array {
-    $query = "SELECT * FROM ".TABLE_REVIEW." WHERE c_uzivatele_fk=".$userNumber;
+    $query = "SELECT * FROM ".TABLE_REVIEW." WHERE c_uzivatele_fk=?";
+    $result = $this->conn->prepare($query);
 
-    return $this->query($query);
+    if(!$result->execute(array($userNumber))) {
+      return [];
+    }
+    else {
+      return $result->fetchAll();
+    }
   }
 
   /**
@@ -844,16 +982,13 @@ class DatabaseConnection
    * @return bool               true - recenze byla odstranena / false jinak
    */
   public function deleteReview(int $reviewNumber):bool {
-    $query = "DELETE FROM ".TABLE_REVIEW." WHERE c_recenze_pk=".$reviewNumber;
+    $query = "DELETE FROM ".TABLE_REVIEW." WHERE c_recenze_pk=?";
+    $result = $this->conn->prepare($query);
 
-    $this->query($query);
-
-    if($this->doesReviewExist($reviewNumber)) {   // recenzi se nepodarilo odstranit
+    if(!$result->execute(array($reviewNumber))) {
       return false;
     }
-    else {
-      return true;
-    }
+    return true;
   }
 
   /**
@@ -867,23 +1002,29 @@ class DatabaseConnection
     $email = $user["email"];
 
     // odstraneni vypujcek
-    $query = "DELETE FROM ".TABLE_HIRE." WHERE c_uzivatele_fk=".$userNumber;
-    $this->query($query);
+    $query = "DELETE FROM ".TABLE_HIRE." WHERE c_uzivatele_fk=?";
+    $result = $this->conn->prepare($query);
 
-    // odstraneni recenzi
-    $query = "DELETE FROM ".TABLE_REVIEW." WHERE c_uzivatele_fk=".$userNumber;
-    $this->query($query);
-
-    $query = "DELETE FROM ".TABLE_USER." WHERE c_uzivatele_pk=".$userNumber;
-
-    $this->query($query);
-
-    if($this->doesUserExist($email)) {   // uzivatele se nepodarilo odstranit
+    if(!$result->execute(array($userNumber))) {
       return false;
     }
-    else {
-      return true;
+
+    // odstraneni recenzi
+    $query = "DELETE FROM ".TABLE_REVIEW." WHERE c_uzivatele_fk=?";
+    $result = $this->conn->prepare($query);
+
+    if(!$result->execute(array($userNumber))) {
+      return false;
     }
+
+    $query = "DELETE FROM ".TABLE_USER." WHERE c_uzivatele_pk=?";
+    $result = $this->conn->prepare($query);
+
+    if(!$result->execute(array($userNumber))) {
+      return false;
+    }
+
+    return true;
   }
 
   /**
@@ -918,40 +1059,36 @@ class DatabaseConnection
 
 
     $query = "INSERT INTO ".TABLE_MODEL." (nazev, cena_den, pocet_osob, vydrz_baterie, rychlost_ly, popis_kratky, popis_dlouhy, obrazek_url)"
-      ." VALUES ('$name', '$price', '$people', '$battery', '$speed', '$descShort', '$descLong', '$img')";
+      ." VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 
-    $this->query($query);
+    $result = $this->conn->prepare($query);
+
+    if(!$result->execute(array($name, $price, $people, $battery, $speed, $descShort, $descLong, $img))) {
+      return false;
+    }
 
     $id = $this->conn->lastInsertId();   // primarni klic noveho modelu
 
-    if(!$this->doesModelExist($id)) {  // nepodarilo se vlozit novy model
-      return false;
-    }
-    else {
-      for($i = 0; $i < $units; $i++) {
-        $result = $this->createNewUFO($id);
+    for($i = 0; $i < $units; $i++) {
+      $result = $this->createNewUFO($id);
 
-        if(!$result) {
-          return false;
-        }
+      if(!$result) {
+        return false;
       }
-
-      return true;
     }
+
+    return true;
+
   }
 
   public function createNewUFO(int $modelNumber):bool {
-    $query = "INSERT INTO ".TABLE_UFO." (c_modelu_fk) VALUES ('$modelNumber')";
+    $query = "INSERT INTO ".TABLE_UFO." (c_modelu_fk) VALUES (?)";
+    $result = $this->conn->prepare($query);
 
-    $this->query($query);
-
-    $id = $this->conn->lastInsertId();   // primarni klic noveho UFO
-
-    if(!$this->doesUFOExist($id)) {  // nepodarilo se vlozit nove UFO
+    if(!$result->execute(array($modelNumber))) {
       return false;
     }
-    else {
-      return true;
-    }
+    return true;
   }
+
 }
