@@ -40,7 +40,7 @@ $templateBasics->getLoginSidebar();
             <div class="input-group-text">
               <i class="far fa-credit-card"></i>
             </div>
-            <input type="number" class="form-control" id="account" placeholder="1111000011110000" name="account-number" min="0" max="1111111111111111" required>
+            <input type="text" class="form-control" id="account" placeholder="1111000011110000" name="account-number" maxlength="20" required>
           </div>
           <p class="payment-main-info">
             Po potvrzení platby ve Vašem chytrém zařízení budou peníze automaticky odeslány.

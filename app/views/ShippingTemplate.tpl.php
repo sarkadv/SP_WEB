@@ -40,7 +40,7 @@ $templateBasics->getLoginSidebar();
               <div class="input-group-text">
                 <i class="fas fa-home"></i>
               </div>
-              <input type="text" class="form-control" id="street" placeholder="Ulice a číslo popisné" value="<?php echo $templateData["street"];?>" name="street" readonly required>
+              <input type="text" class="form-control" id="street" placeholder="Ulice a číslo popisné" value="<?php echo $templateData["street"];?>" name="street" maxlength="50" readonly required>
             </div>
           </div>
         </div>
@@ -51,7 +51,7 @@ $templateBasics->getLoginSidebar();
               <div class="input-group-text">
                 <i class="fas fa-city"></i>
               </div>
-              <input type="text" class="form-control" id="city" placeholder="Město" value="<?php echo $templateData["city"];?>" name="city" readonly required>
+              <input type="text" class="form-control" id="city" placeholder="Město" value="<?php echo $templateData["city"];?>" name="city" maxlength="50" readonly required>
             </div>
           </div>
           <div class="col-md-4 shipping-main-item">
@@ -60,7 +60,7 @@ $templateBasics->getLoginSidebar();
               <div class="input-group-text">
                 <i class="far fa-envelope-open"></i>
               </div>
-              <input type="text" class="form-control" id="zip-code" placeholder="PSČ" value="<?php echo $templateData["zip"];?>" name="zip-code" readonly required>
+              <input type="text" class="form-control" id="zip-code" placeholder="PSČ" value="<?php echo $templateData["zip"];?>" name="zip-code" maxlength="5" readonly required>
             </div>
           </div>
           <div class="col-md-4 shipping-main-item">
@@ -69,7 +69,7 @@ $templateBasics->getLoginSidebar();
               <div class="input-group-text">
                 <i class="fas fa-globe"></i>
               </div>
-              <input class="form-control" id="planet" list ="planets" placeholder="Domovská planeta" value="<?php echo $templateData["planet"];?>" name="planet" readonly required>
+              <input class="form-control" id="planet" list ="planets" placeholder="Domovská planeta" value="<?php echo $templateData["planet"];?>" name="planet" maxlength="50" readonly required>
             </div>
             <datalist id="planets">
               <option value="Kepler-452b">

@@ -33,7 +33,7 @@ $templateBasics->getLoginSidebar();
               <div class="input-group-text">
                 <i class="fas fa-key"></i>
               </div>
-              <input type="password" class="form-control" id="pswd1" placeholder="Heslo" name="pswd1" required>
+              <input type="password" class="form-control" id="pswd1" placeholder="Heslo" name="pswd1" maxlength="60" required>
             </div>
           </div>
           <div class="col-md-6 registration-main-item">
@@ -42,7 +42,7 @@ $templateBasics->getLoginSidebar();
               <div class="input-group-text">
                 <i class="fas fa-lock"></i>
               </div>
-              <input type="password" class="form-control" id="pswd2" placeholder="Heslo podruhé" name="pswd2" required>
+              <input type="password" class="form-control" id="pswd2" placeholder="Heslo podruhé" name="pswd2" maxlength="60" required>
             </div>
           </div>
         </div>
@@ -58,7 +58,7 @@ $templateBasics->getLoginSidebar();
               <div class="input-group-text">
                 <i class="fas fa-user-circle"></i>
               </div>
-              <input type="text" class="form-control" id="first-name" placeholder="Jméno" name="first-name" value="<?php echo $templateData["name"];?>" required>
+              <input type="text" class="form-control" id="first-name" placeholder="Jméno" name="first-name" value="<?php echo $templateData["name"];?>" maxlength="50" required>
             </div>
           </div>
           <div class="col-md-6 registration-main-item">
@@ -67,7 +67,7 @@ $templateBasics->getLoginSidebar();
               <div class="input-group-text">
                 <i class="far fa-user-circle"></i>
               </div>
-              <input type="text" class="form-control" id="last-name" placeholder="Příjmení" name="last-name" value="<?php echo $templateData["surname"];?>" required>
+              <input type="text" class="form-control" id="last-name" placeholder="Příjmení" name="last-name" value="<?php echo $templateData["surname"];?>" maxlength="50" required>
             </div>
           </div>
         </div>
@@ -89,7 +89,7 @@ $templateBasics->getLoginSidebar();
               <div class="input-group-text">
                 <i class="fas fa-phone"></i>
               </div>
-              <input type="tel" class="form-control" id="phone" placeholder="628 267 170" name="phone" value="<?php echo $templateData["phone"];?>" required>
+              <input type="tel" class="form-control" id="phone" placeholder="628 267 170" name="phone" value="<?php echo $templateData["phone"];?>" maxlength="12" required>
             </div>
           </div>
         </div>
@@ -104,7 +104,7 @@ $templateBasics->getLoginSidebar();
               <div class="input-group-text">
                 <i class="fas fa-home"></i>
               </div>
-              <input type="text" class="form-control" id="street" placeholder="Mimozemská 108" name="street" value="<?php echo $templateData["street"];?>" required>
+              <input type="text" class="form-control" id="street" placeholder="Mimozemská 108" name="street" value="<?php echo $templateData["street"];?>" maxlength="50" required>
             </div>
           </div>
         </div>
@@ -115,7 +115,7 @@ $templateBasics->getLoginSidebar();
               <div class="input-group-text">
                 <i class="fas fa-city"></i>
               </div>
-              <input type="text" class="form-control" id="city" placeholder="Město" name="city" value="<?php echo $templateData["city"];?>" required>
+              <input type="text" class="form-control" id="city" placeholder="Město" name="city" value="<?php echo $templateData["city"];?>" maxlength="50" required>
             </div>
           </div>
           <div class="col-md-4 registration-main-item">
@@ -124,7 +124,7 @@ $templateBasics->getLoginSidebar();
               <div class="input-group-text">
                 <i class="far fa-envelope-open"></i>
               </div>
-              <input type="text" class="form-control" id="zip-code" placeholder="123 45" name="zip-code" value="<?php echo $templateData["zip"];?>" required>
+              <input type="text" class="form-control" id="zip-code" placeholder="123 45" name="zip-code" value="<?php echo $templateData["zip"];?>" maxlength="5" required>
             </div>
           </div>
           <div class="col-md-4 registration-main-item">
@@ -133,7 +133,7 @@ $templateBasics->getLoginSidebar();
               <div class="input-group-text">
                 <i class="fas fa-globe"></i>
               </div>
-              <input class="form-control" id="planet" list ="planets" placeholder="Domovská planeta" name="planet" value="<?php echo $templateData["planet"];?>" required>
+              <input class="form-control" id="planet" list ="planets" placeholder="Domovská planeta" name="planet" value="<?php echo $templateData["planet"];?>" maxlength="50" required>
             </div>
             <datalist id="planets">
               <option value="Kepler-452b">

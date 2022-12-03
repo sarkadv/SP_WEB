@@ -125,7 +125,7 @@ $templateBasics->getLoginSidebar();
              <div class="input-group-text">
                <i class="fas fa-rocket"></i>
              </div>
-             <input type="text" class="form-control" id="model-name" placeholder="The Cubicle" name="model-name" required>
+             <input type="text" class="form-control" id="model-name" placeholder="The Cubicle" name="model-name" maxlength="40" required>
            </div>
          </div>
          <div class="col-md-6 management-form-main-item">
@@ -134,7 +134,7 @@ $templateBasics->getLoginSidebar();
              <div class="input-group-text">
                <i class="fas fa-gem"></i>
              </div>
-             <input type="number" class="form-control" id="model-price" min=0 placeholder="30000" name="model-price" required>
+             <input type="number" class="form-control" id="model-price" min=1 placeholder="30000" name="model-price" step="1" required>
            </div>
          </div>
        </div>
@@ -146,7 +146,7 @@ $templateBasics->getLoginSidebar();
             <div class="input-group-text">
               <i class="fas fa-keyboard"></i>
             </div>
-            <input type="text" class="form-control" id="model-desc-short" placeholder="Krátký popis modelu." name="model-desc-short" required>
+            <input type="text" class="form-control" id="model-desc-short" placeholder="Krátký popis modelu." name="model-desc-short" maxlength="100" required>
           </div>
         </div>
       </div>
@@ -165,7 +165,7 @@ $templateBasics->getLoginSidebar();
             <div class="input-group-text">
               <i class="fas fa-child"></i>
             </div>
-            <input type="number" class="form-control" id="model-people" placeholder="4" min=1 name="model-people" required>
+            <input type="number" class="form-control" id="model-people" placeholder="4" min=1 name="model-people" step="1" required>
           </div>
         </div>
         <div class="col-md-4 management-form-main-item">
@@ -174,7 +174,7 @@ $templateBasics->getLoginSidebar();
             <div class="input-group-text">
               <i class="fas fa-clock"></i>
             </div>
-            <input type="number" class="form-control" id="model-battery" placeholder="50" min=1 name="model-battery" required>
+            <input type="number" class="form-control" id="model-battery" placeholder="50" min=1 name="model-battery" step="1" required>
           </div>
         </div>
 
@@ -184,7 +184,7 @@ $templateBasics->getLoginSidebar();
             <div class="input-group-text">
               <i class="fas fa-tachometer-alt"></i>
             </div>
-            <input type="number" class="form-control" id="model-speed" placeholder="2000" min=1 name="model-speed" required>
+            <input type="number" class="form-control" id="model-speed" placeholder="2000" min=1 name="model-speed" step="1" required>
           </div>
         </div>
       </div>
@@ -203,7 +203,7 @@ $templateBasics->getLoginSidebar();
             <div class="input-group-text">
               <i class="fas fa-file"></i>
             </div>
-            <input type="number" class="form-control" id="model-units" placeholder="5" min=0 name="model-units" required>
+            <input type="number" class="form-control" id="model-units" placeholder="5" min=0 name="model-units" step="1" required>
           </div>
         </div>
       </div>
@@ -219,7 +219,7 @@ $templateBasics->getLoginSidebar();
     <div class="row">
       <div class="col-12 management-main-heading">
         <p>
-          Požadovaná stránka neexistuje.
+          Požadovanou stránku můžete zobrazit pouze jako správce.
         </p>
       </div>
     </div>

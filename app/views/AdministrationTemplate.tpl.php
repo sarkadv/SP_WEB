@@ -169,7 +169,7 @@ $templateBasics->getLoginSidebar();
       <div class="row">
         <div class="col-12 management-main-heading">
           <p>
-            Požadovaná stránka neexistuje.
+            Požadovanou stránku můžete zobrazit pouze jako administrátor.
           </p>
         </div>
       </div>
