@@ -85,7 +85,7 @@ class DatabaseConnection
     }
   }
 
-  public function addUser(string $email, string $password1, string $password2, string $name, string $surname, string $rawDate, string $tel, string $city, string $street, string $zip, string $planet, int $role):bool {
+  public function addUser(string $email, string $password1, string $password2, string $name, string $surname, string $rawDate, string $tel, string $city, string $street, string $zip, string $planet):bool {
     $birthDate = date('Y-m-d', strtotime($rawDate));
 
     if($password1 != $password2) {
@@ -131,7 +131,7 @@ class DatabaseConnection
     $encryptedPassword = password_hash($password1, PASSWORD_DEFAULT);
 
     $query = "INSERT INTO ".TABLE_USER." (email, heslo, jmeno, prijmeni, d_narozeni, tel_cislo, c_prava_fk, c_adresy_fk)"
-    ." VALUES ('$email', '$encryptedPassword', '$name', '$surname', '$birthDate', '$tel', '$role', '$adressNumber')";
+    ." VALUES ('$email', '$encryptedPassword', '$name', '$surname', '$birthDate', '$tel', '3', '$adressNumber')";
 
     $this->query($query);
 
@@ -197,6 +197,54 @@ class DatabaseConnection
     $this->query($query);
 
     return true;
+  }
+
+  /**
+   * Metoda povysi uzivatele - zmensi cislo prava o 1.
+   * @param int $userNumber   primarni klic uzivatele
+   * @return bool             true - povyseni se podarilo / false jinak
+   */
+  public function promoteUser(int $userNumber):bool {
+    $roleNumber = $this->getUserByNumber($userNumber)["c_prava_fk"] - 1;
+
+    if($roleNumber <= 0) {
+      return false;
+    }
+
+    $query = "UPDATE ".TABLE_USER." SET c_prava_fk=".$roleNumber." WHERE c_uzivatele_pk=".$userNumber;
+
+    $this->query($query);
+
+    if($this->getUserByNumber($userNumber)["c_prava_fk"] != $roleNumber) {
+      return false;
+    }
+    else {
+      return true;
+    }
+  }
+
+  /**
+   * Metoda zbavi uzivatele funkce - zvysi cislo prava o 1.
+   * @param int $userNumber     primarni klic uzivatele
+   * @return bool               true - zbaveni funkce se podarilo / false jinak
+   */
+  public function demoteUser(int $userNumber):bool {
+    $roleNumber = $this->getUserByNumber($userNumber)["c_prava_fk"] + 1;
+
+    if($roleNumber >= 4) {
+      return false;
+    }
+
+    $query = "UPDATE ".TABLE_USER." SET c_prava_fk=".$roleNumber." WHERE c_uzivatele_pk=".$userNumber;
+
+    $this->query($query);
+
+    if($this->getUserByNumber($userNumber)["c_prava_fk"] != $roleNumber) {
+      return false;
+    }
+    else {
+      return true;
+    }
   }
 
   public function doesUserExist(string $email):bool {

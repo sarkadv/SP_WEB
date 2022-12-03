@@ -45,21 +45,24 @@ class AdministrationController implements IController
           }
         }
       }
-      else if($_POST["user"] == "new") {
-        if(isset($_POST["email"]) && isset($_POST["pswd1"]) && isset($_POST["pswd2"]) && isset($_POST["first-name"]) && isset($_POST["last-name"]) && isset($_POST["birth-date"]) && isset($_POST["phone"]) && isset($_POST["city"]) && isset($_POST["street"]) && isset($_POST["zip-code"]) && isset($_POST["planet"])) {
-          if($this->dbconnection->doesUserExist($_POST["email"])) {
-            echo '<script>alert("Uživatel s touto e-mailovou adresou již existuje.")</script>';
-          }
-          else {
-            $result = $this->dbconnection->addUser($_POST["email"], $_POST["pswd1"], $_POST["pswd2"], $_POST["first-name"], $_POST["last-name"], $_POST["birth-date"], $_POST["phone"], $_POST["city"], $_POST["street"], $_POST["zip-code"], $_POST["planet"], 2);
 
-            if(!$result) {
-              echo '<script>alert("Správce nebyl přidán - chybně vyplněný registrační formulář.")</script>';
-            }
+      else if($_POST["user"] == "promote") {
+        if(isset($_POST["user-number"])) {
+          $result = $this->dbconnection->promoteUser($_POST["user-number"]);
+
+          if(!$result) {
+            echo '<script>alert("Uživatele se nepodařilo povýšit.")</script>';
           }
         }
-        else {
-          echo '<script>alert("Správce nebyl přidán - chybně vyplněný registrační formulář.")</script>';
+      }
+
+      else if($_POST["user"] == "demote") {
+        if(isset($_POST["user-number"])) {
+          $result = $this->dbconnection->demoteUser($_POST["user-number"]);
+
+          if(!$result) {
+            echo '<script>alert("Uživatele se nepodařilo zbavit funkce.")</script>';
+          }
         }
       }
     }

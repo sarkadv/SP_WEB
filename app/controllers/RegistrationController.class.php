@@ -39,7 +39,7 @@ class RegistrationController implements IController
             echo '<script>alert("Uživatel s touto e-mailovou adresou již existuje.")</script>';
           }
           else {
-            $result = $this->dbconnection->addUser($_POST["email"], $_POST["pswd1"], $_POST["pswd2"], $_POST["first-name"], $_POST["last-name"], $_POST["birth-date"], $_POST["phone"], $_POST["city"], $_POST["street"], $_POST["zip-code"], $_POST["planet"], 3);
+            $result = $this->dbconnection->addUser($_POST["email"], $_POST["pswd1"], $_POST["pswd2"], $_POST["first-name"], $_POST["last-name"], $_POST["birth-date"], $_POST["phone"], $_POST["city"], $_POST["street"], $_POST["zip-code"], $_POST["planet"]);
 
             if(!$result) {
               echo '<script>alert("Nebyli jste zaregistrováni - chybně vyplněný registrační formulář.")</script>';
