@@ -2,20 +2,29 @@
 
 require_once CONTROLLERS_PATH."IController.interface.php";
 
+/**
+ * Trida predstavuje kontroler pro stranku Uvod.
+ * Kontroler ma za ukol zpracovat vstup od uzivatele / z databaze, dat data do sablony a jeji vystup vratit.
+ */
 class IntroductionController implements IController
 {
+  /**
+   * @var DatabaseConnection promenna pro praci s databazi
+   */
+  private DatabaseConnection $dbconnection;
 
-  private $dbconnection;
-
+  /**
+   * Konstruktor pro vytvoreni instance tridy kontroleru.
+   */
   public function __construct() {
     require_once MODELS_PATH."DatabaseConnection.class.php";
     $this->dbconnection = new DatabaseConnection();
   }
 
   /**
-   * Metoda vrati HTML kod uvodni stranky.
-   * @param string $title      nazev stranky
-   * @return string     HTML kod uvodni stranky.
+   * Metoda vrati HTML kod stranky odpovidajici kontroleru.
+   * @param string $title       nazev stranky
+   * @return string             HTML kod stranky
    */
   public function show(string $title): string
   {

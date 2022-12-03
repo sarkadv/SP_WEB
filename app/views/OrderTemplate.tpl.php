@@ -1,4 +1,5 @@
 <?php
+// sablona pro stranku Objednavka
 
 require_once VIEWS_PATH."TemplateBasics.class.php";
 

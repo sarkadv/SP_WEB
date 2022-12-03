@@ -1,4 +1,5 @@
 <?php
+// sablona pro stranku Administrace
 
 require_once VIEWS_PATH."TemplateBasics.class.php";
 
@@ -14,7 +15,7 @@ $templateBasics->getLoginSidebar();
 
 ?>
 
-  <!-- Stred stranky - sprava recenzi a produktu -->
+  <!-- Stred stranky - sprava uzivatelu -->
   <div class="row" id="administration-main-content">
     <h2 class="administration-main-heading">
       Administrace webu

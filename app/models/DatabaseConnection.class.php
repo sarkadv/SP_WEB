@@ -1,17 +1,33 @@
 <?php
 
+/**
+ * Trida pro volani metod, ktere provadeji dotazy nad databazi.
+ */
 class DatabaseConnection
 {
+  /**
+   * @var PDO promenna pro praci s databazi
+   */
   private PDO $conn;
 
-  /* Pro prihlasovani / odhlasovani uzivatele */
+  /**
+   * @var Session promenna pro praci se session - prihlasovani a odhlasovani uzivatele
+   */
   private Session $session;
 
-  /* Pro vytvareni vypujcek */
+  /**
+   * @var HireUFO promenna pro vytvareni vypujcek
+   */
   private HireUFO $hireUFO;
 
+  /**
+   * klic do session, pod kterym bude prihlaseny uzivatel ulozen
+   */
   private const KEY_USER = "user";
 
+  /**
+   * Metoda vytvori instanci tridy DatabaseConnection.
+   */
   public function __construct () {
     require_once "settings.inc.php";
     $this->conn = new PDO("mysql:host=".DATABASE_SERVER.";dbname=".DATABASE_NAME, DATABASE_USER, DATABASE_PASSWORD);

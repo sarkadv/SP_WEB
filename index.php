@@ -4,5 +4,5 @@
   require_once "app/AppStart.class.php";
 
   $appStart = new AppStart();
-  $appStart->start();
+  $appStart->start();           // spusteni vybrane stranky
 

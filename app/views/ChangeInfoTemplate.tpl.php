@@ -1,4 +1,5 @@
 <?php
+// sablona pro stranku Zmena osobnich udaju
 
 require_once VIEWS_PATH."TemplateBasics.class.php";
 
@@ -14,7 +15,7 @@ $templateBasics->getLoginSidebar();
 
 ?>
 
-  <!-- Stred stranky - formular pro upravu osobnich udaju - stejny jako pri registraci -->
+  <!-- Stred stranky - formular pro upravu osobnich udaju - stejny jako pri registraci krome emailu -->
   <div class="row" id="registration-main-content">
     <h2 class="registration-main-heading">
       Změna osobních údajů

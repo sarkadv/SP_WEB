@@ -1,4 +1,5 @@
 <?php
+// sablona pro stranku Registrace
 
 require_once VIEWS_PATH."TemplateBasics.class.php";
 

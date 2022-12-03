@@ -2,11 +2,25 @@
 
 require_once CONTROLLERS_PATH."IController.interface.php";
 
+/**
+ * Trida predstavuje kontroler pro stranku Kosik.
+ * Kontroler ma za ukol zpracovat vstup od uzivatele / z databaze, dat data do sablony a jeji vystup vratit.
+ */
 class CartController implements IController
 {
-  private $dbconnection;
-  private $hireUFO;
+  /**
+   * @var DatabaseConnection promenna pro praci s databazi
+   */
+  private DatabaseConnection $dbconnection;
 
+  /**
+   * @var HireUFO promenna pro praci s cookies k ukladani prubehu nakupu
+   */
+  private HireUFO $hireUFO;
+
+  /**
+   * Konstruktor pro vytvoreni instance tridy kontroleru.
+   */
   public function __construct() {
     require_once MODELS_PATH."DatabaseConnection.class.php";
     $this->dbconnection = new DatabaseConnection();
@@ -16,9 +30,9 @@ class CartController implements IController
   }
 
   /**
-   * Metoda vrati HTML kod uvodni stranky.
-   * @param string $title      nazev stranky
-   * @return string     HTML kod uvodni stranky.
+   * Metoda vrati HTML kod stranky odpovidajici kontroleru.
+   * @param string $title       nazev stranky
+   * @return string             HTML kod stranky
    */
   public function show(string $title): string
   {

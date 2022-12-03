@@ -5,9 +5,6 @@
  */
 class TemplateBasics
 {
-  public function __construct() {
-  }
-
   /**
    * Metoda vypise HTML kod hlavicky (od doctype po menu).
    * @param string $title    nazev stranky
