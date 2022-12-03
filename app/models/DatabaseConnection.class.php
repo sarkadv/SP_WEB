@@ -38,6 +38,9 @@ class DatabaseConnection
   }
 
   public function loginUser(string $email, string $password):bool {
+    $email = htmlspecialchars($email);
+    $password = htmlspecialchars($password);
+
     $query = "SELECT * FROM ".TABLE_USER." WHERE email='$email'";
 
     $result = $this->query($query);
@@ -86,6 +89,18 @@ class DatabaseConnection
   }
 
   public function addUser(string $email, string $password1, string $password2, string $name, string $surname, string $rawDate, string $tel, string $city, string $street, string $zip, string $planet):bool {
+    $email = htmlspecialchars($email);
+    $password1 = htmlspecialchars($password1);
+    $password2 = htmlspecialchars($password2);
+    $name = htmlspecialchars($name);
+    $surname = htmlspecialchars($surname);
+    $rawDate = htmlspecialchars($rawDate);
+    $tel = htmlspecialchars($tel);
+    $city = htmlspecialchars($city);
+    $street = htmlspecialchars($street);
+    $zip = htmlspecialchars($zip);
+    $planet = htmlspecialchars($planet);
+
     $birthDate = date('Y-m-d', strtotime($rawDate));
 
     if($password1 != $password2) {
@@ -144,6 +159,17 @@ class DatabaseConnection
   }
 
   public function modifyUser(string $password1, string $password2, string $name, string $surname, string $rawDate, string $tel, string $city, string $street, string $zip, string $planet):bool {
+    $password1 = htmlspecialchars($password1);
+    $password2 = htmlspecialchars($password2);
+    $name = htmlspecialchars($name);
+    $surname = htmlspecialchars($surname);
+    $rawDate = htmlspecialchars($rawDate);
+    $tel = htmlspecialchars($tel);
+    $city = htmlspecialchars($city);
+    $street = htmlspecialchars($street);
+    $zip = htmlspecialchars($zip);
+    $planet = htmlspecialchars($planet);
+
     $user = $this->getLoggedUser();
     $birthDate = date('Y-m-d', strtotime($rawDate));
 
@@ -205,6 +231,8 @@ class DatabaseConnection
    * @return bool             true - povyseni se podarilo / false jinak
    */
   public function promoteUser(int $userNumber):bool {
+    $userNumber = intval($userNumber);
+
     $roleNumber = $this->getUserByNumber($userNumber)["c_prava_fk"] - 1;
 
     if($roleNumber <= 0) {
@@ -229,6 +257,8 @@ class DatabaseConnection
    * @return bool               true - zbaveni funkce se podarilo / false jinak
    */
   public function demoteUser(int $userNumber):bool {
+    $userNumber = intval($userNumber);
+
     $roleNumber = $this->getUserByNumber($userNumber)["c_prava_fk"] + 1;
 
     if($roleNumber >= 4) {
@@ -248,6 +278,8 @@ class DatabaseConnection
   }
 
   public function doesUserExist(string $email):bool {
+    $email = htmlspecialchars($email);
+
     $query = "SELECT * FROM ".TABLE_USER ." WHERE email='$email'";
     $result = $this->query($query);
 
@@ -260,6 +292,8 @@ class DatabaseConnection
   }
 
   public function doesCityExist(string $city):bool {
+    $city = htmlspecialchars($city);
+
     $query = "SELECT * FROM ".TABLE_CITY." WHERE nazev='$city'";
     $result = $this->query($query);
 
@@ -272,6 +306,10 @@ class DatabaseConnection
   }
 
   public function doesAdressExist(string $city, string $street, string $planet):bool {
+    $city = htmlspecialchars($city);
+    $street = htmlspecialchars($street);
+    $planet = htmlspecialchars($planet);
+
     $cityNumber = $this->getCityNumber($city);
 
     if($cityNumber == null) {
@@ -290,6 +328,8 @@ class DatabaseConnection
   }
 
   public function doesHireExist(int $hireNumber):bool {
+    $hireNumber = intval($hireNumber);
+
     $query = "SELECT * FROM ".TABLE_HIRE." WHERE c_vypujcky_pk='$hireNumber'";
     $result = $this->query($query);
 
@@ -302,6 +342,8 @@ class DatabaseConnection
   }
 
   public function doesReviewExist(int $reviewNumber):bool {
+    $reviewNumber = intval($reviewNumber);
+
     $query = "SELECT * FROM ".TABLE_REVIEW." WHERE c_recenze_pk='$reviewNumber'";
     $result = $this->query($query);
 
@@ -314,6 +356,8 @@ class DatabaseConnection
   }
 
   public function doesModelExist(int $modelNumber):bool {
+    $modelNumber = intval($modelNumber);
+
     $query = "SELECT * FROM ".TABLE_MODEL." WHERE c_modelu_pk='$modelNumber'";
     $result = $this->query($query);
 
@@ -326,6 +370,8 @@ class DatabaseConnection
   }
 
   public function doesUFOExist(int $UFONumber):bool {
+    $UFONumber = intval($UFONumber);
+
     $query = "SELECT * FROM ".TABLE_UFO." WHERE c_ufo_pk='$UFONumber'";
     $result = $this->query($query);
 
@@ -337,8 +383,10 @@ class DatabaseConnection
     }
   }
 
-  public function getUFOModelByNumber ($number) {
-    $query = "SELECT * FROM ".TABLE_MODEL." WHERE c_modelu_pk='$number'";
+  public function getUFOModelByNumber (int $modelNumber) {
+    $modelNumber = intval($modelNumber);
+
+    $query = "SELECT * FROM ".TABLE_MODEL." WHERE c_modelu_pk='$modelNumber'";
 
     $result = $this->query($query);
 
@@ -350,8 +398,10 @@ class DatabaseConnection
     }
   }
 
-  public function getUserByNumber ($number) {
-    $query = "SELECT * FROM ".TABLE_USER." WHERE c_uzivatele_pk='$number'";
+  public function getUserByNumber (int $userNumber) {
+    $userNumber = intval($userNumber);
+
+    $query = "SELECT * FROM ".TABLE_USER." WHERE c_uzivatele_pk='$userNumber'";
 
     $result = $this->query($query);
 
@@ -363,8 +413,10 @@ class DatabaseConnection
     }
   }
 
-  public function getCityByNumber($number) {
-    $query = "SELECT * FROM ".TABLE_CITY." WHERE c_mesta_pk='$number'";
+  public function getCityByNumber(int $cityNumber) {
+    $cityNumber = intval($cityNumber);
+
+    $query = "SELECT * FROM ".TABLE_CITY." WHERE c_mesta_pk='$cityNumber'";
 
     $result = $this->query($query);
 
@@ -376,8 +428,10 @@ class DatabaseConnection
     }
   }
 
-  public function getAdressByNumber($number) {
-    $query = "SELECT * FROM ".TABLE_ADRESS." WHERE c_adresy_pk='$number'";
+  public function getAdressByNumber(int $adressNumber) {
+    $adressNumber = intval($adressNumber);
+
+    $query = "SELECT * FROM ".TABLE_ADRESS." WHERE c_adresy_pk='$adressNumber'";
 
     $result = $this->query($query);
 
@@ -389,8 +443,10 @@ class DatabaseConnection
     }
   }
 
-  public function getUFOByNumber($number) {
-    $query = "SELECT * FROM ".TABLE_UFO." WHERE c_ufo_pk='$number'";
+  public function getUFOByNumber(int $UFONumber) {
+    $UFONumber = intval($UFONumber);
+
+    $query = "SELECT * FROM ".TABLE_UFO." WHERE c_ufo_pk='$UFONumber'";
 
     $result = $this->query($query);
 
@@ -402,8 +458,10 @@ class DatabaseConnection
     }
   }
 
-  public function getHireByNumber($number) {
-    $query = "SELECT * FROM ".TABLE_HIRE." WHERE c_vypujcky_pk='$number'";
+  public function getHireByNumber(int $hireNumber) {
+    $hireNumber = intval($hireNumber);
+
+    $query = "SELECT * FROM ".TABLE_HIRE." WHERE c_vypujcky_pk='$hireNumber'";
 
     $result = $this->query($query);
 
@@ -415,8 +473,10 @@ class DatabaseConnection
     }
   }
 
-  public function getReviewByNumber($number) {
-    $query = "SELECT * FROM ".TABLE_REVIEW." WHERE c_recenze_pk='$number'";
+  public function getReviewByNumber(int $reviewNumber) {
+    $reviewNumber = intval($reviewNumber);
+
+    $query = "SELECT * FROM ".TABLE_REVIEW." WHERE c_recenze_pk='$reviewNumber'";
 
     $result = $this->query($query);
 
@@ -428,8 +488,10 @@ class DatabaseConnection
     }
   }
 
-  public function getRoleByNumber(int $number) {
-    $query = "SELECT * FROM ".TABLE_ROLE." WHERE c_prava_pk='$number'";
+  public function getRoleByNumber(int $roleNumber) {
+    $roleNumber = intval($roleNumber);
+
+    $query = "SELECT * FROM ".TABLE_ROLE." WHERE c_prava_pk='$roleNumber'";
 
     $result = $this->query($query);
 
@@ -441,7 +503,9 @@ class DatabaseConnection
     }
   }
 
-  public function getCityNumber($city) {
+  public function getCityNumber(string $city) {
+    $city = htmlspecialchars($city);
+
     $query = "SELECT * FROM ".TABLE_CITY." WHERE nazev='$city'";
 
     $result = $this->query($query);
@@ -455,7 +519,11 @@ class DatabaseConnection
 
   }
 
-  public function getAdressNumber($city, $street, $planet) {
+  public function getAdressNumber(string $city, string $street, string $planet) {
+    $city = htmlspecialchars($city);
+    $street = htmlspecialchars($street);
+    $planet = htmlspecialchars($planet);
+
     $cityNumber = $this->getCityNumber($city);
 
     $query = "SELECT * FROM ".TABLE_ADRESS." WHERE ulice='$street' AND planeta='$planet' AND c_mesta_fk='$cityNumber'";
@@ -490,6 +558,8 @@ class DatabaseConnection
   }
 
   public function getNumberOfUFOsAvailableByModelNumber(int $modelNumber):int {
+    $modelNumber = intval($modelNumber);
+
     $query = "SELECT * FROM ".TABLE_UFO." WHERE c_modelu_fk='$modelNumber'";
     $allUFOs = $this->query($query);
 
@@ -521,6 +591,8 @@ class DatabaseConnection
    * @return mixed|null         primarni klic UFO / null
    */
   public function getAvailableUFONumberByModelNumber(int $modelNumber) {
+    $modelNumber = intval($modelNumber);
+
     $query = "SELECT * FROM ".TABLE_UFO." WHERE c_modelu_fk='$modelNumber'";
     $allUFOs = $this->query($query);
 
@@ -534,6 +606,9 @@ class DatabaseConnection
   }
 
   public function getReviewByUserModel(int $userNumber, int $modelNumber) {
+    $userNumber = intval($userNumber);
+    $modelNumber = intval($modelNumber);
+
     $query = "SELECT * FROM ".TABLE_REVIEW." WHERE c_uzivatele_fk='$userNumber' AND c_modelu_fk='$modelNumber'";
 
     $result = $this->query($query);
@@ -546,7 +621,9 @@ class DatabaseConnection
     }
   }
 
-  public function isUFOFree($UFONumber):bool {
+  public function isUFOFree(int $UFONumber):bool {
+    $UFONumber = intval($UFONumber);
+
     $query = "SELECT * FROM ".TABLE_HIRE." WHERE c_ufo_fk='$UFONumber'";
 
     $result = $this->query($query);
@@ -577,6 +654,8 @@ class DatabaseConnection
    * @return array                  pole primarnich klicu vytvorenych vypujcek
    */
   public function createNewHire(string $accountNumber):array {
+    $accountNumber = htmlspecialchars($accountNumber);
+
     $allUFOS = $this->hireUFO->getAllSavedUFOs();
     $hireResult = [];
 
@@ -599,7 +678,7 @@ class DatabaseConnection
     $i = 0;
     foreach($allUFOS as $UFO) {
       $UFO = json_decode($UFO, true);
-      $modelNumber = $UFO["model"];
+      $modelNumber = intval($UFO["model"]);
 
       $availableUFONumber = $this->getAvailableUFONumberByModelNumber($modelNumber);
 
@@ -607,13 +686,13 @@ class DatabaseConnection
         return [];
       }
 
-      $days = $UFO["days"];
+      $days = intval($UFO["days"]);
       $dateEnd = date('Y-m-d', strtotime($dateNow. ' + '.$days.' days'));
       $userNumber = $this->getLoggedUser()["c_uzivatele_pk"];
-      $cityName = $adress["city"];
-      $street = $adress["street"];
-      $planet = $adress["planet"];
-      $zip = $adress["zip"];
+      $cityName = htmlspecialchars($adress["city"]);
+      $street = htmlspecialchars($adress["street"]);
+      $planet = htmlspecialchars($adress["planet"]);
+      $zip = htmlspecialchars($adress["zip"]);
 
       if(!$this->doesCityExist($cityName)) { // mesto jeste neexistuje -> vytvorime ho
         $queryCity = "INSERT INTO ".TABLE_CITY." (nazev, psc)"." VALUES ('$cityName', '$zip')";
@@ -666,7 +745,9 @@ class DatabaseConnection
     return $hireResult;
   }
 
-  public function getReviewsByModelNumber($modelNumber):array {
+  public function getReviewsByModelNumber(int $modelNumber):array {
+    $modelNumber = intval($modelNumber);
+
     $query = "SELECT * FROM ".TABLE_REVIEW." WHERE c_modelu_fk='$modelNumber'";
 
     return $this->query($query);
@@ -674,6 +755,10 @@ class DatabaseConnection
   }
 
   public function createNewReview(int $rating, string $text, int $modelNumber):bool {
+    $rating = intval($rating);
+    $text = htmlspecialchars($text);
+    $modelNumber = intval($modelNumber);
+
     $user = $this->getLoggedUser();
     $userNumber = $user["c_uzivatele_pk"];
 
@@ -712,17 +797,20 @@ class DatabaseConnection
    * @param int $modelNumber      primarni klic modelu
    * @return bool             true - uzivatel uz napsal na tento model recenzi / false jinak
    */
-  public function doesReviewByThisUserExist($userNumber, $modelNumber):bool {
-      $query = "SELECT * FROM ".TABLE_REVIEW." WHERE c_uzivatele_fk=".$userNumber." AND c_modelu_fk=".$modelNumber;
+  public function doesReviewByThisUserExist(int $userNumber, int $modelNumber):bool {
+    $userNumber = intval($userNumber);
+    $modelNumber = intval($modelNumber);
 
-      $result = $this->query($query);
+    $query = "SELECT * FROM ".TABLE_REVIEW." WHERE c_uzivatele_fk=".$userNumber." AND c_modelu_fk=".$modelNumber;
 
-      if(count($result) > 0) {
-        return true;
-      }
-      else {
-        return false;
-      }
+    $result = $this->query($query);
+
+    if(count($result) > 0) {
+      return true;
+    }
+    else {
+      return false;
+    }
   }
 
   /**
@@ -732,6 +820,8 @@ class DatabaseConnection
    * @return bool               true - uzivatel si nekdy model zapujcil / false jinak
    */
   public function hasUserEverHiredThisModel($userNumber, $modelNumber):bool {
+    $userNumber = intval($userNumber);
+    $modelNumber = intval($modelNumber);
 
     $query = "SELECT * FROM ".TABLE_HIRE." INNER JOIN ".TABLE_UFO." ON ".TABLE_HIRE.".c_ufo_fk = ".TABLE_UFO.".c_ufo_pk WHERE c_uzivatele_fk=".$userNumber." AND c_modelu_fk=".$modelNumber;
 
@@ -751,6 +841,8 @@ class DatabaseConnection
    * @return array                  pole nejnovejsich recenzi
    */
   public function getNewestReviews(int $numberOfReviews):array {
+    $numberOfReviews = intval($numberOfReviews);
+
     $query = "SELECT c_recenze_pk FROM ".TABLE_REVIEW;
     $primaryKeys = $this->query($query);
 
@@ -778,6 +870,8 @@ class DatabaseConnection
    * @return array            pole vypujcek uzivatele
    */
   public function getHiresByUser(int $userNumber):array {
+    $userNumber = intval($userNumber);
+
     $query = "SELECT * FROM ".TABLE_HIRE." WHERE c_uzivatele_fk=".$userNumber;
 
     return $this->query($query);
@@ -789,6 +883,8 @@ class DatabaseConnection
    * @return array            pole recenzi uzivatele
    */
   public function getReviewsByUser(int $userNumber):array {
+    $userNumber = intval($userNumber);
+
     $query = "SELECT * FROM ".TABLE_REVIEW." WHERE c_uzivatele_fk=".$userNumber;
 
     return $this->query($query);
@@ -800,6 +896,8 @@ class DatabaseConnection
    * @return bool               true - recenze byla odstranena / false jinak
    */
   public function deleteReview(int $reviewNumber):bool {
+    $reviewNumber = intval($reviewNumber);
+
     $query = "DELETE FROM ".TABLE_REVIEW." WHERE c_recenze_pk=".$reviewNumber;
 
     $this->query($query);
@@ -819,6 +917,8 @@ class DatabaseConnection
    * @return bool               true - uzivatel byl odstranen / false jinak
    */
   public function deleteUser(int $userNumber):bool {
+    $userNumber = intval($userNumber);
+
     $user = $this->getUserByNumber($userNumber);
     $email = $user["email"];
 
@@ -856,6 +956,16 @@ class DatabaseConnection
    * @return bool                 true - model se podarilo vlozit / false jinak
    */
   public function createNewModel(string $name, int $price, string $descShort, string $descLong, int $people, int $battery, int $speed, string $img, int $units):bool {
+    $name = htmlspecialchars($name);
+    $price = intval($price);
+    $descShort = htmlspecialchars($descShort);
+    $descLong = htmlspecialchars($descLong);
+    $people = intval($people);
+    $battery = intval($battery);
+    $speed = intval($speed);
+    $img = htmlspecialchars($img);
+    $units = intval($units);
+
     if($descLong == null) {
       $descLong = "";
     }
@@ -891,7 +1001,9 @@ class DatabaseConnection
     }
   }
 
-  public function createNewUFO($modelNumber):bool {
+  public function createNewUFO(int $modelNumber):bool {
+    $modelNumber = intval($modelNumber);
+
     $query = "INSERT INTO ".TABLE_UFO." (c_modelu_fk) VALUES ('$modelNumber')";
 
     $this->query($query);
