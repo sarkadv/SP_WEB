@@ -40,6 +40,11 @@ class DatabaseConnection
     $this->hireUFO = new HireUFO();
   }
 
+  /**
+   * Metoda provede dotaz nad databazi bez osetreni SQL injection.
+   * @param string $query     dotaz
+   * @return array            ziskana data
+   */
   public function query(string $query):array {
     $result = $this->conn->query($query);
 
@@ -53,6 +58,12 @@ class DatabaseConnection
     }
   }
 
+  /**
+   * Metoda zpracuje zadany email a heslo, pokud odpovidaji uzivateli v databazi, prihlasi jej.
+   * @param string $email         email
+   * @param string $password      heslo
+   * @return bool                 true - uzivatel byl prihlasen / false - takovy uzivatel v databazi neexistuje
+   */
   public function loginUser(string $email, string $password):bool {
     $email = htmlspecialchars($email);
     $password = htmlspecialchars($password);
@@ -75,16 +86,28 @@ class DatabaseConnection
     }
   }
 
+  /**
+   * Metoda odhlasi aktualniho uzivatele (odstrani ho ze session).
+   * @return void
+   */
   public function logoutUser() {
     if(isset($_SESSION[self::KEY_USER])) {
       $this->session->unsetSession(self::KEY_USER);
     }
   }
 
+  /**
+   * Metoda zjisti, zda je nejaky uzivatel prihlasen.
+   * @return bool     true - uzivatel je prihlasen / false jinak
+   */
   public function isUserLoggedIn():bool {
     return $this->session->isSessionSet(self::KEY_USER);
   }
 
+  /**
+   * Metoda vrati prave prihlaseneho uzivatele.
+   * @return mixed|null     prave prihlaseny uzivatel / null, pokud uzivatel prihlasen neni
+   */
   public function getLoggedUser() {
     if($this->isUserLoggedIn()) {
       $email = $this->session->readSession(self::KEY_USER);
@@ -104,6 +127,21 @@ class DatabaseConnection
     }
   }
 
+  /**
+   * Metoda prida noveho uzivatele do databaze pri registraci.
+   * @param string $email         email
+   * @param string $password1     heslo z prvniho pole formulare
+   * @param string $password2     heslo z druheho pole formulare
+   * @param string $name          jmeno
+   * @param string $surname       prijmeni
+   * @param string $rawDate       datum narozeni
+   * @param string $tel           telefonni cislo
+   * @param string $city          nazev mesta
+   * @param string $street        ulice
+   * @param string $zip           PSC
+   * @param string $planet        planeta
+   * @return bool                 true - uzivatel byl zaregistrovan / false jinak.
+   */
   public function addUser(string $email, string $password1, string $password2, string $name, string $surname, string $rawDate, string $tel, string $city, string $street, string $zip, string $planet):bool {
     $email = htmlspecialchars($email);
     $password1 = htmlspecialchars($password1);
@@ -174,6 +212,20 @@ class DatabaseConnection
     }
   }
 
+  /**
+   * Metoda modifikuje udaje prave prihlaseneho uzivatele (krome emailu).
+   * @param string $password1     heslo z prvniho pole formulare
+   * @param string $password2     heslo z druheho pole formulare
+   * @param string $name          jmeno
+   * @param string $surname       prijmeni
+   * @param string $rawDate       datum narozeni
+   * @param string $tel           telefonni cislo
+   * @param string $city          nazev mesta
+   * @param string $street        ulice
+   * @param string $zip           PSC
+   * @param string $planet        planeta
+   * @return bool                 true - uzivatel byl modifikovan / false jinak.
+   */
   public function modifyUser(string $password1, string $password2, string $name, string $surname, string $rawDate, string $tel, string $city, string $street, string $zip, string $planet):bool {
     $password1 = htmlspecialchars($password1);
     $password2 = htmlspecialchars($password2);
@@ -287,6 +339,11 @@ class DatabaseConnection
     }
   }
 
+  /**
+   * Metoda zjisti, zda existuje uzivatel s danym emailem.
+   * @param string $email     email
+   * @return bool             true - uzivatel s takovym emailem existuje / false jinak
+   */
   public function doesUserExist(string $email):bool {
     $email = htmlspecialchars($email);
 
@@ -307,6 +364,11 @@ class DatabaseConnection
     }
   }
 
+  /**
+   * Metoda zjisti, zda existuje mesto s danym nazvem.
+   * @param string $city      nazev mesta
+   * @return bool             true - mesto s takovym nazvem existuje / false jinak
+   */
   public function doesCityExist(string $city):bool {
     $city = htmlspecialchars($city);
 
@@ -327,6 +389,13 @@ class DatabaseConnection
     }
   }
 
+  /**
+   * Metoda zjisti, zda existuje adresa s takovym nazvem mesta, ulici a planetou.
+   * @param string $city        nazev mesta
+   * @param string $street      ulice
+   * @param string $planet      planeta
+   * @return bool               true - takova adresa existuje / false jinak
+   */
   public function doesAdressExist(string $city, string $street, string $planet):bool {
     $city = htmlspecialchars($city);
     $street = htmlspecialchars($street);
@@ -355,78 +424,11 @@ class DatabaseConnection
     }
   }
 
-  public function doesHireExist(int $hireNumber):bool {
-    $query = "SELECT * FROM ".TABLE_HIRE." WHERE c_vypujcky_pk=?";
-    $result = $this->conn->prepare($query);
-
-    if(!$result->execute(array($hireNumber))) {
-      return false;
-    }
-    else {
-      $result = $result->fetchAll();
-      if(count($result) > 0) {
-        return true;
-      }
-      else {
-        return false;
-      }
-    }
-  }
-
-  public function doesReviewExist(int $reviewNumber):bool {
-    $query = "SELECT * FROM ".TABLE_REVIEW." WHERE c_recenze_pk=?";
-    $result = $this->conn->prepare($query);
-
-    if(!$result->execute(array($reviewNumber))) {
-      return false;
-    }
-    else {
-      $result = $result->fetchAll();
-      if(count($result) > 0) {
-        return true;
-      }
-      else {
-        return false;
-      }
-    }
-  }
-
-  public function doesModelExist(int $modelNumber):bool {
-    $query = "SELECT * FROM ".TABLE_MODEL." WHERE c_modelu_pk=?";
-    $result = $this->conn->prepare($query);
-
-    if(!$result->execute(array($modelNumber))) {
-      return false;
-    }
-    else {
-      $result = $result->fetchAll();
-      if(count($result) > 0) {
-        return true;
-      }
-      else {
-        return false;
-      }
-    }
-  }
-
-  public function doesUFOExist(int $UFONumber):bool {
-    $query = "SELECT * FROM ".TABLE_UFO." WHERE c_ufo_pk=?";
-    $result = $this->conn->prepare($query);
-
-    if(!$result->execute(array($UFONumber))) {
-      return false;
-    }
-    else {
-      $result = $result->fetchAll();
-      if(count($result) > 0) {
-        return true;
-      }
-      else {
-        return false;
-      }
-    }
-  }
-
+  /**
+   * Metoda vrati cely radek UFO modelu podle jeho primarniho klice.
+   * @param int $modelNumber      cislo modelu
+   * @return mixed|null           radek modelu v databazi / null, pokud cislo modelu zadnemu modelu neodpovida
+   */
   public function getUFOModelByNumber (int $modelNumber) {
     $query = "SELECT * FROM ".TABLE_MODEL." WHERE c_modelu_pk=?";
     $result = $this->conn->prepare($query);
@@ -445,6 +447,11 @@ class DatabaseConnection
     }
   }
 
+  /**
+   * Metoda vrati cely radek uzivatele podle jeho primarniho klice.
+   * @param int $userNumber     cislo uzivatele
+   * @return mixed|null         radek uzivatele v databazi / null, pokud cislo uzivatele zadnemu uzivateli neodpovida
+   */
   public function getUserByNumber (int $userNumber) {
     $query = "SELECT * FROM ".TABLE_USER." WHERE c_uzivatele_pk=?";
     $result = $this->conn->prepare($query);
@@ -463,6 +470,11 @@ class DatabaseConnection
     }
   }
 
+  /**
+   * Metoda vrati cely radek mesta podle jeho primarniho klice.
+   * @param int $cityNumber     cislo mesta
+   * @return mixed|null         radek mesta v databazi / null, pokud cislo mesta zadnemu mestu neodpovida
+   */
   public function getCityByNumber(int $cityNumber) {
     $query = "SELECT * FROM ".TABLE_CITY." WHERE c_mesta_pk=?";
     $result = $this->conn->prepare($query);
@@ -481,6 +493,11 @@ class DatabaseConnection
     }
   }
 
+  /**
+   * Metoda vrati cely radek adresy podle jejiho primarniho klice.
+   * @param int $adressNumber     cislo adresy
+   * @return mixed|null           radek adresy v databazi / null, pokud cislo adresy zadne adrese neodpovida
+   */
   public function getAdressByNumber(int $adressNumber) {
     $query = "SELECT * FROM ".TABLE_ADRESS." WHERE c_adresy_pk=?";
     $result = $this->conn->prepare($query);
@@ -499,6 +516,11 @@ class DatabaseConnection
     }
   }
 
+  /**
+   * Metoda vrati cely radek UFO vozidla podle jeho primarniho klice.
+   * @param int $userNumber     cislo UFO vozidla
+   * @return mixed|null         radek UFO vozidla v databazi / null, pokud cislo UFO vozidla zadnemu vozidlu neodpovida
+   */
   public function getUFOByNumber(int $UFONumber) {
     $query = "SELECT * FROM ".TABLE_UFO." WHERE c_ufo_pk=?";
     $result = $this->conn->prepare($query);
@@ -517,6 +539,11 @@ class DatabaseConnection
     }
   }
 
+  /**
+   * Metoda vrati cely radek vypujcky podle jejiho primarniho klice.
+   * @param int $userNumber     cislo vypujcky
+   * @return mixed|null         radek vypujcky v databazi / null, pokud cislo vypujcky zadne vypujcce neodpovida
+   */
   public function getHireByNumber(int $hireNumber) {
     $query = "SELECT * FROM ".TABLE_HIRE." WHERE c_vypujcky_pk=?";
     $result = $this->conn->prepare($query);
@@ -535,6 +562,11 @@ class DatabaseConnection
     }
   }
 
+  /**
+   * Metoda vrati cely radek recenze podle jejiho primarniho klice.
+   * @param int $userNumber     cislo recenze
+   * @return mixed|null         radek recenze v databazi / null, pokud cislo recenze zadne recenzi neodpovida
+   */
   public function getReviewByNumber(int $reviewNumber) {
     $query = "SELECT * FROM ".TABLE_REVIEW." WHERE c_recenze_pk=?";
     $result = $this->conn->prepare($query);
@@ -553,6 +585,11 @@ class DatabaseConnection
     }
   }
 
+  /**
+   * Metoda vrati cely radek prava podle jeho primarniho klice.
+   * @param int $userNumber     cislo prava
+   * @return mixed|null         radek prava v databazi / null, pokud cislo prava zadnemu pravu neodpovida
+   */
   public function getRoleByNumber(int $roleNumber) {
     $query = "SELECT * FROM ".TABLE_ROLE." WHERE c_prava_pk=?";
     $result = $this->conn->prepare($query);
@@ -571,6 +608,11 @@ class DatabaseConnection
     }
   }
 
+  /**
+   * Metoda zjisti primarni klic mesta podle jeho nazvu.
+   * @param string $city      nazev mesta
+   * @return mixed|null       primarni klic mesta / null, pokud mesto s takovym nazvem neexistuje
+   */
   public function getCityNumber(string $city) {
     $city = htmlspecialchars($city);
 
@@ -592,6 +634,13 @@ class DatabaseConnection
     }
   }
 
+  /**
+   * Metoda zjisti primarni klic adresy podle nazvu mesta, ulice a planety.
+   * @param string $city        nazev mesta
+   * @param string $street      ulice
+   * @param string $planet      planeta
+   * @return mixed|null         primarni klic adresy / null, pokud takova adresa neexistuje
+   */
   public function getAdressNumber(string $city, string $street, string $planet) {
     $city = htmlspecialchars($city);
     $street = htmlspecialchars($street);
@@ -618,24 +667,42 @@ class DatabaseConnection
 
   }
 
+  /**
+   * Metoda vrati seznam vsech existujicich UFO modelu v databazi.
+   * @return array      vsechny existujici UFO modely
+   */
   public function getAllUFOModels():array {
     $query = "SELECT * FROM ".TABLE_MODEL;
 
     return $this->query($query);
   }
 
+  /**
+   * Metoda vrati seznam vsech recenzi v databazi.
+   * @return array      vsechny existujici recenze
+   */
   public function getAllReviews():array {
     $query = "SELECT * FROM ".TABLE_REVIEW." ORDER BY c_modelu_fk";
 
     return $this->query($query);
   }
 
+  /**
+   * Metoda vrati seznam vsech uzivatelu v databazi.
+   * @return array      vsichni existujici uzivatele
+   */
   public function getAllUsers():array {
     $query = "SELECT * FROM ".TABLE_USER." ORDER BY c_prava_fk";
 
     return $this->query($query);
   }
 
+  /**
+   * Metoda zjisti pocet volnych UFO vozidel podle modelu.
+   * UFO je volne, jestlize neni v kosiku a neni asociovano s vypujckou, ktera prave probiha.
+   * @param int $modelNumber      cislo modelu
+   * @return int                  pocet volnych UFO vozidel tohoto modelu
+   */
   public function getNumberOfUFOsAvailableByModelNumber(int $modelNumber):int {
     $query = "SELECT * FROM ".TABLE_UFO." WHERE c_modelu_fk=?";
     $allUFOs = $this->conn->prepare($query);
@@ -669,7 +736,7 @@ class DatabaseConnection
   /**
    * Vrati primarni klic prvniho dostupneho UFO podle modelu.
    * @param int $modelNumber    cislo modelu UFO
-   * @return mixed|null         primarni klic UFO / null
+   * @return mixed|null         primarni klic UFO / null, pokud zadne UFO neni dostupne
    */
   public function getAvailableUFONumberByModelNumber(int $modelNumber) {
     $query = "SELECT * FROM ".TABLE_UFO." WHERE c_modelu_fk=?";
@@ -688,6 +755,12 @@ class DatabaseConnection
     return null;
   }
 
+  /**
+   * Metoda vrati recenzi daneho uzivatele na dany model.
+   * @param int $userNumber       cislo uzivatele
+   * @param int $modelNumber      cislo modelu
+   * @return mixed|null           recenze uzivatele na dany model / null, pokud takova recenze neexistuje
+   */
   public function getReviewByUserModel(int $userNumber, int $modelNumber) {
     $query = "SELECT * FROM ".TABLE_REVIEW." WHERE c_uzivatele_fk=? AND c_modelu_fk=?";
     $result = $this->conn->prepare($query);
@@ -706,6 +779,12 @@ class DatabaseConnection
     }
   }
 
+  /**
+   * Metoda zjisti, zda je UFO vozidlo volne.
+   * Vozidlo je volne, pokud neni asociovano s vypujckou, ktera prave probiha.
+   * @param int $UFONumber      cislo UFO vozidla
+   * @return bool               true - vozidlo je prave volne / false jinak
+   */
   public function isUFOFree(int $UFONumber):bool {
     $query = "SELECT * FROM ".TABLE_HIRE." WHERE c_ufo_fk=?";
     $result = $this->conn->prepare($query);
@@ -832,6 +911,11 @@ class DatabaseConnection
     return $hireResult;
   }
 
+  /**
+   * Metoda ziska vsechny recenze na dany model.
+   * @param int $modelNumber      cislo modelu
+   * @return array                radky vsech recenzi na dany model
+   */
   public function getReviewsByModelNumber(int $modelNumber):array {
     $query = "SELECT * FROM ".TABLE_REVIEW." WHERE c_modelu_fk=?";
     $result = $this->conn->prepare($query);
@@ -845,6 +929,13 @@ class DatabaseConnection
 
   }
 
+  /**
+   * Metoda vytvori novou recenzi a vlozi ji do tabulky RECENZE.
+   * @param int $rating         hvezdickove ohodnoceni
+   * @param string $text        text recenze
+   * @param int $modelNumber    cislo modelu
+   * @return bool               true - recenze byla vytvorena / false jinak
+   */
   public function createNewReview(int $rating, string $text, int $modelNumber):bool {
     $text = htmlspecialchars($text);
 
@@ -885,7 +976,7 @@ class DatabaseConnection
    * Metoda zjisti, zda uz uzivatel napsal recenzi na tento model.
    * @param int $userNumber       primarni klic uzivatele
    * @param int $modelNumber      primarni klic modelu
-   * @return bool             true - uzivatel uz napsal na tento model recenzi / false jinak
+   * @return bool                 true - uzivatel uz napsal na tento model recenzi / false jinak
    */
   public function doesReviewByThisUserExist(int $userNumber, int $modelNumber):bool {
     $query = "SELECT * FROM ".TABLE_REVIEW." WHERE c_uzivatele_fk=? AND c_modelu_fk=?";
@@ -1033,6 +1124,7 @@ class DatabaseConnection
       return false;
     }
 
+    // odstraneni uzivatele
     $query = "DELETE FROM ".TABLE_USER." WHERE c_uzivatele_pk=?";
     $result = $this->conn->prepare($query);
 
@@ -1097,6 +1189,11 @@ class DatabaseConnection
 
   }
 
+  /**
+   * Metoda vytvori nove UFO vozidlo daneho modelu a vlozi ho do tabulky UFO.
+   * @param int $modelNumber      cislo modelu
+   * @return bool                 true - vozidlo bylo vytvoreno / false jinak
+   */
   public function createNewUFO(int $modelNumber):bool {
     $query = "INSERT INTO ".TABLE_UFO." (c_modelu_fk) VALUES (?)";
     $result = $this->conn->prepare($query);
