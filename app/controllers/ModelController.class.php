@@ -114,7 +114,7 @@ class ModelController implements IController
       $templateData["reviews"] = $reviewsInfo;
     }
 
-    if($templateData["user_logged"]) {
+    if($templateData["user_logged"] && $UFOModel != null) {
       $user = $this->dbconnection->getLoggedUser();
       $templateData["user_role"] = $user["c_prava_fk"];
       $userNumber = $user["c_uzivatele_pk"];

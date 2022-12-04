@@ -256,6 +256,7 @@ body {
   padding: 0;
   border: none;
   text-decoration: none;
+  font-size: x-large;
 }
 
 .products-main-name-btn:hover {

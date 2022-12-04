@@ -41,7 +41,7 @@ $templateBasics->getLoginSidebar();
 
         <div class="row">
           <div class="col-md-6 registration-main-item">
-            <label for="psw1" class="form-label">Heslo</label>
+            <label for="pswd1" class="form-label">Heslo</label>
             <div class="input-group">
               <div class="input-group-text">
                 <i class="fas fa-key"></i>

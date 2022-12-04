@@ -41,7 +41,7 @@ $templateBasics->getLoginSidebar();
             <!-- Formular pro rozkliknuti stranky vozidla -->
             <form action='index.php?' method='get'>
               <button type='submit' name='page' value='model' class='products-main-name-btn'>
-                <h4 class='card-title'><?php echo $name;?></h4>
+                <?php echo $name;?>
               </button>
               <input type="hidden" name="examine" value='<?php echo $modelNumber;?>'>
             </form>
@@ -52,7 +52,7 @@ $templateBasics->getLoginSidebar();
               ?>
               <!-- Formular pro vypujceni vozidla -->
               <form method='post'>
-                <label for='$input_id' class='form-label'>Počet dnů:</label>
+                <label for='<?php echo $input_id;?>' class='form-label'>Počet dnů:</label>
                 <input type='number' class='form-control' id='<?php echo $input_id;?>' placeholder='1' min='1' max='14' name='days' required>
                 <button type='submit' class='products-main-btn-product' name='hire' value='<?php echo $modelNumber;?>'>
                   <i class='fas fa-shopping-basket'></i>
@@ -79,7 +79,6 @@ $templateBasics->getLoginSidebar();
     }
     ?>
 
-  </div>
   </div>
 
   <script>

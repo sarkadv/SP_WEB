@@ -518,7 +518,7 @@ class DatabaseConnection
 
   /**
    * Metoda vrati cely radek UFO vozidla podle jeho primarniho klice.
-   * @param int $userNumber     cislo UFO vozidla
+   * @param int $UFONumber     cislo UFO vozidla
    * @return mixed|null         radek UFO vozidla v databazi / null, pokud cislo UFO vozidla zadnemu vozidlu neodpovida
    */
   public function getUFOByNumber(int $UFONumber) {
@@ -541,7 +541,7 @@ class DatabaseConnection
 
   /**
    * Metoda vrati cely radek vypujcky podle jejiho primarniho klice.
-   * @param int $userNumber     cislo vypujcky
+   * @param int $hireNumber     cislo vypujcky
    * @return mixed|null         radek vypujcky v databazi / null, pokud cislo vypujcky zadne vypujcce neodpovida
    */
   public function getHireByNumber(int $hireNumber) {
@@ -564,7 +564,7 @@ class DatabaseConnection
 
   /**
    * Metoda vrati cely radek recenze podle jejiho primarniho klice.
-   * @param int $userNumber     cislo recenze
+   * @param int $reviewNumber     cislo recenze
    * @return mixed|null         radek recenze v databazi / null, pokud cislo recenze zadne recenzi neodpovida
    */
   public function getReviewByNumber(int $reviewNumber) {
@@ -587,7 +587,7 @@ class DatabaseConnection
 
   /**
    * Metoda vrati cely radek prava podle jeho primarniho klice.
-   * @param int $userNumber     cislo prava
+   * @param int $roleNumber     cislo prava
    * @return mixed|null         radek prava v databazi / null, pokud cislo prava zadnemu pravu neodpovida
    */
   public function getRoleByNumber(int $roleNumber) {
@@ -1003,7 +1003,7 @@ class DatabaseConnection
    * @param int $modelNumber    primarni klic modelu
    * @return bool               true - uzivatel si nekdy model zapujcil / false jinak
    */
-  public function hasUserEverHiredThisModel($userNumber, $modelNumber):bool {
+  public function hasUserEverHiredThisModel(int $userNumber, int $modelNumber):bool {
     $query = "SELECT * FROM ".TABLE_HIRE." INNER JOIN ".TABLE_UFO." ON ".TABLE_HIRE.".c_ufo_fk = ".TABLE_UFO.".c_ufo_pk WHERE c_uzivatele_fk=? AND c_modelu_fk=?";
     $result = $this->conn->prepare($query);
 
@@ -1105,9 +1105,6 @@ class DatabaseConnection
    * @return bool               true - uzivatel byl odstranen / false jinak
    */
   public function deleteUser(int $userNumber):bool {
-    $user = $this->getUserByNumber($userNumber);
-    $email = $user["email"];
-
     // odstraneni vypujcek
     $query = "DELETE FROM ".TABLE_HIRE." WHERE c_uzivatele_fk=?";
     $result = $this->conn->prepare($query);
