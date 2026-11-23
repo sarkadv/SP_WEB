@@ -1,0 +1,122 @@
+CREATE TABLE IF NOT EXISTS MESTO (
+    c_mesta_pk INT NOT NULL AUTO_INCREMENT,
+    nazev VARCHAR(50) NOT NULL,
+    psc VARCHAR(5),
+    PRIMARY KEY(c_mesta_pk)
+) ENGINE = INNODB
+  CHARACTER SET = utf8
+  COLLATE = UTF8_CZECH_CI;
+
+CREATE TABLE IF NOT EXISTS ADRESA (
+    c_adresy_pk INT NOT NULL AUTO_INCREMENT,
+    ulice VARCHAR(50) NOT NULL,
+    planeta VARCHAR(50) NOT NULL,
+    c_mesta_fk INT NOT NULL,
+    PRIMARY KEY(c_adresy_pk)
+) ENGINE = INNODB
+  CHARACTER SET = utf8
+  COLLATE = UTF8_CZECH_CI;
+
+ALTER TABLE ADRESA
+ADD FOREIGN KEY (c_mesta_fk) REFERENCES MESTO (c_mesta_pk);
+
+CREATE TABLE IF NOT EXISTS PRAVO (
+    c_prava_pk INT NOT NULL AUTO_INCREMENT,
+    nazev VARCHAR(20) NOT NULL,
+    PRIMARY KEY(c_prava_pk)
+) ENGINE = INNODB
+  CHARACTER SET = utf8
+  COLLATE = UTF8_CZECH_CI;
+
+CREATE TABLE IF NOT EXISTS UZIVATEL (
+    c_uzivatele_pk INT NOT NULL AUTO_INCREMENT,
+    email VARCHAR(254) NOT NULL,
+    heslo VARCHAR(60) NOT NULL,
+    jmeno VARCHAR(50) NOT NULL,
+    prijmeni VARCHAR(50) NOT NULL,
+    d_narozeni DATE NOT NULL,
+    tel_cislo VARCHAR(12) NOT NULL,
+    c_prava_fk INT NOT NULL,
+    c_adresy_fk INT NOT NULL,
+    PRIMARY KEY(c_uzivatele_pk)
+) ENGINE = INNODB
+  CHARACTER SET = utf8
+  COLLATE = UTF8_CZECH_CI;
+
+ALTER TABLE UZIVATEL
+ADD FOREIGN KEY (c_prava_fk) REFERENCES PRAVO (c_prava_pk);
+
+ALTER TABLE UZIVATEL
+ADD FOREIGN KEY (c_adresy_fk) REFERENCES ADRESA (c_adresy_pk);
+
+CREATE TABLE IF NOT EXISTS MODEL (
+    c_modelu_pk INT NOT NULL AUTO_INCREMENT,
+    nazev VARCHAR(40) NOT NULL,
+    cena_den DOUBLE NOT NULL,
+    pocet_osob INT NOT NULL,
+    vydrz_baterie DOUBLE NOT NULL,
+    rychlost_ly DOUBLE NOT NULL,
+    popis_kratky VARCHAR(100) NOT NULL,
+    popis_dlouhy TEXT,
+    obrazek_url VARCHAR(100),
+    PRIMARY KEY(c_modelu_pk)
+) ENGINE = INNODB
+  CHARACTER SET = utf8
+  COLLATE = UTF8_CZECH_CI;
+
+CREATE TABLE IF NOT EXISTS UFO (
+    c_ufo_pk INT NOT NULL AUTO_INCREMENT,
+    c_modelu_fk INT NOT NULL,
+    PRIMARY KEY(c_ufo_pk)
+) ENGINE = INNODB
+  CHARACTER SET = utf8
+  COLLATE = UTF8_CZECH_CI;
+
+ALTER TABLE UFO
+ADD FOREIGN KEY (c_modelu_fk) REFERENCES MODEL (c_modelu_pk);
+
+CREATE TABLE IF NOT EXISTS VYPUJCKA (
+    c_vypujcky_pk INT NOT NULL AUTO_INCREMENT,
+    d_vypujceni DATE NOT NULL,
+    d_vraceni DATE NOT NULL,
+    c_platebniho_uctu VARCHAR(20) NOT NULL,
+    c_uzivatele_fk INT NOT NULL,
+    c_ufo_fk INT NOT NULL,
+    c_adresy_fk INT NOT NULL,
+    PRIMARY KEY(c_vypujcky_pk)
+) ENGINE = INNODB
+  CHARACTER SET = utf8
+  COLLATE = UTF8_CZECH_CI;
+
+ALTER TABLE VYPUJCKA
+ADD FOREIGN KEY (c_uzivatele_fk) REFERENCES UZIVATEL (c_uzivatele_pk);
+
+ALTER TABLE VYPUJCKA
+ADD FOREIGN KEY (c_ufo_fk) REFERENCES UFO (c_ufo_pk);
+
+ALTER TABLE VYPUJCKA
+ADD FOREIGN KEY (c_adresy_fk) REFERENCES ADRESA (c_adresy_pk);
+
+CREATE TABLE IF NOT EXISTS RECENZE (
+    c_recenze_pk INT NOT NULL AUTO_INCREMENT,
+    text TEXT,
+    hodnoceni INT NOT NULL CHECK (hodnoceni > 0 AND hodnoceni < 6),
+    datum_cas DATETIME NOT NULL,
+    c_uzivatele_fk INT NOT NULL,
+    c_modelu_fk INT NOT NULL,
+    PRIMARY KEY(c_recenze_pk)
+) ENGINE = INNODB
+  CHARACTER SET = utf8
+  COLLATE = UTF8_CZECH_CI;
+
+ALTER TABLE RECENZE
+ADD FOREIGN KEY (c_uzivatele_fk) REFERENCES UZIVATEL (c_uzivatele_pk);
+
+ALTER TABLE RECENZE
+ADD FOREIGN KEY (c_modelu_fk) REFERENCES MODEL (c_modelu_pk);
+
+
+
+
+
+
