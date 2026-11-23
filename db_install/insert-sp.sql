@@ -44,10 +44,10 @@ INSERT INTO UZIVATEL (email, heslo, jmeno, prijmeni, d_narozeni, tel_cislo, c_pr
 VALUES ('ufon@gmail.com', '$2y$10$q8LipmICeK/6xjzxpqtrY.w6KmhfcmnGFLrm1rV2ybGWzTEWcNQM6', 'Garrus', 'Vakarian', '3001-10-16', '111000111', '3', '3');
 
 INSERT INTO UZIVATEL (email, heslo, jmeno, prijmeni, d_narozeni, tel_cislo, c_prava_fk, c_adresy_fk)
-VALUES ('liara@gmail.com', '2y$10$CC4aDjzUgYJUhtlvbLNbc.UJPmpX8/u.2VRutw1vNceb8f1CqmVYS', 'Liara', 'TSoni', '3000-9-16', '123091190', '3', '4');
+VALUES ('liara@gmail.com', '$2y$10$CC4aDjzUgYJUhtlvbLNbc.UJPmpX8/u.2VRutw1vNceb8f1CqmVYS', 'Liara', 'TSoni', '3000-9-16', '123091190', '3', '4');
 
 INSERT INTO UZIVATEL (email, heslo, jmeno, prijmeni, d_narozeni, tel_cislo, c_prava_fk, c_adresy_fk)
-VALUES ('mordin@gmail.com', '2y$10$FvTcTY5nlBuXzF534zIG1O9HwGrWDb0T.5Wf/Qci92IIde1N3MRr6', 'Mordin', 'Solus', '3000-2-27', '097472969', '3', '4');
+VALUES ('mordin@gmail.com', '$2y$10$FvTcTY5nlBuXzF534zIG1O9HwGrWDb0T.5Wf/Qci92IIde1N3MRr6', 'Mordin', 'Solus', '3000-2-27', '097472969', '3', '4');
 
 INSERT INTO MODEL (nazev, cena_den, pocet_osob, vydrz_baterie, rychlost_ly, popis_kratky, popis_dlouhy, obrazek_url)
 VALUES ('The Timeless Classic', '20000', '2', '68', '2000', 'Klasické UFO pro každou příležitost.', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus varius ultricies sapien, vel consequat neque fermentum eget. Etiam vel libero enim. Etiam tempor ornare ante, et cursus enim tincidunt eget. Quisque sollicitudin risus nec ex malesuada, et pretium ante sagittis. Nunc feugiat, ante vel molestie cursus, mauris urna vulputate magna, ut blandit ipsum dui quis ex. Nam sit amet massa dignissim, elementum lectus quis, dignissim lorem. Curabitur blandit placerat lorem in tincidunt. Maecenas fermentum libero ac ex ornare lobortis.', 'img/the_timeless_classic.png');
