@@ -4,3 +4,7 @@
 node_modules
 dist
 .cache
+
+# Editor and OS files
+.DS_Store
+.idea/
